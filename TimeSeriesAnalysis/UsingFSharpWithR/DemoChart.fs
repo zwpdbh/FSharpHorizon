@@ -10,7 +10,7 @@ open RProvider.grDevices // Required package to save charts
 open RProvider.datasets
 open RProvider.Helpers
 open RProvider.faraway // Once fresh installed a package, it seems we need to restart VS to fresh the env to see the packages
-
+open RDotNet
 open System
 
 let chartDemo () = 
