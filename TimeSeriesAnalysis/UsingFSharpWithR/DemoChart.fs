@@ -30,8 +30,10 @@ let chartDemo () =
     R.dev_off ()
 
 let plotDemo () =
-    let dataset = faraway.R.coagulation
+    let dataset = faraway.R.coagulation.AsList()
     // R commands like: 
     // plot(coag~diet, data=coagulation)
     // summary(coagulation)
+    // references: http://bluemountaincapital.github.io/FSharpRProvider/Statistics-QuickStart.html
+
     R.plot(dataset)
