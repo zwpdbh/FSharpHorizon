@@ -9,6 +9,7 @@ open RProvider.graphics
 open RProvider.grDevices // Required package to save charts
 open RProvider.datasets
 open RProvider.Helpers
+open RProvider.faraway // Once fresh installed a package, it seems we need to restart VS to fresh the env to see the packages
 
 open System
 
@@ -27,3 +28,10 @@ let chartDemo () =
     R.barplot(widgets) |> ignore
     // Close the device once the chart is complete
     R.dev_off ()
+
+let plotDemo () =
+    let dataset = faraway.R.coagulation
+    // R commands like: 
+    // plot(coag~diet, data=coagulation)
+    // summary(coagulation)
+    R.plot(dataset)

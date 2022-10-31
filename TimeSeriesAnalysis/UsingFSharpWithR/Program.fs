@@ -2,4 +2,6 @@
 open DemoLinearRegression
 
 // chartDemo () |> ignore
-linearRegressionDemo () |> ignore
+// linearRegressionDemo () |> ignore
+
+plotDemo () |> ignore
