@@ -29,11 +29,19 @@ let chartDemo () =
     // Close the device once the chart is complete
     R.dev_off ()
 
+//R commands like: 
+//data(coagulation, package='faraway')
+//plot(coag~diet, data=coagulation)
 let plotDemo () =
     let dataset = faraway.R.coagulation.AsList()
-    // R commands like: 
-    // plot(coag~diet, data=coagulation)
-    // summary(coagulation)
-    // references: http://bluemountaincapital.github.io/FSharpRProvider/Statistics-QuickStart.html
 
-    R.plot(dataset)
+    // R.plot(coag, diet) |> ignore
+    for x in dataset do 
+        for i in x.AsNumeric() do 
+            printfn "%A" i // -> 62.0; 60.0; 63.0; 59.0; ...
+        
+    let coag = dataset.[0]
+    printfn "%A" (coag.AsNumeric()) // -> seq [62.0; 60.0; 63.0; 59.0; ...]
+    let diet = dataset.[1]
+    printfn "%A" (diet.AsNumeric()) // -> seq [1.0; 1.0; 1.0; 1.0; ...]
+    //printfn "%A" (seq {for x in dataset -> x.AsNumeric})
