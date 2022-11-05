@@ -1,20 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="DemoBasics.fs" />
     <Compile Include="DemoLinearRegression.fs" />
     <Compile Include="DemoChart.fs" />
+    <Compile Include="DemoInteractive.fsx" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
+    <PackageReference Include="FSharp.DependencyManager.Nuget" Version="37.0.0" />
     <PackageReference Include="RProvider" Version="2.1.0" />
   </ItemGroup>
-
 </Project>
