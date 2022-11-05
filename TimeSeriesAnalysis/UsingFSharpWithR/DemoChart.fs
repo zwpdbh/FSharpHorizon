@@ -34,14 +34,13 @@ let chartDemo () =
 //plot(coag~diet, data=coagulation)
 let plotDemo () =
     let dataset = faraway.R.coagulation.AsList()
-
-    // R.plot(coag, diet) |> ignore
     for x in dataset do 
         for i in x.AsNumeric() do 
             printfn "%A" i // -> 62.0; 60.0; 63.0; 59.0; ...
         
-    let coag = dataset.[0]
-    printfn "%A" (coag.AsNumeric()) // -> seq [62.0; 60.0; 63.0; 59.0; ...]
-    let diet = dataset.[1]
-    printfn "%A" (diet.AsNumeric()) // -> seq [1.0; 1.0; 1.0; 1.0; ...]
-    //printfn "%A" (seq {for x in dataset -> x.AsNumeric})
+    let diet = dataset.[0]
+    printfn "%A" (diet.AsNumeric()) 
+    let coag = dataset.[1]
+    printfn "%A" (coag.AsNumeric()) 
+
+    R.plot(coag, diet) |> ignore
