@@ -9,6 +9,9 @@ open RProvider.Operators
 open RProvider.graphics
 open RProvider.stats
 
+
+fsi.AddPrinter FSIPrinters.rValue
+
 let rng = System.Random()
 let rand () = rng.NextDouble()
 
