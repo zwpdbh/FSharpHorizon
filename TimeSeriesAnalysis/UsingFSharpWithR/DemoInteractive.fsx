@@ -1,6 +1,6 @@
 
 #r "nuget:RProvider"
-
+#r "FSharp.Compiler.Interactive.Settings.dll"
 
 open RDotNet
 open RProvider
@@ -9,8 +9,8 @@ open RProvider.Operators
 open RProvider.graphics
 open RProvider.stats
 
-
-fsi.AddPrinter FSIPrinters.rValue
+// Not working, no obvious solution: https://github.com/fsharp/FsAutoComplete/issues/227
+// fsi.AddPrinter FSIPrinters.rValue
 
 let rng = System.Random()
 let rand () = rng.NextDouble()
