@@ -28,17 +28,16 @@ let test08 =
         let input = ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e"]
         let expected = ["a"; "b"; "c"; "a"; "d"; "e"]
 
-        let compress list = 
-            let rec aux acc lst = 
-                match acc, lst with 
-                | [], head::tail -> aux [head] tail    
-                | x::_, head::tail when x = head -> 
-                    aux acc tail 
-                | acc, [] -> 
-                    List.rev acc 
-                | x::_, head::tail  -> 
-                    aux (head::acc) tail 
-            aux [] list 
+        let rec compress = function 
+            | a :: (b :: _ as tail) -> 
+                // Instead of keep the first and ignore following repeated as I first though
+                // It continue to see next until meet different element to keep the last one !
+                if a = b then 
+                    compress tail 
+                else 
+                    a :: (compress tail)
+            | x -> x 
+
 
         Expect.sequenceEqual (compress input) expected ""
 
