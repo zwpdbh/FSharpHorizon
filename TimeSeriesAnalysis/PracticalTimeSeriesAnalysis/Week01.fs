@@ -45,8 +45,11 @@ let demo02 () =
 
 
 open Deedle
-open RProvider.datasets
 open Plotly.NET
+
+open RProvider
+open RProvider.faraway
+open RProvider.datasets
 
 let demoDeedle () = 
     // Demo from http://bluemountaincapital.github.io/Deedle/rinterop.html
@@ -59,3 +62,4 @@ let demoDeedle () =
     |> Series.observations
     |> Chart.Column
     |> Chart.show 
+    // Somehow to make it works as an application. I also need to install Deedle.RPlugin which is not needed in FSI...
