@@ -42,3 +42,20 @@ let demo02 () =
         "main" => "Zoomed in Residuals on Time"
     ])
     // See https://fslab.org/RProvider/quickstart-statistics.html about how they handle result
+
+
+open Deedle
+open RProvider.datasets
+open Plotly.NET
+
+let demoDeedle () = 
+    // Demo from http://bluemountaincapital.github.io/Deedle/rinterop.html
+    // However, instead of using FSharp.Charting. I am using Plotly.NET which is more robust.
+    let mtcars : Frame<string, string> = R.mtcars.GetValue()
+    mtcars
+    |> Frame.groupRowsByInt "gear"
+    |> Frame.getCol "mpg"
+    |> Stats.levelMean fst
+    |> Series.observations
+    |> Chart.Column
+    |> Chart.show 

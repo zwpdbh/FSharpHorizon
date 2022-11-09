@@ -1,28 +1,23 @@
 ﻿#r "nuget:RProvider" // run this into FSI REPL to make R related available in REPL
+#r "nuget:Deedle.RPlugin"
+#r "nuget:Plotly.NET"
 
-open RDotNet
+open Deedle
+open Plotly.NET
+
 open RProvider
-open RProvider.Operators
-
-open RProvider.graphics
-open RProvider.stats
 open RProvider.faraway
+open RProvider.datasets
 
 
-// For example from PDF file https://www.coursera.org/learn/practical-time-series-analysis/supplement/laBLx/basic-statistics-review-with-linear-regression-and-hypothesis-testing
-// 𝑌𝑖 = 𝑙𝑖𝑛𝑒𝑎𝑟 𝑚𝑜𝑑𝑒𝑙 𝑝𝑙𝑢𝑠 𝑛𝑜𝑖𝑠𝑒 = ( 𝛽0 + 𝛽1𝑥𝑖) + 𝜖
-let co2Data = datasets.R.co2
-let co2Times = R.time(co2Data)
-
-let dataset = [
-    "Y" => co2Data 
-    "X" => co2Times] |> R.data_frame 
-
-let lmModel = R.lm(formula = "Y~X", data = dataset)
-
-// Plot the linear regression
-R.plot([
-    "x" => co2Data 
-    "main" => "Atmospheric CO2 Concentration with Fitted Line"
-]) |> ignore
-R.abline(lmModel) |> ignore
+let demoDeedle () = 
+    // Demo from http://bluemountaincapital.github.io/Deedle/rinterop.html
+    // However, instead of using FSharp.Charting. I am using Plotly.NET which is more robust.
+    let mtcars : Frame<string, string> = R.mtcars.GetValue()
+    mtcars
+    |> Frame.groupRowsByInt "gear"
+    |> Frame.getCol "mpg"
+    |> Stats.levelMean fst
+    |> Series.observations
+    |> Chart.Column
+    |> Chart.show 
