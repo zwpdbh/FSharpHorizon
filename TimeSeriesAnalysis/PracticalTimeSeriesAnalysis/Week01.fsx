@@ -1,5 +1,6 @@
-﻿#r "nuget:RProvider" // run this into FSI REPL to make R related available in REPL
-#r "nuget:Deedle.RPlugin"
+﻿/// Run this into FSI REPL to make R related available in REPL
+#r "nuget:RProvider" 
+#r "nuget:Deedle"
 #r "nuget:Plotly.NET"
 
 open Deedle
