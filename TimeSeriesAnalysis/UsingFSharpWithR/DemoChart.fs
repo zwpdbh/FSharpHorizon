@@ -9,7 +9,8 @@ open RProvider.graphics
 open RProvider.grDevices // Required package to save charts
 open RProvider.datasets
 open RProvider.Helpers
-
+open RProvider.faraway // Once fresh installed a package, it seems we need to restart VS to fresh the env to see the packages
+open RDotNet
 open System
 
 let chartDemo () = 
@@ -27,3 +28,19 @@ let chartDemo () =
     R.barplot(widgets) |> ignore
     // Close the device once the chart is complete
     R.dev_off ()
+
+//R commands like: 
+//data(coagulation, package='faraway')
+//plot(coag~diet, data=coagulation)
+let plotDemo () =
+    let dataset = faraway.R.coagulation.AsList()
+    for x in dataset do 
+        for i in x.AsNumeric() do 
+            printfn "%A" i // -> 62.0; 60.0; 63.0; 59.0; ...
+        
+    let diet = dataset.[0]
+    printfn "%A" (diet.AsNumeric()) 
+    let coag = dataset.[1]
+    printfn "%A" (coag.AsNumeric()) 
+
+    R.plot(coag, diet) |> ignore
