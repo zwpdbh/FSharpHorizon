@@ -50,6 +50,26 @@ let rec insert newValue  (tree: Tree<'T>) =
         Node (v, left, right')
     | _ -> tree // if inserted value already exist, do nothing
 
+
+let rec findInOrderPredecessor (tree: Tree<'T>) = 
+    // Find the left-right most node
+    match tree with 
+    | Empty -> Empty
+    | Node (_, _, Empty) -> tree // If the current node has no right, then itself is the left-right most
+    | Node (_, _, right) -> findInOrderPredecessor right
+
+let findRightLeftMost (tree: Tree<'T>) = 
+    let rec findLeftMost (tree: Tree<'T>) = 
+        match tree with 
+        | Empty -> tree
+        | Node (_, Empty, Empty) -> tree
+        | Node (_, left, _) -> 
+            findLeftMost left
+
+    match tree with 
+    | Empty -> Empty
+    | Node (_, _, right) -> findLeftMost right
+
 let test01 =
     testCase "01 BST: in-order"
     <| fun _ ->
@@ -82,6 +102,22 @@ let test03 =
 
         Expect.sequenceEqual (inOrder tree) (seq [1; 2; 3; 4; 100]) ""
 
+let buildTreeFromList list = 
+    let mutable tree = Empty 
+    for e in list do 
+        tree <- insert e tree 
+    tree 
+
+let test04 = 
+    testCase "04 BST: find the left tree's right most node"
+    <| fun _ -> 
+        let tree = buildTreeFromList [7;3;9;2;5;8;10;4;6]
+        let x = 
+            match (findRightLeftMost tree) with 
+            | Empty -> failwith "shouldn't be this"
+            | Node (v, _, _) -> v
+        Expect.equal x 8 ""
+
 
 [<Tests>]
-let tests = testList "Binary Search Tree" [ test01; test02; test03 ]
+let tests = testList "Binary Search Tree" [ test01; test02; test03; test04 ]
