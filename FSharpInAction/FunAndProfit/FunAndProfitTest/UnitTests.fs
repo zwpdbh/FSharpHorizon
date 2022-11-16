@@ -3,6 +3,8 @@ module Tests
 open Expecto
 
 open FunAndProfit
+open FunAndProfit.ExpressionSimplification
+
 let test01 = 
     testCase "01 Dynamic call function"
     <| fun _ -> 
@@ -22,10 +24,20 @@ let test01 =
             Expect.equal (obj :?> int)  114 ""
         | _ -> 
             0 |> ignore  
+
+let test02 = 
+    testCase "02 Test simple derivative"
+    <| fun _ -> 
+        
+        let e1 = Sum (Num 1, Prod (Num 2, Var))
+        let e2 = deriv e1 
+
+        Expect.equal e2 (Sum (Num 0,Sum (Prod (Num 2,Num 1),Prod (Var,Num 0)))) ""
         
 
 [<Tests>]
 let tests =
   testList "UnitTests" [
     test01
+    test02
   ]
