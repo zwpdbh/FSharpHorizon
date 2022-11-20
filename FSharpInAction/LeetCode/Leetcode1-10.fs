@@ -22,7 +22,7 @@ let test01 =
         Expect.sequenceEqual (twoSum ([ 2; 7; 11; 15 ]) 9) (seq [ (0, 1) ]) ""
         Expect.sequenceEqual (twoSum ([ 3; 2; 4 ]) 6) (seq [ (1, 2) ]) ""
         Expect.sequenceEqual (twoSum ([3; 3]) 6) (seq [(0, 1)]) ""
-
+        Expect.isTrue true "Easy"
 
 let test02 = 
     testCase "02: Add two number"
@@ -52,11 +52,59 @@ let test02 =
                 convertNumToSeq (l1 + l2)
 
             Expect.equal (addTwoNumber ([2; 4; 3]) ([5; 6; 4])) ([7; 0; 8]) ""
-            Expect.isTrue true ""
+            Expect.isTrue true "Median"
 
                 
+let test03 = 
+    testCase "03: Longest Substring Without Repeating Characters"
+    <| fun _ -> 
+        let lengthOfLongestSubstring (s: string) = 
+            let helper s = 
+                let mutable currSet = Set.empty 
+                seq {
+                    for i in s do 
+                        if currSet.Contains i then 
+                            yield currSet 
+                            currSet <- Set.empty
+                            currSet <- currSet.Add i  
+                        else 
+                            currSet <- currSet.Add i 
+                    yield currSet
+                }
+            helper s |> Seq.map (fun x -> Seq.length x) |> Seq.max
 
+             
+
+        Expect.equal (lengthOfLongestSubstring "abcabcbb") 3 "abcabcbb"
+        Expect.equal (lengthOfLongestSubstring "bbbb") 1 "bbbb"
+        Expect.equal (lengthOfLongestSubstring "pwwkew") 3 "pwwkew"
+        Expect.isTrue true "Median"
                    
 
+let test04 = 
+    testCase "04: Median of Two Sorted Arrays"
+    <| fun _ -> 
+        let findMedianSortedArrays (num1: int list) (num2: int list) = 
+            let merged = (num1 @ num2) |> List.sort 
+            let beforeMiddle = 
+                merged 
+                |> List.indexed 
+                |> List.takeWhile (fun (i, _) -> i < merged.Length / 2 + 1 ) 
+                |> Array.ofList
+                |> Array.map (fun (_, v) -> v)
+                |> Array.rev
+
+            printfn "%A" beforeMiddle
+
+            let n = beforeMiddle.Length
+            if n % 2 = 0 then 
+                beforeMiddle[0] |> float
+            else 
+                ((float beforeMiddle[0]) + (float beforeMiddle[1])) / 2.0 
+            
+        Expect.equal (findMedianSortedArrays [1; 3] [2]) 2.0 "case01"
+        Expect.equal (findMedianSortedArrays [1; 2] [3; 4]) 2.5 "case02"
+        Expect.isTrue true "Hard"
+
 [<Tests>]
-let tests = testList "1-10" [ test01; test02 ]
+let tests = testList "1-10" [ test01; test02; test03; test04 ]
