@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Sample.fs" />
+    <Compile Include="Leetcode1-10.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 
