@@ -86,6 +86,7 @@ type TableForm() as form =
              ("MSFT", 72.050, 72.3100, 72.4000, 0.0800);
              ("EBAY", 58.250, 58.5200, 58.5100, 0.0100)|]
 
+// Not working now, because it still needs datavisualization and it is missing from .net 6.0
 // https://fslab.org/FSharp.Charting/
 // https://stackoverflow.com/questions/41795086/f-make-bar-chart-with-winforms-datavisualization
 // https://stackoverflow.com/questions/21129486/how-to-display-an-fsharp-charting-graph-in-an-existing-form
