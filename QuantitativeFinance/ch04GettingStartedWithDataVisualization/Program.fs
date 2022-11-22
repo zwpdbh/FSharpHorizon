@@ -33,7 +33,11 @@ module Main =
         // example 02: display text
         //let view = new TextForm() 
 
-        let view = new TableForm()
+        // example 03: table form
+        //let view = new TableForm()
+        
+        let view = new YahooForm()
+
 
         Application.Run(view)
 
