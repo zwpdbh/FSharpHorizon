@@ -80,10 +80,27 @@ let failIfEitherBig (inp1, inp2) =
         let! n1 = failIfBig inp1
         let! n2 = failIfBig inp2
 
+        return (n1, n2)
+    }
+
+let test01 = testCase "01" <| fun _ -> 
+    Expect.equal (runAttempt (failIfEitherBig (999, 998))) (Some (999, 998)) ""
+    Expect.isTrue true ""
+
+
+
+let sumIfBothSmall (inp1, inp2) = 
+    attempt {
+        let! n1 = failIfBig inp1 
+        let! n2 = failIfBig inp2 
         return n1 + n2
     }
 
-let test01 = testCase "01" <| fun _ -> Expect.isTrue true ""
+let test02 = 
+    testCase "02" 
+    <| fun _ -> 
+        Expect.equal (runAttempt (sumIfBothSmall (100, 200))) (Some 300) ""
+        Expect.equal ((sumIfBothSmall (1001, 200)) |> runAttempt) None ""
 
 [<Tests>]
-let tests = testList "Computation Expression: AttempBuilder" [ test01 ]
+let tests = testList "Computation Expression: AttempBuilder" [ test01; test02 ]
