@@ -6,9 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="ComputationExpression\Ex01Attempt.fs" />
     <Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
     <Compile Include="DynamicFeatures.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ComputationExpression\" />
   </ItemGroup>
 
 </Project>
