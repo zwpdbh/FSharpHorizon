@@ -2,8 +2,12 @@
 
 
 module DemoDDD = 
+    //Now ValidateAddress can’t be created from outside the containing module due to the private constructor
     type ValidateAddress = private ValidateAddress of string 
 
+    //If we write code in the same module that contains the type definition above, then we can access the constructor.
+    //Let’s use this fact to define some functions that will help us manipulate the
+    //type. We’ll start by creating a submodule with exactly the same name
     module ValidateAddress = 
         let create (address: string) = 
             if address.Length <= 4 then 
@@ -15,7 +19,8 @@ module DemoDDD =
 
         let value (ValidateAddress address) = address 
 
-    let demo() = 
+    // p105 DDD
+    let demo01 () = 
         let validAddressResult = ValidateAddress.create "some"
         match validAddressResult with 
         | Error msg -> 
