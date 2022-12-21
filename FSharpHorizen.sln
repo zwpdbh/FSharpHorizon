@@ -27,6 +27,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "LeetCode", "FSharpInAction\
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Advanced", "FSharpInAction\Advanced\Advanced.fsproj", "{033686E6-FCB1-4FB8-9161-B4B24EBB6C18}"
 EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AdventOfCode", "FSharpInAction\AdventOfCode\AdventOfCode.fsproj", "{4539C436-237A-467F-A846-FE20F756077C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,14 @@ Global
 		{033686E6-FCB1-4FB8-9161-B4B24EBB6C18}.Release|Any CPU.Build.0 = Release|Any CPU
 		{033686E6-FCB1-4FB8-9161-B4B24EBB6C18}.Release|x64.ActiveCfg = Release|Any CPU
 		{033686E6-FCB1-4FB8-9161-B4B24EBB6C18}.Release|x64.Build.0 = Release|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Debug|x64.Build.0 = Debug|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Release|x64.ActiveCfg = Release|Any CPU
+		{4539C436-237A-467F-A846-FE20F756077C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +130,7 @@ Global
 		{C1E8EEC5-5111-462A-88A7-B0456A3A7CB1} = {89A72912-3F56-4308-9135-FE84159D6B39}
 		{0F2EFE80-D1C0-406D-B349-189545E4C3E4} = {89A72912-3F56-4308-9135-FE84159D6B39}
 		{033686E6-FCB1-4FB8-9161-B4B24EBB6C18} = {89A72912-3F56-4308-9135-FE84159D6B39}
+		{4539C436-237A-467F-A846-FE20F756077C} = {89A72912-3F56-4308-9135-FE84159D6B39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {135C6156-E291-4B76-9B42-44AC44E00446}
