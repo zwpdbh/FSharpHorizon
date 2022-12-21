@@ -1,4 +1,4 @@
-﻿module AdventOfCode
+﻿module Advent_of_Code
 open Expecto
 
 [<EntryPoint>]
