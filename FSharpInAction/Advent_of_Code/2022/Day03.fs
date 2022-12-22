@@ -85,11 +85,11 @@ module Day03 =
             input
             |> List.map (fun each -> 
                 each 
-                |> List.ofSeq
-                |> Set.ofList
-                |> List.ofSeq
+                |> List.ofSeq // change each string to list
+                |> Set.ofList // get rid of duplicated one using set 
+                |> List.ofSeq // convert back to list from set
             )
-            |> List.concat
+            |> List.concat // form a big list from multiple small list
             |> List.iter (fun each -> 
                 if map.ContainsKey each then 
                     map <- map.Add(each, map[each] + 1)
