@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common.fs" />
+    <Compile Include="2022\Day02.fs" />
+    <Content Include="2022\input\day02.txt" />
     <Content Include="2022\input\day01.txt" />
     <Compile Include="2022\Day01.fs" />
     <Compile Include="Main.fs" />

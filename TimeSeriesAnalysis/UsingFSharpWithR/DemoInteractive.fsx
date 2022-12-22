@@ -1,7 +1,7 @@
 
 // Only in fsharp script file we could run #r 
-#r "nuget:RProvider" // run this into FSI REPL to make R related available in REPL
-#r "FSharp.Compiler.Interactive.Settings.dll"
+//#r "nuget:RProvider" // run this into FSI REPL to make R related available in REPL
+//#r "FSharp.Compiler.Interactive.Settings.dll"
 
 open RDotNet
 open RProvider

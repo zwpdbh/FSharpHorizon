@@ -1,7 +1,5 @@
 module Day01
 
-open System
-open System.IO
 open Expecto
 
 
@@ -34,13 +32,9 @@ let findTop3TotalCalorie (numbers: string array) =
     |> List.sumBy (fun (_, v) -> v)
 
 
-let workingDirectory = Environment.CurrentDirectory
-// We need to go to its "../../" because it is running from output folder
-let projectFolder = Directory.GetParent(workingDirectory).Parent.Parent.FullName
 
 let numbers =
-    File.ReadAllLines(Path.Combine(projectFolder, @"2022\input\day01.txt"))
-
+    AdventOfCode.Common.readInput "2022\input\day01.txt"
 
 // For https://adventofcode.com/2022/day/1
 let test01 =
