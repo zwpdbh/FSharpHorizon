@@ -74,6 +74,39 @@ module Day04 =
                 
                 Expect.equal result 466 "assignment pairs does one range fully contain the other"
 
+    module Part02 = 
+        let firstTwoSetFullyOverlap lst =
+            match lst with 
+            | set01::set02::_ ->
+                let intersect = Set.intersect set01 set02
+                match intersect with 
+                | _ when intersect <> Set.empty -> true 
+                | _ -> false
+            | _ -> 
+                failwith "lst should contain at least two set"
+
+        let onePairFullyOverlap (s:string) = 
+            s
+            |> splitLineWith ','
+            |> List.map (fun each -> 
+                sectionAssigmentToSet each 
+            )
+            |> firstTwoSetFullyOverlap
+
+        let test01 = 
+            testCase "Part02 with input"
+            <| fun _ ->
+                let result = 
+                    input 
+                    |> List.map (fun each ->
+                        match onePairFullyOverlap each with 
+                        | true -> 1 
+                        | false -> 0
+                    )
+                    |> List.sum
+                
+                Expect.equal result 865 "assignment pairs do the ranges overlap"
+
     [<Tests>]
-    let tests = testList "Day04" [testInput; Part01.test01; Part01.test02]
+    let tests = testList "Day04" [testInput; Part01.test01; Part01.test02; Part02.test01]
 
