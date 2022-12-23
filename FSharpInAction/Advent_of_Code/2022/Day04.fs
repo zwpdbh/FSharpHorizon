@@ -110,3 +110,10 @@ module Day04 =
     [<Tests>]
     let tests = testList "Day04" [testInput; Part01.test01; Part01.test02; Part02.test01]
 
+    // Lesson 01
+    // To fit "|>" especially during processing of list, we shall keep the function in each stage accept list
+    // as parameter and handle details in side to avoid breaking the "shape" of process flow.
+    // Just as we did for "firstTwoSetFullyOverlap"
+
+    // Lesson 02 
+    // List to Set and Set operations
