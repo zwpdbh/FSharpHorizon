@@ -47,6 +47,8 @@ module Demo02 =
 
 module Demo03 = 
     // Shows DU used as inheritance. Inheritance usually can be considered as composition
+    // Shows explict convert from int to float
+    // Show they are just functions
     type Point = {x: int; y: int}
 
     type Shape = 
@@ -54,7 +56,7 @@ module Demo03 =
         | Square of edge: int * point: Point
         | Circle of radius: int * point: Point
 
-    let rectange = Rectangle (20, 10, {x = 1; y = 2})
+    let rectangle = Rectangle (20, 10, {x = 1; y = 2})
     let squre = Square (10, {x = 0; y = 0})
     let circle = Circle (10, {x = 0; y = 2})
 
@@ -65,6 +67,6 @@ module Demo03 =
         | Circle (r, _) -> 3.14 * float r * float r 
 
     let demo() = 
-        [rectange; squre; circle]
+        [rectangle; squre; circle]
         |> List.map (fun x -> area x)
         |> List.sum
