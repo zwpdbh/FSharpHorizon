@@ -17,20 +17,7 @@ module Demo01 =
         | x -> x
 
     let demo01 () =
-        compress [ "a"
-                   "a"
-                   "a"
-                   "a"
-                   "b"
-                   "c"
-                   "c"
-                   "a"
-                   "a"
-                   "d"
-                   "e"
-                   "e"
-                   "e"
-                   "e" ]
+        compress [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e" ]
 
     let demo02 () = 
         compress [1; 1; 2; 2; 3; 3; 3; 3; 4]
