@@ -20,7 +20,7 @@ namespace CSharpDemos
         static IEnumerable<T> NonConsecutiveImpl<T>(this IEnumerable<T> input)
         {
             bool isFirst = true;
-            T last = default(T);
+            T? last = default(T);
             foreach (var item in input)
             {
                 if (isFirst || !object.Equals(item, last))

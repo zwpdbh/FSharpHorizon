@@ -153,3 +153,79 @@ module Demo06 =
     let demo () = 
         isItWarm (Celsius 32.0) |> printfn "%A"
         isItWarm (Fahrenheit 88) |> printfn "%A"
+
+
+/// Computation Expression
+// It is very powerful, not possible in C#
+// Computation expressions “hide” handling of async, errors and more
+// Model: Customer with an optional Name, Data with an Amount
+// Input: Customer ID and Data ID
+// 1. Load Customer by its ID
+// 2. Load Data by its ID
+// 3. Get the Name of the Customer (if the Customer was found)
+// 4. Get the Amount of the Data (if the Data was found)
+// 5. Return a tuple with the Name and Amount if all went well, otherwise return some kind of error
+module Demo07 = 
+    open FsToolkit.ErrorHandling
+
+    type Customer = {Id: int; Name: string option}
+    type Data = {Id: int; Amount: int}
+
+    let loadCustomer customerId = 
+        asyncResult {
+            do! customerId = 42
+                |> Result.requireTrue 
+                    "customer not found"
+
+            return {Id = customerId; Name = Some "Charles"}
+        }
+
+    let loadCustomerCaller () = 
+        async {
+            let! customerResult = loadCustomer 42
+
+            return 
+                match customerResult with 
+                | Ok customer -> $"customer: {customer.Name}"
+                | Error error -> $"no customer: {error}"
+        }
+
+    let loadData dataId = 
+        asyncResult {
+            return {Id = dataId; Amount = 100}
+        }
+
+    let getNameOfCustomer customer = 
+        option {
+            let! name = customer.Name 
+            return name
+        }
+
+    // Simplifies reading, understanding and writing code
+    let getCustomerNameAndAmount customerId dataId  = 
+        asyncResult {
+            // Has a value when the customer could be loaded, 
+            // otherwise the whole computation expression returns the error.
+            // Kind of an early return.
+            let! customer = loadCustomer customerId
+            let! data = loadData dataId 
+
+            let! name = 
+                customer 
+                |> getNameOfCustomer
+                |> Result.requireSome "customer has no name"
+
+            return name, data.Amount
+        }
+
+    let compute () = 
+        async {
+            let! result = getCustomerNameAndAmount 42 17
+            match result with 
+            | Ok (name, amount) -> printf $"customer = {name}, amount = {amount}"
+            | Error error -> printf $"error is {error}"
+        }
+
+    let demo () = 
+        compute () |> Async.RunSynchronously
+
