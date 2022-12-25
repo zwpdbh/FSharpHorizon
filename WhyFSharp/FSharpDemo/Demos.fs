@@ -98,7 +98,9 @@ module Demo04 =
         printfn $"{gameStatus game03}"
 
         
-// Something F# feature that is hard to achieve in C#
+
+/// Something F# feature that is hard to achieve in C#
+// Active pattern 01
 module Demo05 = 
     // What is active pattern?
     // “Active patterns” means the pattern can be parsed or detected dynamically.
@@ -124,3 +126,29 @@ module Demo05 =
         extractHost "http://google.com/test" |> printfn "%A"
         extractHost "alice@hotmail.com" |> printfn "%A"
         extractHost "unknown" |> printfn "%A"
+
+
+// Active pattern 02 
+module Demo06 = 
+    
+    type Temperature =
+    | Celsius of float
+    | Fahrenheit of int
+
+    // Define an active pattern
+    let (|IsWarm|IsCold|) temperature = 
+        match temperature with 
+        | Celsius c when c > 25.0 -> IsWarm
+        | Celsius _ -> IsCold
+        | Fahrenheit f when f > 77 -> IsWarm
+        | Fahrenheit _ -> IsCold
+
+    // Use it dynamically
+    let isItWarm temperature = 
+        match temperature with 
+        | IsWarm -> true 
+        | IsCold -> false
+
+    let demo () = 
+        isItWarm (Celsius 32.0) |> printfn "%A"
+        isItWarm (Fahrenheit 88) |> printfn "%A"
