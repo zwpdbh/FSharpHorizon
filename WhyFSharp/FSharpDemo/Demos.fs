@@ -96,3 +96,31 @@ module Demo04 =
         printfn $"{gameStatus game01}"
         printfn $"{gameStatus game02}"
         printfn $"{gameStatus game03}"
+
+        
+// Something F# feature that is hard to achieve in C#
+module Demo05 = 
+    // What is active pattern?
+    // “Active patterns” means the pattern can be parsed or detected dynamically.
+    open System.Text.RegularExpressions
+
+    // Here, we defined FirstRegexGroup as partial active pattern 
+    // which could return Some value or None.
+    let (|FirstRegexGroup|_|) pattern input = 
+            let m = Regex.Match(input, pattern)
+            if (m.Success) then Some m.Groups.[1].Value else None 
+
+    // Here, in this function we pattern matching dynamically with different input 
+    // and based on result (Some value or None) we do further processing.
+    let extractHost str = 
+        match str with 
+        | FirstRegexGroup "http://(.*?)/(.*)" host -> 
+            host 
+        | FirstRegexGroup ".*?@(.*)" host -> 
+            host
+        | _ -> str
+
+    let demo() = 
+        extractHost "http://google.com/test" |> printfn "%A"
+        extractHost "alice@hotmail.com" |> printfn "%A"
+        extractHost "unknown" |> printfn "%A"
