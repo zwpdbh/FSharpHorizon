@@ -70,3 +70,29 @@ module Demo03 =
         [rectangle; squre; circle]
         |> List.map (fun x -> area x)
         |> List.sum
+
+
+module Demo04 = 
+    // Shows DU as better domain modeling
+    type Player = {name: string; score: int}
+
+    type Game = 
+        | NotStarted
+        | InProcess of Player * Player 
+        | Finished of Player
+
+    let gameStatus (game: Game) = 
+        match game with 
+        | NotStarted -> "Game not started: Waiting for players to join"
+        | InProcess (player01, player02) -> 
+            $"Game is on: {player01} vs {player02}"
+        | Finished player -> 
+            $"Game is finished: {player} is the winner!"
+
+    let demo() = 
+        let game01 = NotStarted
+        let game02 = InProcess ({name = "player01"; score = 0}, {name = "player02"; score = 0})
+        let game03 = Finished {name = "player01"; score = 100}
+        printfn $"{gameStatus game01}"
+        printfn $"{gameStatus game02}"
+        printfn $"{gameStatus game03}"
