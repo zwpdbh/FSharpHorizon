@@ -135,7 +135,7 @@ module Demo06 =
     | Celsius of float
     | Fahrenheit of int
 
-    // Define an active pattern
+    // Define an active pattern: IsWarm | IsCold
     let (|IsWarm|IsCold|) temperature = 
         match temperature with 
         | Celsius c when c > 25.0 -> IsWarm
@@ -143,7 +143,8 @@ module Demo06 =
         | Fahrenheit f when f > 77 -> IsWarm
         | Fahrenheit _ -> IsCold
 
-    // Use it dynamically
+    // Use it dynamically: the active pattern "IsWarm | IsCold" 
+    // is matched dynamically in pattern matching with Temperature
     let isItWarm temperature = 
         match temperature with 
         | IsWarm -> true 
