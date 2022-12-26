@@ -69,6 +69,18 @@ module Day05 =
  1   2   3   4   5   6   7   8   9 
                 """
 
+    let inputCargo = [|
+        ['Q'; 'F'; 'L'; 'S'; 'R']
+        ['T'; 'P'; 'G'; 'Q'; 'Z'; 'N']
+        ['B'; 'Q'; 'M'; 'S']
+        ['Q'; 'B'; 'C'; 'H'; 'J'; 'Z'; 'G'; 'T']
+        ['S'; 'F'; 'N'; 'B'; 'M'; 'H'; 'P']
+        ['G'; 'V'; 'L'; 'S'; 'N'; 'Q'; 'C'; 'P']
+        ['F'; 'C'; 'W']
+        ['M'; 'P'; 'V'; 'W'; 'Z'; 'G'; 'H'; 'Q']
+        ['R'; 'N'; 'C'; 'L'; 'D'; 'Z'; 'G']
+    |]
+
     let parseCargoInput () = 
         cargoInput.Split '\n'
         |> Array.filter (fun each -> each.Trim().Length > 0)
@@ -98,10 +110,20 @@ module Day05 =
         let test02 =
             testCase "part one input"
             <| fun _ -> 
-                Expect.isTrue true ""
+                let commandsInput = 
+                    AdventOfCode.Common.readInput "2022/input/day05.txt"
+                    |> List.ofArray
+
+                let message = 
+                    commandsInput
+                    |> moveCargoFromInput inputCargo
+                    |> messageFromCargo
+                    |> System.String
+
+                Expect.equal message "FZCMJCRHZ" "input part one"
 
     [<Tests>]
-    let tests = testList "Day05" [Part01.test01]
+    let tests = testList "Day05" [Part01.test01; Part01.test02]
 
 
     // Things to learn

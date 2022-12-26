@@ -12,6 +12,7 @@
     <Compile Include="2022\Day04.fs" />
     <Compile Include="2022\Day03.fs" />
     <Compile Include="2022\Day02.fs" />
+    <Content Include="2022\input\day05.txt" />
     <Content Include="2022\input\day04.txt" />
     <Content Include="2022\input\day03.txt" />
     <Content Include="2022\input\day02.txt" />
