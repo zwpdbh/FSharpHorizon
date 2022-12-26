@@ -57,17 +57,17 @@ module Day05 =
         cargo 
 
     let cargoInput = 
-                                """
-                            [Q]     [G]     [M]    
-                            [B] [S] [V]     [P] [R]
-                    [T]     [C] [F] [L]     [V] [N]
-                [Q] [P]     [H] [N] [S]     [W] [C]
-                [F] [G] [B] [J] [B] [N]     [Z] [L]
-                [L] [Q] [Q] [Z] [M] [Q] [F] [G] [D]
-                [S] [Z] [M] [G] [H] [C] [C] [H] [Z]
-                [R] [N] [S] [T] [P] [P] [W] [Q] [G]
-                 1   2   3   4   5   6   7   8   9 
-                                """
+                """
+            [Q]     [G]     [M]    
+            [B] [S] [V]     [P] [R]
+    [T]     [C] [F] [L]     [V] [N]
+[Q] [P]     [H] [N] [S]     [W] [C]
+[F] [G] [B] [J] [B] [N]     [Z] [L]
+[L] [Q] [Q] [Z] [M] [Q] [F] [G] [D]
+[S] [Z] [M] [G] [H] [C] [C] [H] [Z]
+[R] [N] [S] [T] [P] [P] [W] [Q] [G]
+ 1   2   3   4   5   6   7   8   9 
+                """
 
     module Part01 = 
         let test01 = 
