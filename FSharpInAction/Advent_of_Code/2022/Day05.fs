@@ -69,6 +69,11 @@ module Day05 =
  1   2   3   4   5   6   7   8   9 
                 """
 
+    let parseCargoInput () = 
+        cargoInput.Split '\n'
+        |> Array.filter (fun each -> each.Trim().Length > 0)
+        |> Array.map (fun each -> each.Split ' ')
+
     module Part01 = 
         let test01 = 
             testCase "baseline"
