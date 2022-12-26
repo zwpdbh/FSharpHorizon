@@ -26,19 +26,10 @@ module Day05 =
             List.tryHead eachList
         )
         |> Array.ofSeq
-        
-    let moveCrateFromToTarget (n:int) (from: 'a list) (target: 'a list) = 
-        let moved = 
-            from[..(n-1)]
-            |> List.rev 
-
-        let left = from[n..]
-        let target' = moved @ target
-
-        left, target'
+       
             
 
-    let moveCargoFrom (c: Command) (cargo: char list array) = 
+    let moveCargoFrom (c: Command) (cargo: char list array) moveCrateFromToTarget = 
         let from = cargo[c.From - 1]
         let target = cargo[c.To - 1]
 
@@ -47,14 +38,6 @@ module Day05 =
         cargo[c.To - 1] <- updatedTarget
         cargo
 
-    let moveCargoFromInput cargo input  = 
-        let mutable cargo = cargo
-        input 
-        |> List.map (fun each -> parseCommand each)
-        |> List.iter (fun eachCommand -> 
-            cargo <- moveCargoFrom eachCommand cargo
-        )
-        cargo 
 
     let cargoInput = 
                 """
@@ -87,8 +70,28 @@ module Day05 =
         |> Array.map (fun each -> each.Split ' ')
 
     module Part01 = 
+        let moveCrateFromToTargetForPartOne (n:int) (from: 'a list) (target: 'a list) = 
+            let moved = 
+                from[..(n-1)]
+                |> List.rev 
+
+            let left = from[n..]
+            let target' = moved @ target
+
+            left, target'
+
+
+        let moveCargoFromInput cargo input  = 
+            let mutable cargo = Array.copy cargo
+            input 
+            |> List.map (fun each -> parseCommand each)
+            |> List.iter (fun eachCommand -> 
+                cargo <- moveCargoFrom eachCommand cargo moveCrateFromToTargetForPartOne
+            )
+            cargo 
+
         let test01 = 
-            testCase "baseline"
+            testCase "Part01 baseline"
             <| fun _ -> 
                 let cargo = [|['N'; 'Z'];['D';'C';'M'];['P']|]
                 let commandsInput = [
@@ -110,6 +113,7 @@ module Day05 =
         let test02 =
             testCase "part one input"
             <| fun _ -> 
+
                 let commandsInput = 
                     AdventOfCode.Common.readInput "2022/input/day05.txt"
                     |> List.ofArray
@@ -122,8 +126,63 @@ module Day05 =
 
                 Expect.equal message "FZCMJCRHZ" "input part one"
 
+    module Part02 = 
+        let moveCrateFromToTargetForPartOne (n:int) (from: 'a list) (target: 'a list) = 
+            let moved = 
+                from[..(n-1)]
+
+            let left = from[n..]
+            let target' = moved @ target
+
+            left, target'
+
+
+        let moveCargoFromInput cargo input  = 
+            let mutable cargo = Array.copy cargo
+            input 
+            |> List.map (fun each -> parseCommand each)
+            |> List.iter (fun eachCommand -> 
+                cargo <- moveCargoFrom eachCommand cargo moveCrateFromToTargetForPartOne
+            )
+            cargo 
+
+        let test01 = 
+            testCase "Part02 baseline"
+            <| fun _ -> 
+                let cargo = [|['N'; 'Z'];['D';'C';'M'];['P']|]
+                let commandsInput = [
+                    "move 1 from 2 to 1"
+                    "move 3 from 1 to 3"
+                    "move 2 from 2 to 1"
+                    "move 1 from 1 to 2"
+                ]
+                let message = 
+                    commandsInput
+                    |> moveCargoFromInput cargo
+                    |> messageFromCargo
+                    |> System.String
+
+                Expect.equal message "MCD" "baseline from part two"
+
+        let test02 =
+            testCase "part two input"
+            <| fun _ -> 
+
+                let commandsInput = 
+                    AdventOfCode.Common.readInput "2022/input/day05.txt"
+                    |> List.ofArray
+
+                let message = 
+                    commandsInput
+                    |> moveCargoFromInput inputCargo
+                    |> messageFromCargo
+                    |> System.String
+
+                Expect.equal message "JSDHQMZGF" "input part one" 
+            
+
     [<Tests>]
-    let tests = testList "Day05" [Part01.test01; Part01.test02]
+    let tests = testList "Day05" [Part01.test01; Part01.test02; Part02.test01; Part02.test02]
 
 
     // Things to learn
