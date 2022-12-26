@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <Compile Include="Common.fs" />
+    <Compile Include="2022\Day06.fs" />
     <Compile Include="2022\Day05.fs" />
     <Compile Include="2022\Day04.fs" />
     <Compile Include="2022\Day03.fs" />
     <Compile Include="2022\Day02.fs" />
+    <Content Include="2022\input\day06.txt" />
     <Content Include="2022\input\day05.txt" />
     <Content Include="2022\input\day04.txt" />
     <Content Include="2022\input\day03.txt" />
