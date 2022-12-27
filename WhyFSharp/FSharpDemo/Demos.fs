@@ -100,37 +100,10 @@ module Demo04 =
         
 
 /// Something F# feature that is hard to achieve in C#
+// What is active pattern?
+// “Active patterns” means the pattern can be parsed or detected dynamically like it is a normal value.
 // Active pattern 01
 module Demo05 = 
-    // What is active pattern?
-    // “Active patterns” means the pattern can be parsed or detected dynamically.
-    open System.Text.RegularExpressions
-
-    // Here, we defined FirstRegexGroup as partial active pattern 
-    // which could return Some value or None.
-    let (|FirstRegexGroup|_|) pattern input = 
-            let m = Regex.Match(input, pattern)
-            if (m.Success) then Some m.Groups.[1].Value else None 
-
-    // Here, in this function we pattern matching dynamically with different input 
-    // and based on result (Some value or None) we do further processing.
-    let extractHost str = 
-        match str with 
-        | FirstRegexGroup "http://(.*?)/(.*)" host -> 
-            host 
-        | FirstRegexGroup ".*?@(.*)" host -> 
-            host
-        | _ -> str
-
-    let demo() = 
-        extractHost "http://google.com/test" |> printfn "%A"
-        extractHost "alice@hotmail.com" |> printfn "%A"
-        extractHost "unknown" |> printfn "%A"
-
-
-// Active pattern 02 
-module Demo06 = 
-    
     type Temperature =
     | Celsius of float
     | Fahrenheit of int
@@ -145,6 +118,7 @@ module Demo06 =
 
     // Use it dynamically: the active pattern "IsWarm | IsCold" 
     // is matched dynamically in pattern matching with Temperature
+    // Active pattern here hide the implementation details about how to decide warm or code for a Temperature.
     let isItWarm temperature = 
         match temperature with 
         | IsWarm -> true 
@@ -153,6 +127,35 @@ module Demo06 =
     let demo () = 
         isItWarm (Celsius 32.0) |> printfn "%A"
         isItWarm (Fahrenheit 88) |> printfn "%A"
+
+
+// Active pattern 02
+module Demo06 = 
+    // Maybe the AdventOfCode2022 Day06 is a good example?
+    open System.Text.RegularExpressions
+
+    // Here, we defined FirstRegexGroup as partial active pattern 
+    // which could return Some value or None.
+    let (|FirstRegexGroup|_|) pattern input = 
+            let m = Regex.Match(input, pattern)
+            if (m.Success) then Some m.Groups.[1].Value else None 
+
+    // Here, in this function we pattern matching input with different pattern dynamically
+    // and based on result (Some value or None) we do further processing.
+    let extractHost str = 
+        match str with 
+        | FirstRegexGroup "http://(.*?)/(.*)" host -> 
+            host 
+        | FirstRegexGroup ".*?@(.*)" host -> 
+            host
+        | FirstRegexGroup "It will be None, therefore not matched" host -> 
+            host
+        | _ -> str
+
+    let demo() = 
+        extractHost "http://google.com/test" |> printfn "%A"
+        extractHost "alice@hotmail.com" |> printfn "%A"
+        extractHost "unknown" |> printfn "%A"
 
 
 /// Computation Expression
@@ -171,6 +174,7 @@ module Demo07 =
     type Customer = {Id: int; Name: string option}
     type Data = {Id: int; Amount: int}
 
+    // simulate loading customer, only succeed when customerId is 42
     let loadCustomer customerId = 
         asyncResult {
             do! customerId = 42
@@ -229,3 +233,132 @@ module Demo07 =
     let demo () = 
         compute () |> Async.RunSynchronously
 
+
+/// MessagePassing as better way to handle concurrency
+// This demo shows 
+// 1. Spawn multiple workers (agent) to compute multiple tasks 
+// 2.1 A worker request new task from scheduler if it is not busy
+// 2.2 A worker report its task result back to scheduler.
+// 3. Scheduler assign new task to worker if there is till work to do 
+// otherwise it tolds worker to shutdown
+// In this example, the scheduler assign 30 tasks (they all compute Fib(40) to 
+// multiple workers and collect their result.
+module Demo08 =
+    open System.Collections.Generic
+
+    type SchedulerMessage =
+        | Ready of int * AsyncReplyChannel<WorkerMessage>
+        | Answer of int * int
+        | Process of AsyncReplyChannel<int>
+        | Summary of AsyncReplyChannel<(int * int) list>
+
+    and WorkerMessage =
+        | Fib of int
+        | Shutdown
+
+    let rec fibCalc n =
+        match n with
+        | 0 -> 0
+        | 1 -> 1
+        | n -> fibCalc (n - 1) + fibCalc (n - 2)
+
+
+    let rec schedulerProcess(jobs:Queue<int>) =
+        MailboxProcessor<SchedulerMessage>.Start
+            (fun inbox ->
+                // Scheduler is more passively to wait for events happen
+                // It receive message and pass response back to client through replyChannel (more like a traditional server)
+                let mutable results = []
+                let rec loop () =
+                    async {
+                        let! msg = inbox.Receive()
+
+                        match msg with
+                        | Ready (id, replyChannel) when jobs.Count <> 0 ->
+                            let n = jobs.Dequeue()
+                            replyChannel.Reply(Fib n)
+                            return! loop ()
+                        | Ready (_, replyChannel) ->
+                            replyChannel.Reply(Shutdown)
+                            return! loop ()
+                        | Answer (num, result) ->
+                            results <- [ (num, result) ] @ results
+                            return! loop ()
+                        | Process replyChannel -> 
+                            replyChannel.Reply(results.Length)
+                            return! loop ()
+                        | Summary replyChannel -> replyChannel.Reply results
+                    }
+
+                loop ())
+
+    and workerProcess (id: int) (scheduler: MailboxProcessor<SchedulerMessage>)  =
+        MailboxProcessor<WorkerMessage>.Start
+            (fun inbox ->
+                // It seems Erlang's symmetric send and received is difficult to achieve.
+                // There, worker is the more active one, it use schedule's reference to send message to it and receive its response.
+                let rec loop () =
+                    async {
+                        let! msg = scheduler.PostAndAsyncReply(fun reply -> Ready(id, reply))
+
+                        match msg with
+                        | Shutdown ->
+                            ()
+                        | Fib n ->
+                            let fibn = fibCalc (n)
+                            scheduler.Post(Answer(n, fibn))
+                            return! loop ()
+                    }
+
+                loop ())
+
+    let computeFibs nworkers nJobs fibX=
+        // printfn $"use {nworkers} workers to compute {nJobs} of fib({fibX})"
+        let jobs =
+            let lst = 
+                seq {
+                    for _ in [1..nJobs] do 
+                        yield fibX
+                }
+            new Queue<int>(lst)
+
+        let scheduler = schedulerProcess(jobs)
+   
+        [ 1..nworkers ]
+        |> List.map (fun i -> workerProcess i scheduler)
+        |> ignore
+
+        let mutable finishedJobs = 0
+        async {     
+            while finishedJobs <> nJobs do 
+                let! updated = scheduler.PostAndAsyncReply(fun reply -> Process reply)
+                if updated <> finishedJobs then 
+                    finishedJobs <- updated
+            return! scheduler.PostAndAsyncReply(fun reply -> Summary(reply)) }
+        |> Async.RunSynchronously
+        |> ignore
+
+    let duration f =
+        let timer = new System.Diagnostics.Stopwatch()
+        timer.Start()
+        f ()
+        timer.ElapsedMilliseconds
+
+    // measure the time using n workers to do m tasks in which each task compute fib(x)
+    let measureNworkers n m x = 
+        let cost = duration (fun _ -> computeFibs n m x)
+        printfn $"{n} workers tooks: {cost}ms"    
+
+    // Print out the time used for using different number of workers, something like:
+    //    > 
+    //5 workers tooks: 4112ms
+    //6 workers tooks: 3411ms
+    //7 workers tooks: 3345ms
+    //8 workers tooks: 2855ms
+    //9 workers tooks: 2757ms
+    //...
+    let demo () =
+        [5 .. 20] 
+        |> List.iter(fun n -> 
+            measureNworkers n 30 40
+        )    

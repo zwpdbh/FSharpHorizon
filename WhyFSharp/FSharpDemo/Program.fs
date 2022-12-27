@@ -1,2 +1,4 @@
-﻿// For more information see https://aka.ms/fsharp-console-apps
-printfn "Hello from F#"
+﻿
+//WhyFSharp.Demo07.demo() 
+
+WhyFSharp.Demo08.demo()
