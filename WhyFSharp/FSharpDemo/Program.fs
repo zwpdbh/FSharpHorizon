@@ -18,6 +18,11 @@
 //WhyFSharp.Demo08.demo()
 
 //AzureWorkflow.DemoAzureSKD.demoListResourceGroupUsingAzureSKD() 
+
+//AzureWorkflow.DemoAzureKeyVault.demoGetCertificateByThumbprint ()
+//AzureWorkflow.DemoAzureKeyVault.demoGetCertificateBySubject ()
+//AzureWorkflow.DemoAzureKeyVault.demoGetSecretValue ()
+
 AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
 
 /// Talk about my experience about choosing F# 

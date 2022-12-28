@@ -7,7 +7,7 @@ module Auth =
             { 
                 tenantId: string // The tenant id where the service principal is created from. It could be checked from Tenant properties --> Tenant ID.
                 clientId: string // It is also the application id
-                clientSecret: string // NOTICE: Client secret values cannot be viewed, except for immediately after creation. So, make sure to save it immediately.
+                clientSecret: string option // NOTICE: Client secret values cannot be viewed, except for immediately after creation. So, make sure to save it immediately.
             }
 
         let deploymentServiceSubScription =
@@ -24,8 +24,67 @@ module Auth =
             { 
                 tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47"
                 clientId = "2470ca86-3843-4aa2-95b8-97d3a912ff69"
-                clientSecret = "2y~8Q~blSah_XVUIGOzQ9IAzpyCZ1PicJCiBtbUc"
+                clientSecret = None
              }
+
+    module KeyVault = 
+        open Azure.Security.KeyVault.Secrets;
+        open Azure.Identity
+        open System
+        open System.Security.Cryptography.X509Certificates
+
+        let getLocalCertificateByThumbprint (thumbprint: string) = 
+                use store = new X509Store(StoreName.My, StoreLocation.CurrentUser)
+                store.Open(OpenFlags.OpenExistingOnly ||| OpenFlags.ReadOnly)
+        
+                let certificate = 
+                    store.Certificates
+                    |> Seq.filter(fun x -> 
+                        x.Thumbprint.ToLower() = thumbprint.ToLower()
+                        && DateTime.Now < x.NotAfter 
+                        && DateTime.Now >= x.NotBefore
+                    )
+                    |> Seq.tryHead
+
+                match certificate with 
+                | Some cert -> cert 
+                | None -> failwith $"Could not find a match for a certificate with thumbprint = '{thumbprint}'"
+
+        let getLocalCertificateBySubject (subjectName: string) = 
+                use store = new X509Store(StoreName.My, StoreLocation.CurrentUser)
+                store.Open(OpenFlags.OpenExistingOnly ||| OpenFlags.ReadOnly)
+        
+                let certificate = 
+                    store.Certificates
+                    |> Seq.filter(fun x -> 
+                        x.SubjectName.Name.ToLower() = ("cn=" + subjectName.ToLower())
+                        && DateTime.Now < x.NotAfter 
+                        && DateTime.Now >= x.NotBefore
+                    )
+                    |> Seq.tryHead
+
+                match certificate with 
+                | Some cert -> cert 
+                | None -> failwith $"Could not find a match for a certificate with issueTo subject = '{subjectName}'"
+
+        /// Fetch secret value (for example, my Service Princial (SP)'s secret) from KeyVault using SP
+        /// 1. Need certificate installed on you local machine under (StoreName.My, StoreLocation.CurrentUser)
+        /// 2. The same certificate is uploaded in SP: App registrations --> Your SP --> Certificates & secrets --> Certificates
+        /// 3. Make sure your Key Vault's Access policies (NOT Access control -- IAM) is granted to SP (select by SP's client Id)
+        let getSecretValue (secretName: string) = 
+            async {
+                let cert = getLocalCertificateBySubject "zwpdbhREST"
+                // Vault URI, checked from your Key Vault's overview
+                let keyVaultUri = "https://zwpdbh.vault.azure.net/"
+                let secretClient = new Lazy<SecretClient>(fun _ -> 
+                    new SecretClient(
+                        new Uri(keyVaultUri), 
+                        new ClientCertificateCredential(Setting.zwpdbhSP.tenantId, 
+                        Setting.zwpdbhSP.clientId, cert))
+                )
+                return secretClient.Value.GetSecretAsync(secretName).Result.Value.Value 
+                // secretClient.Value.GetSecretAsync(secretName).Value
+            }
 
 
     module AuthToken = 
@@ -70,11 +129,19 @@ module Auth =
         let (|RequestAccessToken|_|) (sp: Setting.ServicePrincipal, scope: string)=
             let client = new System.Net.Http.HttpClient()
 
+            let clientSecret = 
+                match sp.clientSecret with 
+                | Some secret -> secret
+                | None -> 
+                    KeyVault.getSecretValue "zwpdbhSPSecret"
+                    |> Async.RunSynchronously
+                  
+
             let authInfo =
                 Map
                     .empty
                     .Add("client_id", sp.clientId)
-                    .Add("client_secret", sp.clientSecret)
+                    .Add("client_secret", clientSecret)
                     .Add("scope", scope)
                     .Add("grant_type", "client_credentials")
 
@@ -105,37 +172,37 @@ module Auth =
         open AuthToken
 
         type AuthTokenMsg = 
-            | GetAccessToken of AsyncReplyChannel<AuthTokenResponse>
-            | RequestNewToken of AsyncReplyChannel<AuthTokenResponse>
+            | GetAccessToken of AsyncReplyChannel<Result<AuthTokenResponse, string>>
+            | RequestNewToken of AsyncReplyChannel<Result<AuthTokenResponse, string>>
 
         type AuthTokenAgent(sp: ServicePrincipal, scope: string) = 
             let sp = sp             
             let agent = 
                 MailboxProcessor.Start(fun inbox ->
-                    let rec loop (tokenResponse: AuthTokenResponse option) = 
+                    let rec loop (tokenResponseResult: Result<AuthTokenResponse, string> option) = 
                         async {
                             let! msg = inbox.Receive()
                             match msg with 
                             | RequestNewToken chnl -> 
                                 match sp, scope with 
                                 | RequestAccessToken tokenResponse -> 
-                                    chnl.Reply tokenResponse
-                                    return! loop(Some tokenResponse)
+                                    chnl.Reply (Result.Ok tokenResponse)
+                                    return! loop(Some (Result.Ok tokenResponse))
                                 | _ -> 
-                                  failwith "RequestAccessToken failed"  
+                                    return! loop(Some (Result.Error "RequestAccessToken failed"))
                       
                             | GetAccessToken chnl  -> 
-                                match tokenResponse with 
-                                | Some tokenResponse -> 
-                                    chnl.Reply tokenResponse
-                                    return! loop(Some tokenResponse)  // Don't forget this
+                                match tokenResponseResult with 
+                                | Some result -> 
+                                    chnl.Reply result
+                                    return! loop(Some result)  // Don't forget this
                                 | None -> 
                                      match sp, scope with 
                                      | RequestAccessToken tokenResponse -> 
-                                        chnl.Reply tokenResponse
-                                        return! loop(Some tokenResponse)
+                                        chnl.Reply (Result.Ok tokenResponse)
+                                        return! loop(Some (Result.Ok tokenResponse))
                                      | _ -> 
-                                       failwith "RequestAccessToken failed"  
+                                       return! loop(Some (Result.Error "RequestAccessToken failed"))  
                                 return () 
                         }
                     loop None // at start there is no token
