@@ -12,9 +12,14 @@
 /// Show Examples between F# and C#
 
 
+//// =============Demos============= 
 //WhyFSharp.Demo07.demo() 
 
-WhyFSharp.Demo08.demo()
+//WhyFSharp.Demo08.demo()
 
+//AzureWorkflow.DemoAzureSKD.demoListResourceGroupUsingAzureSKD() 
+AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
 
 /// Talk about my experience about choosing F# 
+
+

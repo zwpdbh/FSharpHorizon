@@ -90,7 +90,7 @@ module Day07 =
         | ParseCd dirName -> Cd {DirectoryName = dirName}
         | ParseLs _ -> Ls 
         | ParseDir dirName -> Directory {DirectoryName = dirName}
-        | ParseFile (size, name) -> File ({Size = size; FileName = name})
+        | ParseFile (size, name) -> Output.File ({Size = size; FileName = name})
         | _ -> 
             failwith $"unknow terminal output line: {line}"
     
@@ -101,7 +101,7 @@ module Day07 =
             Expect.equal (parseTerminalOutputLine "$ ls") (Ls) "02"        
             Expect.throws (fun () -> parseTerminalOutputLine "$ dir a" |> ignore) "03.a"
             Expect.equal (parseTerminalOutputLine "dir a") (Directory {DirectoryName = "a"}) "03.b" 
-            Expect.equal (parseTerminalOutputLine "8504156 c.dat") (File {Size = 8504156; FileName = "c.dat"}) "04"
+            Expect.equal (parseTerminalOutputLine "8504156 c.dat") (Output.File {Size = 8504156; FileName = "c.dat"}) "04"
 
     let demo () = 
         let output = 
