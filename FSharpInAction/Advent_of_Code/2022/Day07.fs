@@ -29,7 +29,6 @@ module Day07 =
 
     
     let (|ParseCd|_|) (input: string) =
-        let input = "$ cd d"
         let inputArray = input.Split " "
         try 
             if  inputArray.Length = 3  
@@ -43,7 +42,6 @@ module Day07 =
             None 
 
     let (|ParseLs|_|) (input: string) = 
-        let input = "$ ls"
         let inputArray = input.Split " "
         try 
             if  inputArray.Length = 2  
@@ -57,7 +55,6 @@ module Day07 =
             None 
 
     let (|ParseDir|_|) (input: string) = 
-        let input = "$ ls"
         let inputArray = input.Split " "
         try 
             if  inputArray.Length = 2  
@@ -70,7 +67,6 @@ module Day07 =
             None 
 
     let (|ParseFile|_|) (input: string) = 
-        let input = "$ ls"
         let inputArray = input.Split " "
         try 
             if  inputArray.Length = 2  then
@@ -94,6 +90,10 @@ module Day07 =
         testCase "test parse string to token"
         <| fun _ -> 
             Expect.equal (parseTerminalOutputLine "$ cd /") (Cd {DirectoryName = "/"}) "01"
+            Expect.equal (parseTerminalOutputLine "$ ls") (Ls) "02"        
+            Expect.throws (fun () -> parseTerminalOutputLine "$ dir a" |> ignore) "03.a"
+            Expect.equal (parseTerminalOutputLine "dir a") (Directory {DirectoryName = "a"}) "03.b" 
+            Expect.equal (parseTerminalOutputLine "8504156 c.dat") (File {Size = 8504156; FileName = "c.dat"}) "04"
 
     let demo () = 
         let output = 
