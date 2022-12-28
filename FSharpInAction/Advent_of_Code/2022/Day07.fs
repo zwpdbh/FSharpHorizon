@@ -20,6 +20,14 @@ module Day07 =
     | File of File
     | Directory of Dir 
 
+    type FileSystemType = 
+    | File of File 
+    | Dir of Dir 
+
+    type FileSystem = 
+    | One of FileSystemType 
+    | Many of FileSystem list 
+
 
     let parseTerminalOutput  (output: string) = 
         output.Split '\n'
