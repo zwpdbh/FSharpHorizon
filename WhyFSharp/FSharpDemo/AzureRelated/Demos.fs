@@ -1,6 +1,6 @@
 ﻿namespace AzureWorkflow
 
-module DemoAzureSKD = 
+module DemoAzureResourceManager = 
     open Azure.ResourceManager
     open Azure.Identity
 
