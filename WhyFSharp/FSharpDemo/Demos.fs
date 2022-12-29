@@ -170,6 +170,8 @@ module Demo06 =
 // 5. Return a tuple with the Name and Amount if all went well, otherwise return some kind of error
 module Demo07 = 
     open FsToolkit.ErrorHandling
+    // See: https://demystifyfp.gitbook.io/fstoolkit-errorhandling
+    // READ LATER: https://fsharpforfunandprofit.com/series/map-and-bind-and-apply-oh-my/
 
     type Customer = {Id: int; Name: string option}
     type Data = {Id: int; Amount: int}
