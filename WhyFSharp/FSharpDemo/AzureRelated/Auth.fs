@@ -97,8 +97,6 @@ module Auth =
               expires_in: DateTime
               access_token: string }
 
-        //type AccessToken = string
-
         let tokenExpireDecoder: Decoder<DateTime> = 
             Decode.int 
             |> Decode.andThen (fun expireInSeconds -> 

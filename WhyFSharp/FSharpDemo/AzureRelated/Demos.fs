@@ -36,12 +36,6 @@ module DemoAuthAgent =
     open Auth.AuthAgent
     open Auth.Setting
 
-    let asyncMap f computation =
-        async {
-            let! x = computation
-            return f x
-        }
-
     let demoGetAuthTokenUsingServicePrincipal () = 
         let authTokenAgent = new AuthTokenAgent(zwpdbhSP, azureScope)
         [1..5]
@@ -55,6 +49,34 @@ module DemoAuthAgent =
             | Result.Ok authTokenResponse -> Some authTokenResponse
             | _ -> None
         )
+        |> Array.iter (fun each -> 
+            printfn "RequestNewToken: %A" each|> ignore 
+            printfn "===" 
+        )
+        printfn "Done"
+
+
+    let demoGetAuthTokenUsingServicePrincipalv2 () =
+        // The point is we could chain more async steps to further delay avoid randevu point
+        let asyncMap f computation =
+            async {
+                let! x = computation
+                return f x
+            }
+
+        let authTokenAgent = new AuthTokenAgent(zwpdbhSP, azureScope)
+        [1..5]
+        |> List.map (fun _ -> 
+            authTokenAgent.GetAccessToken()
+            )
+        |> Async.Parallel   
+        |> asyncMap (Array.choose (fun eachResonse -> 
+            match eachResonse with 
+            | Result.Ok authTokenResponse -> Some authTokenResponse
+            | _ -> None
+            )
+        )
+        |> Async.RunSynchronously 
         |> Array.iter (fun each -> 
             printfn "RequestNewToken: %A" each|> ignore 
             printfn "===" 
