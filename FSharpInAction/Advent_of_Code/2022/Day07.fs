@@ -87,15 +87,6 @@ module Day07 =
             Expect.equal (parseTerminalOutputLine "dir a") (Directory {Name = "a"}) "03.b" 
             Expect.equal (parseTerminalOutputLine "8504156 c.dat") (Token.File {Size = 8504156; Name = "c.dat"}) "04"
 
-    type FileSystem = 
-    | OneFile of Dir * File 
-    | OneDirectory of Dir * FileSystem option // option type is not a good fit
-    | Many of FileSystem list 
-
-    type FileType = 
-    | File of File 
-    | Dir of Dir 
-
 
     type Directory = 
     | EmptyFolder of {|Name: string|} 
@@ -122,17 +113,40 @@ module Day07 =
         - k (file, size=7214296)
         """
 
-    let testBuildFileSystem = 
-        testCase "test build FileSystem" 
-        <| fun _ -> 
-            let fileSystem = 
-                OneDirectory (
-                    {Name = "/"},
-                    Some (Many [OneDirectory ({Name = "a"}, None)])
-                )
-            Expect.isTrue true ""
+    //let buildFileSystem (input: Token list) = 
+    //    let helper (x: Token) (y: Token) = 
+            
+    let demo () = 
+        let output = 
+            """
+            $ cd /
+            $ ls
+            dir a
+            14848514 b.txt
+            8504156 c.dat
+            dir d
+            $ cd a
+            $ ls
+            dir e
+            29116 f
+            2557 g
+            62596 h.lst
+            $ cd e
+            $ ls
+            584 i
+            $ cd ..
+            $ cd ..
+            $ cd d
+            $ ls
+            4060174 j
+            8033020 d.log
+            5626152 d.ext
+            7214296 k
+            """
+        parseTerminalOutput output
+        |> List.map (fun eachLine -> parseTerminalOutputLine eachLine)
 
-    let testBuildFileSystem02 = 
+    let testBuildFileSystem = 
         testCase "test build FileSystem02"
         <| fun _ -> 
             let fileSystem = 
@@ -170,37 +184,6 @@ module Day07 =
                 |}
             Expect.isTrue true ""
         
-
-
-    let demo () = 
-        let output = 
-            """
-            $ cd /
-            $ ls
-            dir a
-            14848514 b.txt
-            8504156 c.dat
-            dir d
-            $ cd a
-            $ ls
-            dir e
-            29116 f
-            2557 g
-            62596 h.lst
-            $ cd e
-            $ ls
-            584 i
-            $ cd ..
-            $ cd ..
-            $ cd d
-            $ ls
-            4060174 j
-            8033020 d.log
-            5626152 d.ext
-            7214296 k
-            """
-        parseTerminalOutput output
-        |> List.map (fun eachLine -> parseTerminalOutputLine eachLine)
 
 
 
