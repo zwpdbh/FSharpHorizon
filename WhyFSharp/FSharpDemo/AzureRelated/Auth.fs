@@ -180,29 +180,26 @@ module Auth =
             let agent = 
                 MailboxProcessor.Start(fun inbox ->
                     let rec loop (tokenResponseResult: Result<AuthTokenResponse, string> option) = 
+                        let requestNewToken sp scope (chnl: AsyncReplyChannel<Result<AuthTokenResponse, string>>) = 
+                            match sp, scope with 
+                            | RequestAccessToken tokenResponse -> 
+                                chnl.Reply (Result.Ok tokenResponse)
+                                loop(Some (Result.Ok tokenResponse))
+                            | _ -> 
+                                loop(Some (Result.Error "RequestAccessToken failed"))    
+                           
                         async {
                             let! msg = inbox.Receive()
                             match msg with 
                             | RequestNewToken chnl -> 
-                                match sp, scope with 
-                                | RequestAccessToken tokenResponse -> 
-                                    chnl.Reply (Result.Ok tokenResponse)
-                                    return! loop(Some (Result.Ok tokenResponse))
-                                | _ -> 
-                                    return! loop(Some (Result.Error "RequestAccessToken failed"))
-                      
+                                return! requestNewToken sp scope chnl                      
                             | GetAccessToken chnl  -> 
                                 match tokenResponseResult with 
                                 | Some result -> 
                                     chnl.Reply result
-                                    return! loop(Some result)  // Don't forget this
+                                    return! loop(Some result)  // Don't forget this, always return! loop
                                 | None -> 
-                                     match sp, scope with 
-                                     | RequestAccessToken tokenResponse -> 
-                                        chnl.Reply (Result.Ok tokenResponse)
-                                        return! loop(Some (Result.Ok tokenResponse))
-                                     | _ -> 
-                                       return! loop(Some (Result.Error "RequestAccessToken failed"))  
+                                    return! requestNewToken sp scope chnl
                                 return () 
                         }
                     loop None // at start there is no token
