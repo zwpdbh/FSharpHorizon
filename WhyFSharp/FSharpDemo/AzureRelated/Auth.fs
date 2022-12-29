@@ -123,7 +123,8 @@ module Auth =
             | Result.Ok authTokenResponse -> Some authTokenResponse
             | Result.Error _ -> None
 
-
+        // ActivePattern which gets access_token using device-code oauth grant
+        // See: https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-device-code
         let (|RequestAccessToken|_|) (sp: Setting.ServicePrincipal, scope: string)=
             let client = new System.Net.Http.HttpClient()
 
