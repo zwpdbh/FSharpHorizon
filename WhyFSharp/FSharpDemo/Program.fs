@@ -23,7 +23,14 @@
 //AzureWorkflow.DemoAzureKeyVault.demoGetCertificateBySubject ()
 //AzureWorkflow.DemoAzureKeyVault.demoGetSecretValue ()
 
-AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
+// AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
+
+
+AzureWorkflow.DemoAzureStorageBlob.demoListContainers ()
+
+
+
+
 
 /// Talk about my experience about choosing F# 
 
