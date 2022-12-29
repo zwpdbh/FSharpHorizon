@@ -3,8 +3,8 @@
 module Day07 = 
     open Expecto
 
-    type File = {FileName: string; Size: int}
-    type Dir = {DirectoryName: string}
+    type File = {Name: string; Size: int}
+    type Dir = {Name: string}
 
     type Token =
     | Ls 
@@ -71,21 +71,21 @@ module Day07 =
     // Like parse string into token 
     let parseTerminalOutputLine (line: string) = 
         match line with 
-        | ParseCd dirName -> Cd {DirectoryName = dirName}
+        | ParseCd dirName -> Cd {Name = dirName}
         | ParseLs _ -> Ls 
-        | ParseDir dirName -> Directory {DirectoryName = dirName}
-        | ParseFile (size, name) -> Token.File ({Size = size; FileName = name})
+        | ParseDir dirName -> Directory {Name = dirName}
+        | ParseFile (size, name) -> Token.File ({Size = size; Name = name})
         | _ -> 
             failwith $"unknow terminal output line: {line}"
     
     let testParser = 
         testCase "test parse string to token"
         <| fun _ -> 
-            Expect.equal (parseTerminalOutputLine "$ cd /") (Cd {DirectoryName = "/"}) "01"
+            Expect.equal (parseTerminalOutputLine "$ cd /") (Cd {Name = "/"}) "01"
             Expect.equal (parseTerminalOutputLine "$ ls") (Ls) "02"        
             Expect.throws (fun () -> parseTerminalOutputLine "$ dir a" |> ignore) "03.a"
-            Expect.equal (parseTerminalOutputLine "dir a") (Directory {DirectoryName = "a"}) "03.b" 
-            Expect.equal (parseTerminalOutputLine "8504156 c.dat") (Token.File {Size = 8504156; FileName = "c.dat"}) "04"
+            Expect.equal (parseTerminalOutputLine "dir a") (Directory {Name = "a"}) "03.b" 
+            Expect.equal (parseTerminalOutputLine "8504156 c.dat") (Token.File {Size = 8504156; Name = "c.dat"}) "04"
 
     type FileSystem = 
     | OneFile of Dir * File 
@@ -102,17 +102,7 @@ module Day07 =
     | FolderWithFiles of {|Name: string; Files: File list|}
     | FolderWithFolders of {|Name: string; SubFolders: Directory list|} 
     | FolderWithFilesAndFolders of {|Name: string; Files: File list; SubFolders: Directory list|}
-    //| Folder03 of string * File list * Directory list 
-    //| SubFolder of string * FileType list option 
-        
-    //let case01 = 
-    //    Folder01 "/"
-    //let case02 = 
-    //    Folder02 ("/", [{FileName = "a"; Size = 100}; {FileName = "b"; Size = 10000}])
-    //let case03 = 
-    //    Folder03 ("/", [Folder01 "/a"; Folder01 "/b"])
-    //let case04 = 
-    //    Folder04 ("/", [Folder01 "/a"; Folder01 "/b"], [{FileName = "a"; Size = 100}; {FileName = "b"; Size = 10000}])
+
 
     let ASTLookLike = 
         """
@@ -137,8 +127,8 @@ module Day07 =
         <| fun _ -> 
             let fileSystem = 
                 OneDirectory (
-                    {DirectoryName = "/"},
-                    Some (Many [OneDirectory ({DirectoryName = "a"}, None)])
+                    {Name = "/"},
+                    Some (Many [OneDirectory ({Name = "a"}, None)])
                 )
             Expect.isTrue true ""
 
@@ -148,17 +138,17 @@ module Day07 =
             let fileSystem = 
                 FolderWithFilesAndFolders {|
                     Name = "/"
-                    Files = [{FileName = "b.txt"; Size = 14848514}; {FileName = "c.dat"; Size = 8504156}]
+                    Files = [{Name = "b.txt"; Size = 14848514}; {Name = "c.dat"; Size = 8504156}]
                     SubFolders = [
                         FolderWithFilesAndFolders {|
                             Name = "a"
                             Files = [
-                                {FileName = "f"; Size = 29116}
-                                {FileName = "g"; Size = 2557}
-                                {FileName = "h.lst"; Size = 62596}
+                                {Name = "f"; Size = 29116}
+                                {Name = "g"; Size = 2557}
+                                {Name = "h.lst"; Size = 62596}
                             ]
                             SubFolders = [
-                                FolderWithFiles {|Name = "e"; Files = [{FileName = "i"; Size = 584}]|}
+                                FolderWithFiles {|Name = "e"; Files = [{Name = "i"; Size = 584}]|}
                             ]
                         |}
                         FolderWithFilesAndFolders {|
@@ -168,10 +158,10 @@ module Day07 =
                                 FolderWithFiles {|
                                     Name = "d"
                                     Files = [
-                                        {FileName = "j"; Size = 4060174}
-                                        {FileName = "d.log"; Size = 8033020}
-                                        {FileName = "d.ext"; Size = 5626152}
-                                        {FileName = "k"; Size = 7214296}
+                                        {Name = "j"; Size = 4060174}
+                                        {Name = "d.log"; Size = 8033020}
+                                        {Name = "d.ext"; Size = 5626152}
+                                        {Name = "k"; Size = 7214296}
                                     ]
                                 |}
                             ]
