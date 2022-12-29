@@ -184,16 +184,6 @@ module Demo07 =
             return {Id = customerId; Name = Some "Charles"}
         }
 
-    let loadCustomerCaller () = 
-        async {
-            let! customerResult = loadCustomer 42
-
-            return 
-                match customerResult with 
-                | Ok customer -> $"customer: {customer.Name}"
-                | Error error -> $"no customer: {error}"
-        }
-
     let loadData dataId = 
         asyncResult {
             return {Id = dataId; Amount = 100}
