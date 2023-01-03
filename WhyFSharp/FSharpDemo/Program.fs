@@ -15,21 +15,11 @@
 //// =============Demos============= 
 //WhyFSharp.Demo07.demo() 
 
-//WhyFSharp.Demo08.demo()
+WhyFSharp.Demo08.demo()
 
-//AzureWorkflow.DemoAzureSKD.demoListResourceGroupUsingAzureSKD() 
-
-//AzureWorkflow.DemoAzureKeyVault.demoGetCertificateByThumbprint ()
-//AzureWorkflow.DemoAzureKeyVault.demoGetCertificateBySubject ()
-//AzureWorkflow.DemoAzureKeyVault.demoGetSecretValue ()
-
-// AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
-
-
-AzureWorkflow.DemoAzureStorageBlob.demoListContainers ()
-
-
-
+//AzureWorkflow.DemoAzureResourceManager.demoListResourceGroupUsingDefaultAzureCredential() 
+//AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
+//AzureWorkflow.DemoAzureStorageBlob.demoListContainers ()
 
 
 /// Talk about my experience about choosing F# 
