@@ -13,9 +13,9 @@
 
 
 //// =============Demos============= 
-//WhyFSharp.Demo07.demo() 
+WhyFSharp.Demo07.demo() 
 
-WhyFSharp.Demo08.demo()
+//WhyFSharp.Demo08.demo()
 
 //AzureWorkflow.DemoAzureResourceManager.demoListResourceGroupUsingDefaultAzureCredential() 
 //AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
@@ -23,5 +23,7 @@ WhyFSharp.Demo08.demo()
 
 
 /// Talk about my experience about choosing F# 
+/// F# is the C#'s future. Shall I wait until C# has all features of F#?
+/// F# Pros and Cons? 
 
 

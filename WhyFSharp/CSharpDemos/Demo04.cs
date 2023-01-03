@@ -14,7 +14,7 @@ namespace CSharpDemos
             var player01 = new Player("player 01");
             var player02 = new Player("player 02");
 
-            // game status is valid
+            // game status is valid, but its game status is ill.
             var game01 = new Game(player01, player01);
             game01.status = Status.InProcess;
             game01.winner = player01;

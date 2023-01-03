@@ -56,8 +56,8 @@ module DemoAuthAgent =
             authTokenAgent.GetAccessToken()
             )
         |> Async.Parallel   
-        |> asyncMap (Array.choose (fun eachResonse -> 
-            match eachResonse with 
+        |> asyncMap (Array.choose (fun response -> 
+            match response with 
             | Result.Ok authTokenResponse -> Some authTokenResponse
             | _ -> None
             )

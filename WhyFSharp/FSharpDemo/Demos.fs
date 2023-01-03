@@ -9,7 +9,7 @@ module Demo01 =
     let rec compress =
         function
         | a :: (b :: _ as tail) ->
-            // Instead of keep the first and ignore following repeated as I first though
+            // Instead of keeping the first and ignore following repeated as I first though
             // It continue to see next until meet different element to keep the last one !
             if a = b then
                 compress tail
@@ -22,6 +22,12 @@ module Demo01 =
 
     let demo02 () = 
         compress [1; 1; 2; 2; 3; 3; 3; 3; 4]
+
+    let add x y = 
+        x + y  
+
+    let add10  = add 10
+    //add10 20 
 
 
 module Demo02 = 
@@ -43,8 +49,7 @@ module Demo02 =
 
         [1..100]
         |> List.iter (fun x -> fizzBuzz x |> printfn "%A")
-
-
+        
 module Demo03 = 
     // Shows DU used as inheritance. Inheritance usually can be considered as composition
     // Shows explict convert from int to float
