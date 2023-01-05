@@ -68,6 +68,36 @@ module Day07 =
         with _ ->
             None 
 
+    let (|ParseLsToken|_|) (input: Token list) = 
+        match input with 
+        | head::_ when head = Ls ->
+            Some Ls 
+        | _ -> None
+
+    let (|ParseDirToken|_|) (input: Token list) = 
+        match input with 
+        | head::_ ->
+            match head with 
+            | Cd dir -> Some dir 
+            | _ -> None 
+        | _ -> None
+
+    let (|ParseFileToken|_|) (input: Token list) = 
+        match input with 
+        | head::_ ->
+            match head with 
+            | File file -> Some file 
+            | _ -> None 
+        | _ -> None
+
+    let (|ParseDirectoryToken|_|) (input: Token list) = 
+        match input with 
+        | head::_ ->
+            match head with 
+            | Directory directory -> Some directory 
+            | _ -> None 
+        | _ -> None
+
     // Like parse string into token 
     let parseTerminalOutputLine (line: string) = 
         match line with 
@@ -113,38 +143,89 @@ module Day07 =
         - k (file, size=7214296)
         """
 
-    //let buildFileSystem (input: Token list) = 
-    //    let helper (x: Token) (y: Token) = 
-            
-    let demo () = 
-        let output = 
-            """
-            $ cd /
-            $ ls
-            dir a
-            14848514 b.txt
-            8504156 c.dat
-            dir d
-            $ cd a
-            $ ls
-            dir e
-            29116 f
-            2557 g
-            62596 h.lst
-            $ cd e
-            $ ls
-            584 i
-            $ cd ..
-            $ cd ..
-            $ cd d
-            $ ls
-            4060174 j
-            8033020 d.log
-            5626152 d.ext
-            7214296 k
-            """
-        parseTerminalOutput output
-        |> List.map (fun eachLine -> parseTerminalOutputLine eachLine)
+           
+    let testTerminalOutput = 
+        testCase "test parse terminal output into token lists"
+        <| fun _ ->
+            let terminalOutput = 
+                """
+                $ cd /
+                $ ls
+                dir a
+                14848514 b.txt
+                8504156 c.dat
+                dir d
+                $ cd a
+                $ ls
+                dir e
+                29116 f
+                2557 g
+                62596 h.lst
+                $ cd e
+                $ ls
+                584 i
+                $ cd ..
+                $ cd ..
+                $ cd d
+                $ ls
+                4060174 j
+                8033020 d.log
+                5626152 d.ext
+                7214296 k
+                """
+            let expectedTokenList = 
+                [
+                    Cd { Name = "/" }
+                    Ls
+                    Directory { Name = "a" }
+                    File { Name = "b.txt"; Size = 14848514 }
+                    File { Name = "c.dat"; Size = 8504156 }
+                    Directory { Name = "d" }
+                    Cd { Name = "a" }
+                    Ls
+                    Directory { Name = "e" }
+                    File { Name = "f"; Size = 29116 }
+                    File { Name = "g"; Size = 2557 };
+                    File { Name = "h.lst"; Size = 62596 }
+                    Cd { Name = "e" }
+                    Ls
+                    File { Name = "i"; Size = 584 }
+                    Cd { Name = ".." }
+                    Cd { Name = ".." }
+                    Cd { Name = "d" }
+                    Ls
+                    File { Name = "j"; Size = 4060174 }
+                    File { Name = "d.log"; Size = 8033020 }
+                    File { Name = "d.ext"; Size = 5626152 }
+                    File { Name = "k"; Size = 7214296 }
+                ]
+
+            let result = 
+                parseTerminalOutput terminalOutput
+                |> List.map (fun eachLine -> parseTerminalOutputLine eachLine)
+
+            Expect.sequenceEqual expectedTokenList result ""
+
+
+    //// currentFolder has contents like: ["e"; "a"; /"]
+    //let rec insert (fileSystem: Directory) (token: Token) (currentFolder: string list)= 
+    //    match token with 
+    //    | Ls -> Some fileSystem
+    //    | Cd dir -> None 
+    //    | File file -> 
+    //        Some fileSystem
+    //    | Directory diretory -> 
+    //        Some fileSystem
+
+    let rec buildFileSystem (tokens: Token list) (currentDir: Dir) = 
+        match tokens with 
+        | head::tail -> 
+            match head with 
+            | Cd dir -> 
+                buildFileSystem tail dir 
+            | Ls -> 
+
+                
 
     let testBuildFileSystem = 
         testCase "test build FileSystem02"
@@ -183,7 +264,6 @@ module Day07 =
                     ]
                 |}
             Expect.isTrue true ""
-        
 
 
 
@@ -194,5 +274,5 @@ module Day07 =
                 Expect.isTrue true ""
 
     [<Tests>]
-    let tests = testList "Day 07" [testParser; Part01.test01]
+    let tests = testList "Day 07" [testParser; testTerminalOutput; Part01.test01]
 
