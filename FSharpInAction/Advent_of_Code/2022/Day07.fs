@@ -143,68 +143,68 @@ module Day07 =
         - k (file, size=7214296)
         """
 
+    let terminalOutput = 
+        """
+        $ cd /
+        $ ls
+        dir a
+        14848514 b.txt
+        8504156 c.dat
+        dir d
+        $ cd a
+        $ ls
+        dir e
+        29116 f
+        2557 g
+        62596 h.lst
+        $ cd e
+        $ ls
+        584 i
+        $ cd ..
+        $ cd ..
+        $ cd d
+        $ ls
+        4060174 j
+        8033020 d.log
+        5626152 d.ext
+        7214296 k
+        """
+
+    let tokenListExample = 
+        [
+            Cd { Name = "/" }
+            Ls
+            Directory { Name = "a" }
+            File { Name = "b.txt"; Size = 14848514 }
+            File { Name = "c.dat"; Size = 8504156 }
+            Directory { Name = "d" }
+            Cd { Name = "a" }
+            Ls
+            Directory { Name = "e" }
+            File { Name = "f"; Size = 29116 }
+            File { Name = "g"; Size = 2557 };
+            File { Name = "h.lst"; Size = 62596 }
+            Cd { Name = "e" }
+            Ls
+            File { Name = "i"; Size = 584 }
+            Cd { Name = ".." }
+            Cd { Name = ".." }
+            Cd { Name = "d" }
+            Ls
+            File { Name = "j"; Size = 4060174 }
+            File { Name = "d.log"; Size = 8033020 }
+            File { Name = "d.ext"; Size = 5626152 }
+            File { Name = "k"; Size = 7214296 }
+        ]
            
     let testTerminalOutput = 
         testCase "test parse terminal output into token lists"
         <| fun _ ->
-            let terminalOutput = 
-                """
-                $ cd /
-                $ ls
-                dir a
-                14848514 b.txt
-                8504156 c.dat
-                dir d
-                $ cd a
-                $ ls
-                dir e
-                29116 f
-                2557 g
-                62596 h.lst
-                $ cd e
-                $ ls
-                584 i
-                $ cd ..
-                $ cd ..
-                $ cd d
-                $ ls
-                4060174 j
-                8033020 d.log
-                5626152 d.ext
-                7214296 k
-                """
-            let expectedTokenList = 
-                [
-                    Cd { Name = "/" }
-                    Ls
-                    Directory { Name = "a" }
-                    File { Name = "b.txt"; Size = 14848514 }
-                    File { Name = "c.dat"; Size = 8504156 }
-                    Directory { Name = "d" }
-                    Cd { Name = "a" }
-                    Ls
-                    Directory { Name = "e" }
-                    File { Name = "f"; Size = 29116 }
-                    File { Name = "g"; Size = 2557 };
-                    File { Name = "h.lst"; Size = 62596 }
-                    Cd { Name = "e" }
-                    Ls
-                    File { Name = "i"; Size = 584 }
-                    Cd { Name = ".." }
-                    Cd { Name = ".." }
-                    Cd { Name = "d" }
-                    Ls
-                    File { Name = "j"; Size = 4060174 }
-                    File { Name = "d.log"; Size = 8033020 }
-                    File { Name = "d.ext"; Size = 5626152 }
-                    File { Name = "k"; Size = 7214296 }
-                ]
-
             let result = 
                 parseTerminalOutput terminalOutput
                 |> List.map (fun eachLine -> parseTerminalOutputLine eachLine)
 
-            Expect.sequenceEqual expectedTokenList result ""
+            Expect.sequenceEqual tokenListExample result ""
 
 
     //// currentFolder has contents like: ["e"; "a"; /"]
@@ -217,13 +217,53 @@ module Day07 =
     //    | Directory diretory -> 
     //        Some fileSystem
 
-    let rec buildFileSystem (tokens: Token list) (currentDir: Dir) = 
-        match tokens with 
-        | head::tail -> 
-            match head with 
+
+    let currentDirectory (token: Token) (dirPath: string list option) = 
+        match dirPath with 
+        | None -> 
+            match token with 
+            | Ls -> None 
             | Cd dir -> 
-                buildFileSystem tail dir 
+                Some [dir.Name]
+            | File _ -> 
+                None 
+            | Directory _ -> 
+                None 
+        | Some dirPath -> 
+            match token with 
             | Ls -> 
+                Some dirPath
+            | Cd dir -> 
+                Some (dir.Name :: dirPath)
+            | File _ -> 
+                Some dirPath
+            | Directory _ -> 
+                Some dirPath 
+
+    let rec getOneGroup acc tokens = 
+        match acc, tokens with 
+        | Cd _ :: _, x :: (Cd _ :: _ as tail) -> 
+            match x with 
+            | Cd _ -> 
+                getOneGroup (x::acc) tail 
+            | Ls -> 
+                failwith "Find Ls appears before Cd"
+            | _ -> 
+                x::acc |> List.rev 
+        | _, x :: (Cd _ :: _) -> 
+            x :: acc 
+            |> List.rev 
+        | _, x :: tail -> 
+            getOneGroup (x::acc) tail
+        | _, _ ->
+            acc |> List.rev
+
+    let (|GetOneGroup|_|) tokens = 
+        match tokens with 
+        | Cd _ :: _ -> 
+            Some (getOneGroup [] tokens)
+        | _ -> 
+            None 
 
                 
 
