@@ -184,28 +184,10 @@ module Day07 =
 
     module FileSystem = 
         open Token
+
         type FileType = 
             | File of File
             | Directory of Dir 
-        
-        type Node =
-            | One of FileType
-            | Many of Node list
-
-
-        type FileSystem = 
-            //// Here the path is the extra information we need to carry in parallel with Empty
-            //| EmptyFolder of Path: string list (I try to think in this way and it confused me for a while!)
-            // Empty is really useful, it helps us to set the base condition
-            | Empty of Path: string list
-            // Use Node to represent files and sub-folders makes things simpler (but may not accurate enough)
-            // For example, Files and SubFolders should not be both None.
-            | Node of Path: string list * Files: File list option * SubFolders: FileSystem list option
-            //| JustFolder of {|Path: string list|} 
-            //| FolderWithFiles of {|Path: string list; Files: File list|}
-            //| FolderWithFolders of {|Path: string list; SubFolders: FileSystem list|} 
-            //| FolderWithFilesAndFolders of {|Path: string list; Files: File list; SubFolders: FileSystem list|}
-
 
         let ASTLookLike = 
             """
@@ -224,48 +206,93 @@ module Day07 =
             - d.ext (file, size=5626152)
             - k (file, size=7214296)
             """
+        
+        // v1
+        type FileSystem = 
+            | Empty of Path: string list
+            | Node of Path: string list * Files: File list option * SubFolders: FileSystem list option
 
-    //let currentDirectory (token: Token) (dirPath: string list option) = 
-    //    match dirPath with 
-    //    | None -> 
-    //        match token with 
-    //        | Ls -> None 
-    //        | Cd dir -> 
-    //            Some [dir.Name]
-    //        | File _ -> 
-    //            None 
-    //        | Directory _ -> 
-    //            None 
-    //    | Some dirPath -> 
-    //        match token with 
-    //        | Ls -> 
-    //            Some dirPath
-    //        | Cd dir -> 
-    //            Some (dir.Name :: dirPath)
-    //        | File _ -> 
-    //            Some dirPath
-    //        | Directory _ -> 
-    //            Some dirPath 
+        // v2 vs v1 which one is better?
+        type Node =
+            | Empty
+            | File of File
+            | Directory of string * Node list 
 
-        let rec getOneGroup acc tokens = 
-            match acc, tokens with 
-            | Cd _ :: _, x :: (Cd _ :: _ as tail) -> 
-                match x with 
-                | Cd _ -> 
-                    getOneGroup (x::acc) tail 
-                | Ls -> 
-                    failwith "Find Ls appears before Cd"
-                | _ -> 
-                    x::acc |> List.rev 
-            | _, x :: (Cd _ :: _) -> 
-                x :: acc 
-                |> List.rev 
-            | _, x :: tail -> 
-                getOneGroup (x::acc) tail
-            | _, _ ->
-                acc |> List.rev
+        // v2 is better because from the below v1 and v2 instance show that only one DU case from v1 is used. 
+        // It should be a signal which the DU is badly designed.
+        // In v2, the case of DU is used properly to represent directories and files
+        let demoAST01 () = 
+            Node(
+                ["/"],
+                Some [{Name = "b.txt"; Size = 14848514}; {Name = "c.dat"; Size = 8504156}],
+                Some [
+                    Node(
+                        ["a"; "/"],
+                        Some [
+                            {Name = "f"; Size = 29116}
+                            {Name = "g"; Size = 2557}
+                            {Name = "h.lst"; Size = 62596}
+                        ],
+                        Some [
+                            Node(
+                                ["e"; "a"; "/"],
+                                Some [{Name = "i"; Size = 584}],
+                                None)
+                        ]
+                    )
+                    Node(
+                        ["d"; "/"],
+                        Some [
+                            {Name = "j"; Size = 4060174}
+                            {Name = "d.log"; Size = 8033020}
+                            {Name = "d.ext"; Size = 5626152}
+                            {Name = "k"; Size = 7214296}
+                        ],
+                        None
+                    )
+                ]
+            )
 
+        let demoAST02 () = 
+            Directory("/", [
+                Directory("a", [
+                    Directory("e", [])
+                    File({Name="f"; Size=29116})
+                    File({Name="g"; Size=2557})
+                    File({Name="h.lst"; Size = 62596})
+                ])
+                File({Name="b.txt"; Size = 14848514})
+                File({Name="c.dat"; Size = 8504156})
+                Directory("d", [
+                    File({Name="j"; Size = 4060174})
+                    File({Name="d.log"; Size = 8033020})
+                    File({Name="d.ext"; Size = 5626152})
+                    File({Name="k"; Size = 7214296})
+                ])
+            ])
+
+
+        // A helper function which extract a group of tokens which belongs to some output.
+        // Those tokens shows based on some directory, to see some content below some path, all the operations needed.
         let (|GetOneGroup|_|) tokens = 
+            let rec getOneGroup acc tokens = 
+                match acc, tokens with 
+                | Cd _ :: _, x :: (Cd _ :: _ as tail) -> 
+                    match x with 
+                    | Cd _ -> 
+                        getOneGroup (x::acc) tail 
+                    | Ls -> 
+                        failwith "Find Ls appears before Cd"
+                    | _ -> 
+                        x::acc |> List.rev 
+                | _, x :: (Cd _ :: _) -> 
+                    x :: acc 
+                    |> List.rev 
+                | _, x :: tail -> 
+                    getOneGroup (x::acc) tail
+                | _, _ ->
+                    acc |> List.rev
+                  
             match tokens with 
             | Cd _ :: _ -> 
                 Some (getOneGroup [] tokens)
@@ -315,9 +342,7 @@ module Day07 =
             helper [] [] [] tokenGroup
 
 
-        let demo () = 
-            getOneGroup [] tokenListExample[2..10]
-            |> getFileSystemComponents
+
 
         //let rec insert (tokenGroup: Token list) (fileSystem: FileSystem) = 
         //    let pathes, files, dirs = getFileSystemComponents tokenGroup
@@ -351,43 +376,6 @@ module Day07 =
                 //| None -> failwith $"There is no matched sub-folder from existing file system for newNodePath: {newNodePath}, currPath: {currPath}"
                 //| Some Node (subFolderPath, _, subFolderDirs) as someFolder-> 
 
-    
-
-        //let testBuildFileSystem = 
-        //    testCase "test build FileSystem02"
-        //    <| fun _ -> 
-        //        let fileSystem = 
-        //            Node(
-        //                Path = ["/"],
-        //                Files = Some [{Name = "b.txt"; Size = 14848514}; {Name = "c.dat"; Size = 8504156}],
-        //                SubFolders = Some [
-        //                    Node(
-        //                        Path = ["a"; "/"],
-        //                        Files = Some [
-        //                            {Name = "f"; Size = 29116}
-        //                            {Name = "g"; Size = 2557}
-        //                            {Name = "h.lst"; Size = 62596}
-        //                        ],
-        //                        SubFolders = Some [
-        //                            Node(
-        //                                Path = ["e"; "a"; "/"],
-        //                                Files = Some [{Name = "i"; Size = 584}],
-        //                                SubFolders = None)
-        //                        ]
-        //                    )
-        //                    Node(
-        //                        Path = ["d"; "/"],
-        //                        Files = Some [
-        //                            {Name = "j"; Size = 4060174}
-        //                            {Name = "d.log"; Size = 8033020}
-        //                            {Name = "d.ext"; Size = 5626152}
-        //                            {Name = "k"; Size = 7214296}
-        //                        ],
-        //                        SubFolders = None
-        //                    )
-        //                ]
-        //            )
-        //        Expect.isTrue true ""
 
 
 
