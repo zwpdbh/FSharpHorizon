@@ -326,21 +326,6 @@ module Day07 =
         //        File { Name = "k"; Size = 7214296 }
         //    ]
 
-        //let getFileSystemComponents tokenGroup = 
-        //    let rec helper currentPath fileList dirList tokenGroup = 
-        //        match tokenGroup with 
-        //        | Cd dir :: rest -> 
-        //            helper (dir.Name :: currentPath) fileList dirList rest
-        //        | Ls :: rest -> 
-        //            helper currentPath fileList dirList rest 
-        //        | Token.File f :: rest -> 
-        //            helper currentPath (f::fileList) dirList rest 
-        //        | Token.Directory d :: rest -> 
-        //            helper currentPath fileList (d::dirList) rest 
-        //        | _ -> 
-        //            currentPath, fileList, dirList 
-        //    helper [] [] [] tokenGroup
-
 
         let rec insert (tokenGroup: Token list) (node: Node) = 
             let update token node = 
@@ -414,42 +399,6 @@ module Day07 =
                 insert tail (update x node)
             | _ -> 
                 node 
-
-
-
-                            
-
-        //let rec insert (tokenGroup: Token list) (fileSystem: FileSystem) = 
-        //    let pathes, files, dirs = getFileSystemComponents tokenGroup
-
-        //    match fileSystem with 
-        //    | Empty currentPath ->             
-        //        let subFolders = 
-        //            dirs 
-        //            |> List.map (fun x -> 
-        //                Node((x.Name::pathes), None, None)
-        //            )
-        //        Node (pathes @ currentPath, Some files, Some subFolders)
-        //    | Node (currPath, files, subFolders) -> 
-        //        // Comparing with BST: In bst, we insert new value by comparing with with current node's value             
-        //        match tokenGroup with 
-        //        | 
-
-                //let matchedOne = 
-                //    subFolders
-                //    |> List.choose (fun x -> 
-                //        match x with 
-                //        | EmptyFolder -> None 
-                //        | Node (subFolderPath, _, subFolderDirs) -> 
-                //            match subFolderPath = newNodePath with 
-                //            | true -> Some x 
-                //            | false -> None                            
-                //    )
-                //    |> List.tryHead
-
-                //match matchedOne with 
-                //| None -> failwith $"There is no matched sub-folder from existing file system for newNodePath: {newNodePath}, currPath: {currPath}"
-                //| Some Node (subFolderPath, _, subFolderDirs) as someFolder-> 
 
 
 
