@@ -23,6 +23,8 @@ module Auth =
         let zwpdbhSP =
             { 
                 tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47"
+                // Usually there is an Object Id for a SP. But this is NOT the Object ID from the Application.
+                // We can fetch it by: az ad sp show --id 2470ca86-3843-4aa2-95b8-97d3a912ff69 --query objectId
                 clientId = "2470ca86-3843-4aa2-95b8-97d3a912ff69"
                 clientSecret = None
              }
