@@ -326,23 +326,98 @@ module Day07 =
         //        File { Name = "k"; Size = 7214296 }
         //    ]
 
-        let getFileSystemComponents tokenGroup = 
-            let rec helper currentPath fileList dirList tokenGroup = 
-                match tokenGroup with 
-                | Cd dir :: rest -> 
-                    helper (dir.Name :: currentPath) fileList dirList rest
-                | Ls :: rest -> 
-                    helper currentPath fileList dirList rest 
-                | Token.File f :: rest -> 
-                    helper currentPath (f::fileList) dirList rest 
-                | Token.Directory d :: rest -> 
-                    helper currentPath fileList (d::dirList) rest 
-                | _ -> 
-                    currentPath, fileList, dirList 
-            helper [] [] [] tokenGroup
+        //let getFileSystemComponents tokenGroup = 
+        //    let rec helper currentPath fileList dirList tokenGroup = 
+        //        match tokenGroup with 
+        //        | Cd dir :: rest -> 
+        //            helper (dir.Name :: currentPath) fileList dirList rest
+        //        | Ls :: rest -> 
+        //            helper currentPath fileList dirList rest 
+        //        | Token.File f :: rest -> 
+        //            helper currentPath (f::fileList) dirList rest 
+        //        | Token.Directory d :: rest -> 
+        //            helper currentPath fileList (d::dirList) rest 
+        //        | _ -> 
+        //            currentPath, fileList, dirList 
+        //    helper [] [] [] tokenGroup
+
+
+        let rec insert (tokenGroup: Token list) (node: Node) = 
+            let update token node = 
+                match token with 
+                | Ls -> node 
+                | Cd dir -> 
+                    match node with 
+                    | Empty -> 
+                        Directory (dir.Name, [])
+                    | File x -> 
+                        failwith $"meet Cd {dir} while visiting File {x}"
+                    | Directory (currPath, nodes) -> 
+                        match nodes with 
+                        | (Directory (subFolder, _) as x)::_ when subFolder = dir.Name ->
+                            x 
+                        | [] -> 
+                            Directory (dir.Name, [])
+                        | _ -> 
+                            failwith $"there is not way to Cd {dir.Name} from {currPath}"
+                | Token.File someFile -> 
+                    match node with 
+                    | Empty -> failwith "file has to be inside some directory"
+                    | File _ -> failwith "could not create a file while visiting a file"
+                    | Directory (currtPath, nodes) as currtDirectory-> 
+                        let sameFile = 
+                            nodes 
+                            |> List.choose (fun x -> 
+                                match x with 
+                                | Empty -> None 
+                                | Directory _ -> None 
+                                | File existingFile -> 
+                                    if existingFile = someFile then 
+                                        Some (File existingFile)
+                                    else 
+                                        None
+                            )
+                            |> List.tryHead
+
+                        match sameFile with 
+                        | Some _ -> currtDirectory
+                        | None -> 
+                            // add new file 
+                            Directory (currtPath, (File someFile)::nodes)
+                | Token.Directory someDir -> 
+                    match node with 
+                    | Directory (currentPath, nodes) as currentDirectory ->
+                        let sameDir = 
+                            nodes 
+                            |> List.choose (fun x -> 
+                                match x with 
+                                | Empty -> None 
+                                | Directory (existingDirName, _) as existingDir-> 
+                                    if existingDirName = someDir.Name then 
+                                        Some existingDir
+                                    else 
+                                        None 
+                            )
+                            |> List.tryHead
+
+                        match sameDir with 
+                        | Some _ -> 
+                            currentDirectory
+                        | None -> 
+                            // add new dir 
+                            Directory (currentPath, (Directory (someDir.Name, [])::nodes))
+                    | _ -> 
+                        failwith $"no meaning when token is {someDir}, while visiting visiting non-directory node"       
+
+            match tokenGroup with 
+            | x::tail -> 
+                insert tail (update x node)
+            | _ -> 
+                node 
 
 
 
+                            
 
         //let rec insert (tokenGroup: Token list) (fileSystem: FileSystem) = 
         //    let pathes, files, dirs = getFileSystemComponents tokenGroup
