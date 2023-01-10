@@ -359,3 +359,17 @@ module Demo08 =
         |> List.iter(fun n -> 
             measureNworkers n 30 40
         )    
+
+module DemoIAsyncEnumerable = 
+    open FSharp.Control
+    open System.IO
+
+    let allFilesAsLines() = 
+        taskSeq {
+            let files = Directory.EnumerateFiles(@"c:\temp")
+            for file in files do
+                // await
+                let! contents = File.ReadAllLinesAsync file
+                // return all lines
+                yield! contents
+        }

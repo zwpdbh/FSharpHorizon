@@ -102,6 +102,8 @@ module DemoAzureStorageBlob =
     open System.IO
     open Azure.Identity
     open Extention
+    open FSharp.Control
+
 
     type CredentialType = 
         | DefaultAzureCredential 
@@ -140,34 +142,52 @@ module DemoAzureStorageBlob =
             use stream = new MemoryStream()
             let bytes = System.Text.Encoding.ASCII.GetBytes("This is a sample text.")
             stream.Write(bytes, 0, bytes.Length)
-
+            stream.Position <- 0
             return! blobClient.UploadAsync(stream) |> Async.AwaitTask
         }
 
 
-    //let listBlob (blobContainer: BlobContainerClient) = 
-    //    async {
-    //        // IAsyncEnumerable<T> to Task<IEnumerable<T>>
-    //        let resultSegment = blobContainer.GetBlobsAsync().AsPages(null, 10)
-    //        let something = resultSegment |> Seq.cast<Azure.Page<Models.BlobItem>>
-                
-    //        //let blobs = 
-    //        //    seq {
-    //        //        for (each: Azure.Page<BlobItem>) in resultSegment.
-    //        //    }
-    //    }
+    let listBlob (blobContainer: BlobContainerClient) = 
+        asyncSeq {
+            // How to under IAsyncEnumerable<T> in F# ?
+            // Use https://github.com/fsprojects/FSharp.Control.TaskSeq or FSharp.Control.AsyncSeq
+            // TODO: see http://www.fssnip.net/869/title/An-IAsyncEnumerable-computation-expression-complete 
+            // to understand how to use computation expression to solve this problem. 
+            let resultSegment = blobContainer.GetBlobsAsync().AsPages(null, 10) |> AsyncSeq.ofAsyncEnum
+            //resultSegment |> Seq.cast<Azure.Page<Models.BlobItem>>
 
-    let demo () = 
-        let storageAccountClient = getStorageAccount "zwpdbh" ServicePrincipal
-        let blobFileNames =
-            seq {
-                for each in [1..10] do 
-                    yield $"test{each}"
-            }
-    
+            let! somethingToIgnore = 
+                resultSegment
+                |> AsyncSeq.iter (fun each -> 
+                    // Convert handle IReadOnlyList : https://devonburriss.me/converting-fsharp-csharp/
+                    // Here we simply change IReadOnlyList to F# list
+                    each.Values 
+                    |> List.ofSeq 
+                    |> List.iter (fun eachBlobItem -> 
+                        printfn $"{eachBlobItem.Name}"
+                    )  
+                )
+            yield somethingToIgnore
+        } 
+        
+    let demoListBlobContainers () = 
+        let storageAccountClient = getStorageAccount "zwpdbh" CredentialType.ServicePrincipal
+        storageAccountClient.GetBlobContainers()
+        // Loop over Azure.Pageable 
+        |> Seq.iter (fun eachContainer -> 
+            printfn $"{eachContainer.Name}"
+        )
+
+    let demoBlobOperations () =
+        let storageAccountClient = getStorageAccount "zwpdbh" CredentialType.ServicePrincipal
         let blobContainer = storageAccountClient.GetBlobContainerClient("testblob")
 
-        blobFileNames 
+        // printfn $"{blobContainer.Name}"
+        // Upload blobs: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-upload
+        seq {
+            for each in [1..10] do 
+                yield $"test{each}"
+        }
         |> Seq.map (updateBlob blobContainer)
         |> Async.Parallel
         |> Async.Map (Seq.choose (fun response -> 
@@ -175,7 +195,15 @@ module DemoAzureStorageBlob =
             | true -> Some response.Value
             | false -> None 
         ))
+        |> Async.RunSynchronously
+        |> ignore
 
+        // list blobs
+        listBlob blobContainer
+        |> AsyncSeq.toListSynchronously
+        |> ignore
+        
+        printfn "== Done =="
 
 module DemoAzureIncrementalCopy = 
     open Azure.Storage.Blobs
