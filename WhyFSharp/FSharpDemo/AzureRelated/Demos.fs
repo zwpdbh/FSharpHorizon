@@ -94,6 +94,7 @@ module DemoAzureResourceManager =
 module DemoAzureStorageBlob = 
     // See: https://learn.microsoft.com/en-us/dotnet/api/overview/azure/storage.blobs-readme?view=azure-dotnet
     open Azure.Storage.Blobs
+    open Azure.Storage.Blobs.Models
     //The storage account used via BlobServiceClient
     //A container in the storage account used via BlobContainerClient
     //A blob in a container used via BlobClient
@@ -104,12 +105,17 @@ module DemoAzureStorageBlob =
     open Extention
     open FSharp.Control
 
+    // During test, I found I could list the containers from storage account: zwpdbh. 
+    // But I couldn't upload blob into any containers in that storage account.
+    // That's because my SP has Contributor role inherited from Subscription.
+    // However, to read, write and delete access to storage container and blob. I need to assign: Storage Blob Data Contributor to my SP!
+
 
     type CredentialType = 
         | DefaultAzureCredential 
         | ServicePrincipal 
 
-    let getStorageAccount (storageAccountName: string) (credentialType: CredentialType) = 
+    let getBlobServiceClient (storageAccountName: string) (credentialType: CredentialType) = 
         // https://learn.microsoft.com/en-us/dotnet/api/overview/azure/storage.blobs-readme?view=azure-dotnet
         let accountUri =  new Uri($"https://{storageAccountName}.blob.core.windows.net/")
 
@@ -117,13 +123,14 @@ module DemoAzureStorageBlob =
         | DefaultAzureCredential -> 
             new BlobServiceClient(accountUri, new DefaultAzureCredential())
         | ServicePrincipal -> 
+            // The assigned IAM scope is:
+            // /subscriptions/<subscription_id>/resourceGroups/zwpdbh/providers/Microsoft.Storage/storageAccounts/zwpdbh
             let clientCertificateCredential = new ClientCertificateCredential(
                 Auth.Setting.zwpdbhSP.tenantId, 
                 Auth.Setting.zwpdbhSP.clientId, 
                 Auth.KeyVault.getLocalCertificateBySubject "zwpdbhREST"
             )
             new BlobServiceClient(accountUri, clientCertificateCredential)
-
 
     let demoTestMemoryStream () = 
         use stream = new MemoryStream()
@@ -133,8 +140,10 @@ module DemoAzureStorageBlob =
         stream.ToArray() |> System.Text.Encoding.UTF8.GetString |> printfn "%A"
         // If we want to convert from stream to Base64 string 
         // stream.ToArray() |> Convert.ToBase64String
-   
-    let updateBlob (containerClient: BlobContainerClient) (localFilePath: string) = 
+
+  
+    let uploadBlobTo (containerClient: BlobContainerClient) (localFilePath: string) = 
+        // https://zwpdbh.blob.core.windows.net/testblob1/ImportAndCopy.xml
         async {
             let fileName = Path.GetFileName(localFilePath)
             let blobClient = containerClient.GetBlobClient(fileName)    
@@ -170,25 +179,47 @@ module DemoAzureStorageBlob =
             yield somethingToIgnore
         } 
         
+    let blobServiceClient = getBlobServiceClient "zwpdbh" CredentialType.ServicePrincipal
+
+    let getBlobContainer containerName = 
+        let blobContainer = blobServiceClient.GetBlobContainerClient containerName
+
+        // This doesn't work, will has resource not found problem...
+        //blobContainer.CreateIfNotExists() |> ignore 
+        //blobContainer.SetAccessPolicy(PublicAccessType.Blob) |> ignore
+
+        blobContainer.CreateIfNotExists(PublicAccessType.Blob) |> ignore
+
+        printfn $"get blob container, its uri: {blobContainer.Uri}"
+        blobContainer
+
     let demoListBlobContainers () = 
-        let storageAccountClient = getStorageAccount "zwpdbh" CredentialType.ServicePrincipal
-        storageAccountClient.GetBlobContainers()
+        blobServiceClient.GetBlobContainers()
         // Loop over Azure.Pageable 
         |> Seq.iter (fun eachContainer -> 
             printfn $"{eachContainer.Name}"
         )
 
-    let demoBlobOperations () =
-        let storageAccountClient = getStorageAccount "zwpdbh" CredentialType.ServicePrincipal
-        let blobContainer = storageAccountClient.GetBlobContainerClient("testblob")
+    let demoUploadBlob () = 
+        let blobContainer = getBlobContainer "testblob1"
 
-        // printfn $"{blobContainer.Name}"
+        uploadBlobTo blobContainer "blob1"
+        |> Async.RunSynchronously
+        |> ignore
+
+        listBlob blobContainer
+        |> AsyncSeq.toListSynchronously
+        |> ignore
+
+    let demoBlobOperations () =
+        let blobContainer = getBlobContainer ("testblob"  + System.DateTime.UtcNow.ToString("yyyyMMdd-HHmmss"))
+
         // Upload blobs: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-upload
         seq {
             for each in [1..10] do 
                 yield $"test{each}"
         }
-        |> Seq.map (updateBlob blobContainer)
+        |> Seq.map (uploadBlobTo blobContainer)
         |> Async.Parallel
         |> Async.Map (Seq.choose (fun response -> 
             match response.HasValue with 
@@ -204,6 +235,25 @@ module DemoAzureStorageBlob =
         |> ignore
         
         printfn "== Done =="
+
+
+    let demoFromMicrosft () = 
+        // https://learn.microsoft.com/en-us/dotnet/fsharp/using-fsharp-on-azure/blob-storage
+        // Create a dummy file to upload
+        let localFile = "./myfile.txt"
+        File.WriteAllText(localFile, "some data")
+
+        let container = getBlobContainer "mycontainer"
+
+        // Retrieve reference to a blob named "myblob.txt".
+        let blockBlob = container.GetBlobClient("myblob.txt")
+
+        // Create or overwrite the "myblob.txt" blob with contents from the local file.
+        use fileStream = new FileStream(localFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+        do blockBlob.Upload(fileStream) |> ignore
+
+        for item in container.GetBlobsByHierarchy() do
+            printfn $"Blob name: {item.Blob.Name}"
 
 module DemoAzureIncrementalCopy = 
     open Azure.Storage.Blobs

@@ -21,7 +21,10 @@
 //AzureWorkflow.DemoAuthAgent.demoGetAuthTokenUsingServicePrincipal()
 
 //AzureWorkflow.DemoAzureStorageBlob.demoListBlobContainers ()
-AzureWorkflow.DemoAzureStorageBlob.demoBlobOperations ()
+//AzureWorkflow.DemoAzureStorageBlob.demoGetBlobContainer()
+//AzureWorkflow.DemoAzureStorageBlob.demoUploadBlob ()
+//.DemoAzureStorageBlob.demoBlobOperations ()
+// AzureWorkflow.DemoAzureStorageBlob.demoFromMicrosft()
 
 //AzureWorkflow.DemoAzureStorageBlob.demoTestMemoryStream()
 
