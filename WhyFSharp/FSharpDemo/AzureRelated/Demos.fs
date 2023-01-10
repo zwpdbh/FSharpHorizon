@@ -140,44 +140,6 @@ module DemoAzureStorageBlob =
         stream.ToArray() |> System.Text.Encoding.UTF8.GetString |> printfn "%A"
         // If we want to convert from stream to Base64 string 
         // stream.ToArray() |> Convert.ToBase64String
-
-  
-    let uploadBlobTo (containerClient: BlobContainerClient) (localFilePath: string) = 
-        // https://zwpdbh.blob.core.windows.net/testblob1/ImportAndCopy.xml
-        async {
-            let fileName = Path.GetFileName(localFilePath)
-            let blobClient = containerClient.GetBlobClient(fileName)    
-
-            use stream = new MemoryStream()
-            let bytes = System.Text.Encoding.ASCII.GetBytes("This is a sample text.")
-            stream.Write(bytes, 0, bytes.Length)
-            stream.Position <- 0
-            return! blobClient.UploadAsync(stream) |> Async.AwaitTask
-        }
-
-
-    let listBlob (blobContainer: BlobContainerClient) = 
-        asyncSeq {
-            // How to under IAsyncEnumerable<T> in F# ?
-            // Use https://github.com/fsprojects/FSharp.Control.TaskSeq or FSharp.Control.AsyncSeq
-            // TODO: see http://www.fssnip.net/869/title/An-IAsyncEnumerable-computation-expression-complete 
-            // to understand how to use computation expression to solve this problem. 
-            let resultSegment = blobContainer.GetBlobsAsync().AsPages(null, 10) |> AsyncSeq.ofAsyncEnum
-            //resultSegment |> Seq.cast<Azure.Page<Models.BlobItem>>
-
-            let! somethingToIgnore = 
-                resultSegment
-                |> AsyncSeq.iter (fun each -> 
-                    // Convert handle IReadOnlyList : https://devonburriss.me/converting-fsharp-csharp/
-                    // Here we simply change IReadOnlyList to F# list
-                    each.Values 
-                    |> List.ofSeq 
-                    |> List.iter (fun eachBlobItem -> 
-                        printfn $"{eachBlobItem.Name}"
-                    )  
-                )
-            yield somethingToIgnore
-        } 
         
     let blobServiceClient = getBlobServiceClient "zwpdbh" CredentialType.ServicePrincipal
 
@@ -200,24 +162,98 @@ module DemoAzureStorageBlob =
             printfn $"{eachContainer.Name}"
         )
 
-    let demoUploadBlob () = 
-        let blobContainer = getBlobContainer "testblob1"
+    let demoFromMicrosft () = 
+        let prefix = System.DateTime.Now.ToString "yyyyMMdd-HHmmss"
+        // https://learn.microsoft.com/en-us/dotnet/fsharp/using-fsharp-on-azure/blob-storage
+        // Create a dummy file to upload
+        let localFile = "./myfile.txt"
+        File.WriteAllText(localFile, "some data")
 
-        uploadBlobTo blobContainer "blob1"
-        |> Async.RunSynchronously
-        |> ignore
+        let container = getBlobContainer ("mycontainer" + prefix)
 
-        listBlob blobContainer
-        |> AsyncSeq.toListSynchronously
-        |> ignore
+        // Retrieve reference to a blob named "myblob.txt".
+        let blockBlob = container.GetBlobClient("myblob.txt")
 
-    let demoBlobOperations () =
-        let blobContainer = getBlobContainer ("testblob"  + System.DateTime.UtcNow.ToString("yyyyMMdd-HHmmss"))
+        // Create or overwrite the "myblob.txt" blob with contents from the local file.
+        use fileStream = new FileStream(localFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+        do blockBlob.Upload(fileStream) |> ignore
+
+        // List the blobs in a container
+        //for item in container.GetBlobsByHierarchy() do
+        //    printfn $"Blob name: {item.Blob.Name}"
+
+        // OR 
+        // Call GetBlobsByHierarchy to return an async collection (it is not IAsyncEnumerable, so it is async ?)
+        // of blobs in this container. AsPages() method enumerate the values 
+        //a Page<T> at a time. This may make multiple service requests.
+        for page in container.GetBlobsByHierarchy().AsPages() do
+            for blobHierarchyItem in page.Values do 
+                printf $"The BlobItem is : {blobHierarchyItem.Blob.Name} "
+
+        // Download blobs
+        let blobToDownload = container.GetBlobClient("myblob.txt")
+
+        // Save blob contents to a file.
+        // The expression in a do binding must return unit.
+        do
+            use fileStream = File.OpenWrite($@"D:\Downloads\downloaded-myblob-{prefix}.txt") 
+            blobToDownload.DownloadTo(fileStream)  |> ignore 
+
+        // Delete blob 
+        // Retrieve reference to a blob named "myblob.txt".
+        let blobToDelete = container.GetBlobClient("myblob.txt")
+
+        // Delete the blob.
+        blobToDelete.Delete() |> ignore
+
+        printfn "\n==DONE=="
+
+
+    // Upload 200 blobs and list them in Async
+    let demoAsyncBlobOperations () =
+        let uploadBlobTo (containerClient: BlobContainerClient) (localFilePath: string) = 
+            // https://zwpdbh.blob.core.windows.net/testblob1/ImportAndCopy.xml
+            async {
+                let fileName = Path.GetFileName(localFilePath)
+                let blobClient = containerClient.GetBlobClient(fileName)    
+
+                use stream = new MemoryStream()
+                let bytes = System.Text.Encoding.ASCII.GetBytes("This is a sample text.")
+                stream.Write(bytes, 0, bytes.Length)
+                stream.Position <- 0
+                return! blobClient.UploadAsync(stream) |> Async.AwaitTask
+            }
+
+
+        let listBlob (blobContainer: BlobContainerClient) = 
+            asyncSeq {
+                // How to handle IAsyncEnumerable<T> in F# ?
+                // Use https://github.com/fsprojects/FSharp.Control.TaskSeq or FSharp.Control.AsyncSeq
+                // TODO: see http://www.fssnip.net/869/title/An-IAsyncEnumerable-computation-expression-complete 
+                // to understand how to use computation expression to solve this problem. 
+                let resultSegment = blobContainer.GetBlobsAsync().AsPages(null, 10) |> AsyncSeq.ofAsyncEnum
+                //resultSegment |> Seq.cast<Azure.Page<Models.BlobItem>>
+
+                let! somethingToIgnore = 
+                    resultSegment
+                    |> AsyncSeq.iter (fun each -> 
+                        // Convert handle IReadOnlyList : https://devonburriss.me/converting-fsharp-csharp/
+                        // Here we simply change IReadOnlyList to F# list
+                        each.Values 
+                        |> List.ofSeq 
+                        |> List.iter (fun eachBlobItem -> 
+                            printfn $"{eachBlobItem.Name}"
+                        )  
+                    )
+                yield somethingToIgnore
+            } 
+
+        let blobContainer = getBlobContainer ("testblob"  + System.DateTime.Now.ToString("yyyyMMdd-HHmmss"))
 
         // Upload blobs: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-upload
         seq {
-            for each in [1..10] do 
-                yield $"test{each}"
+            for each in [1..200] do 
+                yield $"test{each}.txt"
         }
         |> Seq.map (uploadBlobTo blobContainer)
         |> Async.Parallel
@@ -233,27 +269,9 @@ module DemoAzureStorageBlob =
         listBlob blobContainer
         |> AsyncSeq.toListSynchronously
         |> ignore
+
+        printfn "\n==DONE=="
         
-        printfn "== Done =="
-
-
-    let demoFromMicrosft () = 
-        // https://learn.microsoft.com/en-us/dotnet/fsharp/using-fsharp-on-azure/blob-storage
-        // Create a dummy file to upload
-        let localFile = "./myfile.txt"
-        File.WriteAllText(localFile, "some data")
-
-        let container = getBlobContainer "mycontainer"
-
-        // Retrieve reference to a blob named "myblob.txt".
-        let blockBlob = container.GetBlobClient("myblob.txt")
-
-        // Create or overwrite the "myblob.txt" blob with contents from the local file.
-        use fileStream = new FileStream(localFile, FileMode.Open, FileAccess.Read, FileShare.Read)
-        do blockBlob.Upload(fileStream) |> ignore
-
-        for item in container.GetBlobsByHierarchy() do
-            printfn $"Blob name: {item.Blob.Name}"
 
 module DemoAzureIncrementalCopy = 
     open Azure.Storage.Blobs

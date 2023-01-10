@@ -23,8 +23,8 @@
 //AzureWorkflow.DemoAzureStorageBlob.demoListBlobContainers ()
 //AzureWorkflow.DemoAzureStorageBlob.demoGetBlobContainer()
 //AzureWorkflow.DemoAzureStorageBlob.demoUploadBlob ()
-//.DemoAzureStorageBlob.demoBlobOperations ()
-// AzureWorkflow.DemoAzureStorageBlob.demoFromMicrosft()
+AzureWorkflow.DemoAzureStorageBlob.demoAsyncBlobOperations ()
+//AzureWorkflow.DemoAzureStorageBlob.demoFromMicrosft()
 
 //AzureWorkflow.DemoAzureStorageBlob.demoTestMemoryStream()
 
