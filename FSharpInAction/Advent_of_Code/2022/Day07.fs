@@ -284,14 +284,13 @@ module Day07 =
                     | Ls -> 
                         failwith "Find Ls appears before Cd"
                     | _ -> 
-                        x::acc |> List.rev 
-                | _, x :: (Cd _ :: _) -> 
-                    x :: acc 
-                    |> List.rev 
+                        x::acc |> List.rev, tail 
+                | _, x :: (Cd _ :: _ as tail) ->       
+                     (x :: acc)|> List.rev, tail
                 | _, x :: tail -> 
                     getOneGroup (x::acc) tail
-                | _, _ ->
-                    acc |> List.rev
+                | _, rest ->
+                    acc |> List.rev, rest
                   
             match tokens with 
             | Cd _ :: _ -> 
@@ -299,34 +298,8 @@ module Day07 =
             | _ -> 
                 None 
 
-        //let tokenListExample = 
-        //    [
-        //        Cd { Name = "/" }
-        //        Ls
-        //        Directory { Name = "a" }
-        //        File { Name = "b.txt"; Size = 14848514 }
-        //        File { Name = "c.dat"; Size = 8504156 }
-        //        Directory { Name = "d" }
-        //        Cd { Name = "a" }
-        //        Ls
-        //        Directory { Name = "e" }
-        //        File { Name = "f"; Size = 29116 }
-        //        File { Name = "g"; Size = 2557 };
-        //        File { Name = "h.lst"; Size = 62596 }
-        //        Cd { Name = "e" }
-        //        Ls
-        //        File { Name = "i"; Size = 584 }
-        //        Cd { Name = ".." }
-        //        Cd { Name = ".." }
-        //        Cd { Name = "d" }
-        //        Ls
-        //        File { Name = "j"; Size = 4060174 }
-        //        File { Name = "d.log"; Size = 8033020 }
-        //        File { Name = "d.ext"; Size = 5626152 }
-        //        File { Name = "k"; Size = 7214296 }
-        //    ]
 
-
+        // A tokenGroup is a list of tokens which contains Cd, Ls until next Cd, Ls 
         let rec insert (tokenGroup: Token list) (node: Node) = 
             let update token node = 
                 match token with 
@@ -399,7 +372,6 @@ module Day07 =
                 insert tail (update x node)
             | _ -> 
                 node 
-
 
 
 

@@ -6,12 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="DemoAdventOfCode.fs" />
     <Compile Include="DemoDDD.fs" />
     <Compile Include="DemoREPerformance.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FSharpInAction\Advent_of_Code\Advent_of_Code.fsproj" />
     <ProjectReference Include="..\FSharpInAction\FunAndProfit\FunAndProfit.fsproj" />
   </ItemGroup>
 
