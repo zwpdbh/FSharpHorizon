@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="CommonlyUsed.fs" />
+    <Compile Include="Basics\FSharpFeatures.fs" />
+    <Compile Include="Basics\BST.fs" />
     <Content Include="Optiver\speed.txt" />
     <Compile Include="Optiver\Optiver.fs" />
-    <Compile Include="BST.fs" />
     <Compile Include="Others.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
