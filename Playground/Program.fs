@@ -19,37 +19,67 @@ let loadSpeedRecord filePath =
     |> List.filter (fun x -> x.Trim() <> "")
     |> List.map (fun x -> int x)
 
-// Find the maximum average speed over 1 km
-// Each element in the list is a distance run in 5 mins
-let maxAverageSpeed (lst: int list) = 
-    let mutable d = 0
-    let mutable acc = [] : int list 
-    let segment = 
-        seq {        
-            for v in lst do 
-                d <- d + v 
-                acc <- acc @ [v]
+let rec expandUntailOneKm accDis accList recordList=
+    match accDis < 1000, recordList with 
+    | true, x::tail -> 
+        expandUntailOneKm (accDis + x) (x::accList) tail 
+    | false, x::tail -> 
+        accDis, accList, recordList 
+    | _, _ -> 
+        accDis, accList, recordList 
 
-                if d > 1000 then 
-                    let mutable currD = 0
-                     
-                    acc <-
-                        acc 
-                        |> List.rev 
-                        |> List.takeWhile (fun x -> 
-                            currD <- x + currD
-                            currD <= 1000
-                        )
-                        |> List.rev 
-                    yield acc
-                    
-        }
-    segment 
-    |> Seq.sortBy (fun each -> each.Length)
+//let rec contractUntilOneKm accDis recordsList = 
+//    match recordsList with 
+//    | x::(y::_ as tail)-> 
+//        match accDis - x > 1000, accDis - x - y < 1000 with
+//        | true, true -> 
+//            accDis - x, tail 
+//        | _ -> 
+//            contractUntilOneKm (accDis - x) tail 
+//    | _ -> 
+//        accDis, recordsList 
+
+let rec contractUntilOneKm accDis recordsList = 
+    match accDis >= 1000, recordsList with 
+    | true, x::tail when (accDis - x) >= 1000 -> 
+        contractUntilOneKm (accDis - x) tail 
+    | true, _ -> 
+        accDis, recordsList 
+    | false, _ ->
+        failwith "when contract, accDis should always >= 1000"
+
+let (|GetJustOneKm|_|) recordList = 
+    let accDis, accList, restList = 
+        recordList
+        |> expandUntailOneKm 0 []    
+
+    if accDis < 1000 then 
+        None 
+    else 
+        let dis, disList = contractUntilOneKm accDis (accList |> List.rev)
+        Some (dis, disList, restList)
 
 
-let result = 
-    maxAverageSpeed (loadSpeedRecord speedFile)
+let demo () = 
+    let recordList = (loadSpeedRecord speedFile)
+    let rec findAllOneKmGroup recordList = 
+        match recordList with
+        | GetJustOneKm (dist, distList, rest) -> 
+            printfn $"dist = {dist}"
+            findAllOneKmGroup (distList[1..] @ rest)
+        | _ -> 
+            printfn "Couldn't find more, use what is left"
+            printfn $"the rest of records are: ${recordList}, there total distance is: {recordList |> List.sum}"
 
-for each in result do 
-    printfn $"{each} : {List.sum each}"
+    findAllOneKmGroup recordList
+
+
+
+demo()
+
+
+//let result = 
+//    maxAverageSpeed (loadSpeedRecord speedFile)
+
+//for each in result do 
+//    printfn $"{each} : {List.sum each}"
