@@ -29,9 +29,15 @@ module BasicMap =
 
 
 module RandomSelection = 
+    open System
     // learn from https://stackoverflow.com/questions/33312260/how-can-i-select-a-random-value-from-a-list-using-f
-    let shuffle next xs = xs |> Seq.sortBy (fun _ -> next())
     let r = System.Random()
 
     let selectRandom3 () = 
+        let shuffle next xs = xs |> Seq.sortBy (fun _ -> next())
         [1..100] |> shuffle (fun _ -> r.Next()) |> Seq.take 3
+
+    // want a single random element
+    let singleRandomElementFromList () = 
+        let shuffleR (r : Random) xs = xs |> Seq.sortBy (fun _ -> r.Next())
+        [1..100] |> shuffleR (Random ()) |> Seq.head;;
