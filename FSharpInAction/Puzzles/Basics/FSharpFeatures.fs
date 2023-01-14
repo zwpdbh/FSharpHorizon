@@ -26,3 +26,12 @@ module BasicMap =
     [<Tests>]
     let tests = 
         testList "Commonly used F# basics" [test01]
+
+
+module RandomSelection = 
+    // learn from https://stackoverflow.com/questions/33312260/how-can-i-select-a-random-value-from-a-list-using-f
+    let shuffle next xs = xs |> Seq.sortBy (fun _ -> next())
+    let r = System.Random()
+
+    let selectRandom3 () = 
+        [1..100] |> shuffle (fun _ -> r.Next()) |> Seq.take 3
