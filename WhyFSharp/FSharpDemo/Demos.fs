@@ -454,24 +454,22 @@ module DemoAsycSeq =
         |> Seq.sum
         
     let useAsyncSeqV6 (input: int list) = 
-        // This will execute one by one with order wiht same speed as useAsyncPallel
+        // This will execute one by one with order
         input
         |> AsyncSeq.ofSeq
-        |> AsyncSeq.mapAsyncParallel someCompute
+        |> AsyncSeq.mapAsync someCompute
         |> AsyncSeq.chooseAsync (fun x -> 
             async {
                 return id x
             }
         )
-        |> AsyncSeq.sum
-        |> Async.RunSynchronously
-        //|> AsyncSeq.toBlockingSeq
-        //|> Seq.sum
+        |> AsyncSeq.toBlockingSeq
+        |> Seq.sum
 
 
     let demo () = 
         [
-            useAsyncPallel
+            //useAsyncPallel
             //useAsyncSeqV1
             //useAsyncSeqV2
             //useAsyncSeqV3
@@ -482,8 +480,8 @@ module DemoAsycSeq =
         ]
         |> List.indexed
         |> List.map (fun (i, f) ->
-            let result = duration (fun _ -> f [1..3])
-            printfn $"Case {i} took {result} ms"
+            let result = duration (fun _ -> f [1..20])
+            printfn $"===Case {i} took {result} ms===\n\n\n"
         )
         |> ignore
 
