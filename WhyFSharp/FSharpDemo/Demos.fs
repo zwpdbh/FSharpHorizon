@@ -289,6 +289,7 @@ module Demo08 =
 
                 loop ())
 
+    // Anyway to create mutualy exclusive functions accross modules?? https://stackoverflow.com/questions/2904889/f-mutual-recursion-between-modules
     and workerProcess (id: int) (scheduler: MailboxProcessor<SchedulerMessage>)  =
         MailboxProcessor<WorkerMessage>.Start
             (fun inbox ->
@@ -360,16 +361,129 @@ module Demo08 =
             measureNworkers n 30 40
         )    
 
-module DemoIAsyncEnumerable = 
+module DemoAsycSeq = 
+    // An AsyncSeq is a sequence in which individual elements are retrieved using an Async computation.
     open FSharp.Control
     open System.IO
 
-    let allFilesAsLines() = 
-        taskSeq {
-            let files = Directory.EnumerateFiles(@"c:\temp")
-            for file in files do
-                // await
-                let! contents = File.ReadAllLinesAsync file
-                // return all lines
-                yield! contents
+    let someCompute x = 
+        async {
+            printfn $"\n compute {x}"
+            do! Async.Sleep(2 * 1000)
+            return Some x 
         }
+
+    let asyncMap f computation =
+        async {
+            let! x = computation
+            return f x
+        }
+
+    let duration f =
+        let timer = new System.Diagnostics.Stopwatch()
+        timer.Start()
+        f () |> ignore
+        timer.ElapsedMilliseconds
+        
+    let useAsyncPallel (input: int list) = 
+        input
+        |> List.map someCompute 
+        |> Async.Parallel
+        |> Async.RunSynchronously
+        |> Array.choose id 
+        |> Array.sum
+
+    let useAsyncSequantial (input: int list) = 
+        input
+        |> List.map someCompute 
+        |> Async.Sequential
+        |> asyncMap (Array.choose id)
+        |> Async.RunSynchronously
+        |> Array.sum
+
+    let useAsyncSeqV1 (input: int list) = 
+        // This will execute one by one with order
+        input
+        |> AsyncSeq.ofSeq
+        |> AsyncSeq.mapAsync someCompute
+        |> AsyncSeq.toListAsync
+        |> Async.RunSynchronously
+        |> List.choose id 
+        |> List.sum
+
+    let useAsyncSeqV2 (input: int list) = 
+        // This will execute one by one with order
+        input
+        |> AsyncSeq.ofSeq
+        |> AsyncSeq.mapAsync someCompute
+        |> AsyncSeq.toListAsync
+        |> asyncMap (List.choose id)
+        |> Async.RunSynchronously
+        |> List.sum
+
+    let useAsyncSeqV3 (input: int list) = 
+        // This will execute one by one with order
+        input
+        |> AsyncSeq.ofSeq
+        |> AsyncSeq.mapAsyncParallel someCompute
+        |> AsyncSeq.toListAsync
+        |> asyncMap (List.choose id)
+        |> Async.RunSynchronously
+        |> List.sum 
+
+    let useAsyncSeqV4 (input: int list) = 
+        // This will execute one by one with order
+        input
+        |> AsyncSeq.ofSeq
+        |> AsyncSeq.mapAsync someCompute
+        |> AsyncSeq.choose id 
+        |> AsyncSeq.sum
+        |> Async.RunSynchronously
+
+    let useAsyncSeqV5 (input: int list) = 
+        // This will execute one by one with order
+        input
+        |> AsyncSeq.ofSeq
+        |> AsyncSeq.mapAsync someCompute
+        |> AsyncSeq.chooseAsync (fun x -> 
+            async {
+                return id x
+            }
+        )
+        |> AsyncSeq.toBlockingSeq
+        |> Seq.sum
+        
+    let useAsyncSeqV6 (input: int list) = 
+        // This will execute one by one with order wiht same speed as useAsyncPallel
+        input
+        |> AsyncSeq.ofSeq
+        |> AsyncSeq.mapAsyncParallel someCompute
+        |> AsyncSeq.chooseAsync (fun x -> 
+            async {
+                return id x
+            }
+        )
+        |> AsyncSeq.sum
+        |> Async.RunSynchronously
+        //|> AsyncSeq.toBlockingSeq
+        //|> Seq.sum
+
+
+    let demo () = 
+        [
+            useAsyncPallel
+            //useAsyncSeqV1
+            //useAsyncSeqV2
+            //useAsyncSeqV3
+            //useAsyncSequantial
+            //useAsyncSeqV4
+            //useAsyncSeqV5
+            useAsyncSeqV6
+        ]
+        |> List.indexed
+        |> List.map (fun (i, f) ->
+            let result = duration (fun _ -> f [1..3])
+            printfn $"Case {i} took {result} ms"
+        )
+        |> ignore
+

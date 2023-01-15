@@ -23,13 +23,17 @@
 //AzureWorkflow.DemoAzureStorageBlob.demoListBlobContainers ()
 //AzureWorkflow.DemoAzureStorageBlob.demoGetBlobContainer()
 //AzureWorkflow.DemoAzureStorageBlob.demoUploadBlob ()
-AzureWorkflow.DemoAzureStorageBlob.demoAsyncBlobOperations ()
+//AzureWorkflow.DemoAzureStorageBlob.demoAsyncBlobOperations ()
 //AzureWorkflow.DemoAzureStorageBlob.demoFromMicrosft()
 
 //AzureWorkflow.DemoAzureStorageBlob.demoTestMemoryStream()
 
+WhyFSharp.DemoAsycSeq.demo() 
+
+
 /// Talk about my experience about choosing F# 
 /// F# is the C#'s future. Shall I wait until C# has all features of F#?
 /// F# Pros and Cons? 
+
 
 
