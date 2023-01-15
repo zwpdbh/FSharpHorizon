@@ -463,8 +463,8 @@ module DemoAsycSeq =
                 return id x
             }
         )
-        |> AsyncSeq.toBlockingSeq
-        |> Seq.sum
+        |> AsyncSeq.sum
+        |> Async.RunSynchronously
 
 
     let demo () = 
