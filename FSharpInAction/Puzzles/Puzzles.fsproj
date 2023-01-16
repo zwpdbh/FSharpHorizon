@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Include="Common.fs" />
+    <Compile Include="Basics\BackTracking.fs" />
     <Compile Include="Basics\FSharpFeatures.fs" />
     <Compile Include="Basics\BST.fs" />
     <Content Include="Optiver\speed.txt" />
