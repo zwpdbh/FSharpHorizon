@@ -33,7 +33,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Puzzles", "FSharpInAction\P
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AdventOfCode", "FSharpInAction\AdventOfCode\AdventOfCode.fsproj", "{228FE2B0-F041-4465-BB34-A55763581FB6}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Topics", "FSharpInAction\OtherTopics\Topics.fsproj", "{E05C7E31-9DC0-4501-BD6E-D05079ECA7A5}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "OtherTopics", "FSharpInAction\OtherTopics\OtherTopics.fsproj", "{E05C7E31-9DC0-4501-BD6E-D05079ECA7A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
