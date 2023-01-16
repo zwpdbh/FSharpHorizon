@@ -21,4 +21,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.*" />
     <PackageReference Update="FSharp.Core" Version="7.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DynamicProgramming\" />
+  </ItemGroup>
 </Project>

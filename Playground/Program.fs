@@ -6,6 +6,3 @@ open FunAndProfit
 
 //timeRegulareExpression n |> printfn "regulare expression takes: %A" 
 //timeStringContain n |> printfn "string contains takes: %A" 
-
-
-0
