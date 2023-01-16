@@ -160,34 +160,37 @@ module Optiver =
     // It is the same as: https://leetcode.com/problems/longest-common-subsequence
 
         let input01 = {|
-            S1 = "abcde" |> List.ofSeq
-            S2 = "ace" |> List.ofSeq
+            S1 = "abcde" 
+            S2 = "ace" 
             Expected = "ace" 
         |}
 
         let input02 = {|
-            S1 = "ACCGGTCGAGTGCGCGGAAGCCGGCCGAA" |> List.ofSeq
-            S2 = "GTCGTTCGGAATGCCGTTGCTCTGTAAA" |> List.ofSeq
+            S1 = "ACCGGTCGAGTGCGCGGAAGCCGGCCGAA"
+            S2 = "GTCGTTCGGAATGCCGTTGCTCTGTAAA" 
             Expected = "GTCGTCGGAAGCCGGCCGAA"
         |}
 
-        let lcs (s1: char list) (s2: char list) = 
+
+
+        let lcsV1 (s1: string) (s2: string) = 
             let rec helper s1 s2 acc = 
                 match s1, s2 with 
-                | [], _ -> s2 @ acc 
-                | _, [] -> s1 @ acc 
+                | [], _ -> acc
+                | _, [] -> acc
                 | x1::tail01, x2::tail02 -> 
                     match x1 = x2 with 
-                    | true -> x1 :: acc 
+                    | true ->   
+                        helper tail01 tail02 (x1::acc)
                     | false -> 
-                        let lcs01 = helper tail01 s2 acc
-                        let lcs02 = helper s1 tail02 acc
+                        let lcs01 = helper tail01 s2 [] 
+                        let lcs02 = helper s1 tail02 [] 
                         if lcs01.Length >= lcs02.Length then 
-                            lcs01 
+                            lcs01 @ acc  
                         else 
-                            lcs02 
+                            lcs02 @ acc
 
-            helper s1 s2 []
+            helper (s1 |> List.ofSeq) (s2 |> List.ofSeq) []
             |> List.rev
             |> Array.ofList
             |> System.String.Concat
@@ -196,13 +199,99 @@ module Optiver =
         let test01 = 
             testCase "Problem02.1"
             <| fun _ ->
-                let result = lcs input01.S1 input01.S2
-                Expect.equal result input01.Expected ""
+                let result = lcsV1 input01.S1 input01.S2
+                Expect.equal result input01.Expected "test 01"
+
+                Expect.equal (lcsV1 "abcdefg" "adfg") "adfg" "test 02"
+
         
-        
+        type Choice = 
+            | Both
+            | First
+            | Second
+
+        let rec getTrace s1 m s2 n (trace: Map<int * int, Choice>) traceResult =         
+            match s1, s2 with 
+            | [], _ -> 
+                traceResult
+            | _, [] ->
+                traceResult
+            | h1 :: tail1, h2 :: tail2 ->
+                match trace.TryFind(m, n) with 
+                | Some v ->
+                    match v with 
+                    | Both ->
+                        // Only in both case, we take it into lcs
+                        getTrace tail1 (m + 1) tail2 (n + 1) trace (h1::traceResult)
+                    | First -> 
+                        getTrace tail1 (m + 1) s2 n trace traceResult
+                    | Second -> 
+                        getTrace s1 m tail2 (n+1) trace traceResult
+                | None -> 
+                    failwith "Should not happened because each step we follow the trace"
+
+
+        let lcsV2 (s1: string) (s2: string) = 
+            let mutable lookup: Map<int * int, int> = Map.empty
+            let mutable trace: Map<int * int, Choice> = Map.empty
+            let rec helper s1 m s2 n =
+                match lookup.TryFind(m, n) with 
+                | Some x -> x 
+                | None -> 
+                    match s1, s2 with 
+                    | [], _ -> 
+                        lookup <- lookup.Add((m, n), 0)       
+                        0
+                    | _, [] -> 
+                        lookup <- lookup.Add((m, n), 0)     
+                        0
+                    | h1::tail1, h2::tail2 -> 
+                        match h1 = h2 with 
+                        | false -> 
+                            let l1 = helper tail1 (m+1) s2 n 
+                            let l2 = helper s1 m tail2 (n+1) 
+                            if l1 >= l2 then 
+                                lookup <- lookup.Add((m, n), l1)
+                                trace <- trace.Add((m, n), First)
+                                l1 
+                            else 
+                                lookup <- lookup.Add((m, n), l2)
+                                trace <- trace.Add((m, n), Second)
+                                l2
+                        | true -> 
+                            let l = 1 + helper tail1 (m + 1) tail2 (n + 1) 
+                            lookup <- lookup.Add((m, n), l)
+                            trace <- trace.Add((m, n), Both)
+                            l 
+            
+            let len = 
+                helper (s1 |> List.ofSeq) 0 (s2 |> List.ofSeq) 0 
+
+
+            let str = 
+                getTrace (s1 |> List.ofSeq) 0 (s2 |> List.ofSeq) 0 trace []
+                |> List.rev 
+                |> Array.ofList
+                |> System.String.Concat
+            len, str
+
+        let test02 = 
+            testCase "Problem02.2"
+            <| fun _ ->
+                //let result = lcsV1 input01.S1 input01.S2
+                //Expect.equal result input01.Expected "test 01"
+                let (x, n) = lcsV2 input01.S1 input01.S2 
+                Expect.equal x input01.Expected.Length "test 01.1" 
+                Expect.equal n input01.Expected "test 01.2"
+
+                let (len, str) = lcsV2 input02.S1 input02.S2
+                Expect.equal len input02.Expected.Length "test 02.1" 
+                Expect.equal str input02.Expected "test 02.2"
 
     [<Tests>]
     let tests = 
-        testList "From Optiver " [Problem01.test01; Problem01.test02; Problem01.test03; Problem01.test04; 
+        testList "From Optiver " [
+            Problem01.test01; Problem01.test02; Problem01.test03; Problem01.test04; 
             Problem02.test01
+            Problem02.test02
         ]
