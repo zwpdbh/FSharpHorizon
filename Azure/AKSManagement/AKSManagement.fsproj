@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AzureAPI\AzureAPI.fsproj" />
     <ProjectReference Include="..\AzureAuth\AzureAuth.fsproj" />
-    <ProjectReference Include="..\AzureManagement\AzureManagement.fsproj" />
   </ItemGroup>
 
 </Project>
