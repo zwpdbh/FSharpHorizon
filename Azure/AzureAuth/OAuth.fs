@@ -170,7 +170,7 @@ module AuthToken =
         getAuthToken |> Async.RunSynchronously 
 
 
-module AuthService = 
+module AuthTokenAgent = 
     open AuthSetting
     open AuthToken
 
@@ -219,3 +219,22 @@ module AuthService =
                 let! tokenResponse = agent.PostAndAsyncReply(fun chnl -> GetAccessToken(chnl))
                 return tokenResponse 
             }          
+
+module AuthService = 
+    open AuthTokenAgent
+    let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.azureScope)
+
+    let getAuthToken () = 
+        async {
+            return! agent.GetAccessToken()
+        }
+
+    let getAccessToken () = 
+        async {
+            let! response =  agent.GetAccessToken()
+            match response with 
+            | Result.Ok authTokenResponse -> 
+                return Result.Ok authTokenResponse.access_token
+            | err -> 
+                return Result.Error $"getAccessToken failed: {err}"
+        }

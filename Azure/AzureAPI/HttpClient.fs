@@ -26,13 +26,20 @@ module HttpClient =
                 |> Async.AwaitTask
         }
 
-    let sendRequestAsync (method: RequestMethod)  (endpoint: string) (someHeaders: Map<string, string> option) (someQueryParameters: Map<string, string> option) = 
+    let getRequestAsync (endpoint: string) (someHeaders: Map<string, string> option) (someQueryParameters: Map<string, string> option) = 
+
         let req = new HttpRequestMessage()
-        match method with 
-        | Get -> 
-            req.Method <- HttpMethod.Get
-        | Post -> 
-            req.Method <- HttpMethod.Post
+        req.Method <- HttpMethod.Get
+
+        match someHeaders with 
+        | Some headers -> 
+            headers 
+            |> Map.toSeq 
+            |> Seq.iter (fun (k, v) -> 
+                req.Headers.Add(k, v)
+            )
+        | None -> 
+            ()
 
         match someQueryParameters with 
         | Some parameters -> 
@@ -42,12 +49,39 @@ module HttpClient =
             req.RequestUri <- 
                 Uri(endpoint)
 
+
+
+        handleResponseAsync req
+
+
+    let postRequestAsync (endpoint: string) (someHeaders: Map<string, string> option) (someQueryParameters: Map<string, string> option) (someBody: Map<string, string> option) = 
+
+        let req = new HttpRequestMessage()
+        req.Method <- HttpMethod.Get
+
         match someHeaders with 
         | Some headers -> 
-            req.Content <- new FormUrlEncodedContent(headers)
+            headers 
+            |> Map.toSeq 
+            |> Seq.iter (fun (k, v) -> 
+                req.Headers.Add(k, v)
+            )
+        | None -> 
+            ()
+
+        match someQueryParameters with 
+        | Some parameters -> 
+            req.RequestUri <- 
+                Uri(endpoint + "?" + (buildQueryFromMap parameters))
+        | None -> 
+            req.RequestUri <- 
+                Uri(endpoint)
+
+        match someBody with 
+        | Some body -> 
+            req.Content <- new FormUrlEncodedContent(body)
         | None -> 
             ()
 
         handleResponseAsync req
-    
 
