@@ -25,28 +25,28 @@ module BackTracking =
             | None -> false 
 
         // Find all solution for N Queens 
-        let nQueen n = 
-            // We need to record down where has been explored and whether it is safe to place a queen
-            let lookup: Map<int * int, bool>  = Map.empty
-            let allSolution: int list list = []
+        //let nQueen n = 
+        //    // We need to record down where has been explored and whether it is safe to place a queen
+        //    let lookup: Map<int * int, bool>  = Map.empty
+        //    let allSolution: int list list = []
 
-            let rec helper (lookup: Map<int * int, bool>) (curr: int list) = 
-                if curr.Length = n then
-                    allSolution <- curr :: allSolution
-                    Some curr 
-                else 
-                    // try all choices, 
-                    for i in [1..n] do 
-                        if noConflict i curr then 
-                            lookup <- lookup.Add((r, curr.Length), true)
-                            match helper lookup (i::curr) with 
-                            | Some sol -> 
-                                Some sol 
-                            | None -> 
-                                lookup <- lookup.Remove(r, curr.Length)
-                                None 
-                        else 
-                            None 
+        //    let rec helper (lookup: Map<int * int, bool>) (curr: int list) = 
+        //        if curr.Length = n then
+        //            allSolution <- curr :: allSolution
+        //            Some curr 
+        //        else 
+        //            // try all choices, 
+        //            for i in [1..n] do 
+        //                if noConflict i curr then 
+        //                    lookup <- lookup.Add((r, curr.Length), true)
+        //                    match helper lookup (i::curr) with 
+        //                    | Some sol -> 
+        //                        Some sol 
+        //                    | None -> 
+        //                        lookup <- lookup.Remove(r, curr.Length)
+        //                        None 
+        //                else 
+        //                    None 
 
         // See: https://codereview.stackexchange.com/questions/53752/making-backtracking-sudoku-solver-more-functional
         // About backtracking 
