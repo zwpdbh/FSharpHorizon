@@ -348,13 +348,13 @@ module Day07 =
                         let sameDir = 
                             nodes 
                             |> List.choose (fun x -> 
-                                match x with 
-                                | Empty -> None 
+                                match x with                                
                                 | Directory (existingDirName, _) as existingDir-> 
                                     if existingDirName = someDir.Name then 
                                         Some existingDir
                                     else 
                                         None 
+                                | _ -> None
                             )
                             |> List.tryHead
 

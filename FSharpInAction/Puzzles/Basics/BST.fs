@@ -150,11 +150,16 @@ let rec delete someValue (tree: Tree<'T>) =
     | Node (_, Empty, Empty) -> Empty
     | Node (_, left, Empty) -> left
     | Node (_, Empty, right) -> right
-    | Node (_, left, right) ->
-        // Notice we must include it in '()' to extract out value
-        let (Node (value', _, _)) = findLeftMost right
-        let right' = delete value' right
-        Node(value', left, right')
+    | Node (_, left, right) ->       
+        match findLeftMost right with 
+        | Node (value', _, _) -> 
+            let right' = delete value' right
+            Node(value', left, right')
+        | Empty -> 
+            failwith "Something goes wrong during deleting"
+        //let (Node (value', _, _)) = findLeftMost right
+        //let right' = delete value' right
+        //Node(value', left, right')
 
 
 let test05 =
