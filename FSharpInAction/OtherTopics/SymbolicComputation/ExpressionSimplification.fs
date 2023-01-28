@@ -1,4 +1,5 @@
 ﻿namespace FunAndProfit
+open Expecto
 
 module ExpressionSimplification = 
     open System
@@ -65,3 +66,25 @@ module ExpressionSimplification =
         | Num _ -> Num 0 
         | Sum (e1, e2) -> simpSum (simpDeriv e1, simpDeriv e2)
         | Prod (e1, e2) -> simpSum (simpProd (e1, simpDeriv e2), simpProd (e2, simpDeriv e1))
+
+
+    let test01 = 
+        testCase "Test simple derivative"
+        <| fun _ -> 
+        
+            let e1 = Sum (Num 1, Prod (Num 2, Var))
+            let e2 = deriv e1 
+
+            Expect.equal e2 (Sum (Num 0,Sum (Prod (Num 2,Num 1),Prod (Var,Num 0)))) ""
+
+            let e3 = Prod (Var, Prod (Var, Num 2))
+            let printedResult = (deriv e3).ToString()
+            Expect.equal printedResult "x*(x*0+2*1)+x*2*1" ""
+        
+            Expect.equal ((simpDeriv e3).ToString()) "x*2+x*2" ""
+
+    [<Tests>]
+    let tests =
+        testList "Expression Simplification" [
+            test01
+        ]
