@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="DynamicFeatures.fs" />
     <Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
+    <Compile Include="ComputationExpression\BinaryFileReader.fs" />
     <Compile Include="ComputationExpression\Ex01Attempt.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>

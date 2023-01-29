@@ -61,19 +61,19 @@ module Demo03 =
         | Square of edge: int * point: Point
         | Circle of radius: int * point: Point
 
+        member this.area = 
+            match this with 
+            | Rectangle (x, y, _) -> float (x * y )
+            | Square (e, _) -> float (e * e)
+            | Circle (r, _) -> 3.14 * float r * float r 
+
     let rectangle = Rectangle (20, 10, {x = 1; y = 2})
     let squre = Square (10, {x = 0; y = 0})
     let circle = Circle (10, {x = 0; y = 2})
 
-    let area shape = 
-        match shape with 
-        | Rectangle (x, y, _) -> float (x * y )
-        | Square (e, _) -> float (e * e)
-        | Circle (r, _) -> 3.14 * float r * float r 
-
     let demo() = 
         [rectangle; squre; circle]
-        |> List.map (fun x -> area x)
+        |> List.map (fun x -> x.area)
         |> List.sum
 
 
