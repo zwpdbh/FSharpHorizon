@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FSharpInAction\AdventOfCode\AdventOfCode.fsproj" />
+    <ProjectReference Include="..\FSharpInAction\OtherTopics\OtherTopics.fsproj" />
   </ItemGroup>
 
 </Project>

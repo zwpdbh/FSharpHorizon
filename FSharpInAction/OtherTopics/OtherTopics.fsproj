@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common.fs" />
     <Compile Include="DynamicFeatures.fs" />
     <Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
+    <Content Include="ComputationExpression\PNG_02.png" />
+    <Content Include="ComputationExpression\PNG_01.png" />
     <Compile Include="ComputationExpression\BinaryFileReader.fs" />
     <Compile Include="ComputationExpression\Ex01Attempt.fs" />
     <Compile Include="Main.fs" />
