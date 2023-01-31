@@ -5,6 +5,8 @@ open Expecto
 module BinaryFileReader =
     // Using F# computation expressions to read binary files
     // See: http://langexplr.blogspot.com/2008/10/using-f-computation-expressions-to-read.html
+    // See: https://www.dcc.fc.up.pt/~pbv/aulas/tapf/handouts/parsing.html
+    // See: https://deepsource.io/blog/monadic-parser-combinators/
     open System.IO
 
     type ParseResult<'a> =
