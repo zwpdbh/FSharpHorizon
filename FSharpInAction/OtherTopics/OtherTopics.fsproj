@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ParserCombinators\Combinators.fs" />
     <Compile Include="Common.fs" />
     <Compile Include="DynamicFeatures.fs" />
     <Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
