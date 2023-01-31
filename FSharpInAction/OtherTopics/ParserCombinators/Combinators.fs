@@ -117,34 +117,34 @@ module CombinatorsDemos =
     // OR 
     let demo01 () = 
         strToCharList "rake"
-        |> (expectChar 'r' <|> expectChar 't' <|> expectChar 'c')  
+        |> runParser (expectChar 'r' <|> expectChar 't' <|> expectChar 'c') 
 
     let demo02 () = 
         strToCharList "rake"
-        |> choice [expectChar 'r'; expectChar 'a'; expectChar 't']  
+        |> runParser (choice [(expectChar 'r'); (expectChar 'a')])
 
     let demo03 () = 
         strToCharList "wake"
-        |> anyCharOf ("rkaw" |> List.ofSeq)
+        |> runParser (anyCharOf ("rkaw" |> List.ofSeq))
 
 
     // AND 
     let demo04 () = 
         strToCharList "rake"
-        |> andParse (expectChar 'r') (expectChar 'a')
+        |> runParser (andParse (expectChar 'r') (expectChar 'a'))
 
     let demo05 () = 
         strToCharList "rake"
-        |> (expectChar 'r' .>>. expectChar 'a')
-
-    let demo05 () = 
-        strToCharList "rake"
-        |> runParser (expectChar 'r')
+        |> runParser ((expectChar 'r' .>>. expectChar 'a'))
 
     let demo06 () = 
         strToCharList "rake"
-        |> runParser (expectString "rake")
+        |> runParser (expectChar 'r')
 
     let demo07 () = 
+        strToCharList "rake"
+        |> runParser (expectString "rake")
+
+    let demo08 () = 
         strToCharList "rake"
         |> runParser (expectString "rake" <|> expectString "lake")
