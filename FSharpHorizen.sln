@@ -41,6 +41,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "ComputationalFinance", "FSh
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "QuantitativeFinance", "FSharpInAction\QuantitativeFinance\QuantitativeFinance.fsproj", "{B619237C-0A7A-4294-ABB5-8D8437CFD721}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DailySolutons", "FSharpInAction\DailySolutons\DailySolutons.fsproj", "{A5AD6A38-9E0A-4650-8916-6EA5570E511C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,6 +171,14 @@ Global
 		{B619237C-0A7A-4294-ABB5-8D8437CFD721}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B619237C-0A7A-4294-ABB5-8D8437CFD721}.Release|x64.ActiveCfg = Release|Any CPU
 		{B619237C-0A7A-4294-ABB5-8D8437CFD721}.Release|x64.Build.0 = Release|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Debug|x64.Build.0 = Debug|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Release|x64.ActiveCfg = Release|Any CPU
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +198,7 @@ Global
 		{D5CDEF89-DBA1-47E3-96CD-24C75A596990} = {3A00BAFB-A8A4-452E-82E2-C13F0672B222}
 		{693FE363-8EE3-4462-A58D-53FC1BEB2069} = {89A72912-3F56-4308-9135-FE84159D6B39}
 		{B619237C-0A7A-4294-ABB5-8D8437CFD721} = {89A72912-3F56-4308-9135-FE84159D6B39}
+		{A5AD6A38-9E0A-4650-8916-6EA5570E511C} = {89A72912-3F56-4308-9135-FE84159D6B39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {135C6156-E291-4B76-9B42-44AC44E00446}
