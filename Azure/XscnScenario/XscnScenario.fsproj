@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureAuth\AzureAuth.fsproj" />
+    <ProjectReference Include="..\AzureAuth\Auth.fsproj" />
     <ProjectReference Include="..\RestAPI\RestAPI.fsproj" />
   </ItemGroup>
 

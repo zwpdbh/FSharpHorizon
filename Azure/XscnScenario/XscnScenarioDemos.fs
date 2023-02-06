@@ -22,7 +22,7 @@ module XscnScenarioDemos =
 
     let demoListVirtualMachineDeployments () = 
         async {
-            let! accessTokenResponse = AzureAuth.AuthService.getAccessToken()
+            let! accessTokenResponse = AzureAuth.AzureAuthService.getAccessToken()
             match accessTokenResponse with 
             | Result.Ok accessToken -> 
                 return! listVirtualMachineDeployments accessToken    

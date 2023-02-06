@@ -220,9 +220,32 @@ module AuthTokenAgent =
                 return tokenResponse 
             }          
 
-module AuthService = 
+    
+
+module AzureAuthService = 
     open AuthTokenAgent
     let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.azureScope)
+
+    let getAuthToken () = 
+        async {
+            return! agent.GetAccessToken()
+        }
+
+    let getAccessToken () = 
+        async {
+            let! response =  agent.GetAccessToken()
+            match response with 
+            | Result.Ok authTokenResponse -> 
+                return Result.Ok authTokenResponse.access_token
+            | err -> 
+                return Result.Error $"getAccessToken failed: {err}"
+        }
+
+
+module XscnAuthService = 
+    open AuthTokenAgent
+
+    let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.xscnworkflowconsoleScope)
 
     let getAuthToken () = 
         async {

@@ -31,7 +31,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "OtherTopics", "FSharpInActi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure", "Azure", "{3A00BAFB-A8A4-452E-82E2-C13F0672B222}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AzureAuth", "Azure\AzureAuth\AzureAuth.fsproj", "{9D3047E1-877F-4F6B-A712-1D74501C02DC}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Auth", "Azure\AzureAuth\Auth.fsproj", "{9D3047E1-877F-4F6B-A712-1D74501C02DC}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "ComputationalFinance", "FSharpInAction\ComputationalFinance\ComputationalFinance.fsproj", "{693FE363-8EE3-4462-A58D-53FC1BEB2069}"
 EndProject

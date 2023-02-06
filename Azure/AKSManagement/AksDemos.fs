@@ -1,4 +1,4 @@
-﻿namespace AKSManagement
+﻿namespace AksManagement
 
 module Snapshot = 
     open RestAPI  
@@ -22,7 +22,7 @@ module Snapshot =
 
     let demoListSnapshot () : string = 
         async {
-            let! accessTokenResponse = AzureAuth.AuthService.getAccessToken()
+            let! accessTokenResponse = AzureAuth.AzureAuthService.getAccessToken()
             match accessTokenResponse with 
             | Result.Ok accessToken -> 
                 return! listAllSnapshots "33922553-c28a-4d50-ac93-a5c682692168" accessToken    
@@ -33,3 +33,33 @@ module Snapshot =
         } |> Async.RunSynchronously
 
     /// TBD: get a xscnworkflow, find all its related snapshot!
+
+
+module XscnWorkflowConsole = 
+    open RestAPI
+
+    let listWorkflowInstances recordsLimitToFetch accessToken =         
+        let endpoint = $"https://xscnworkflowconsole.eastus.cloudapp.azure.com/api/Workflow"
+        let headerParameters: Map<string, string> = 
+            Map.empty
+                .Add("accept", "text/plain")
+                .Add("Authorization", $"Bearer {accessToken}")
+        let queryParameters: Map<string, string> = 
+            Map.empty
+                .Add ("count", $"{recordsLimitToFetch}")
+        async {
+            let! resultStr = HttpClient.getRequestAsync endpoint (Some headerParameters) (Some queryParameters)
+            return resultStr
+        }  
+
+    let demoListWorkflowInstances () = 
+        async {
+            let! accessTokenResponse = AzureAuth.AzureAuthService.getAccessToken()
+            match accessTokenResponse with 
+            | Result.Ok accessToken -> 
+                return! listWorkflowInstances 10 accessToken
+            | Result.Error err -> 
+                return err 
+        } 
+        |> Async.RunSynchronously
+        |> printfn "%A"
