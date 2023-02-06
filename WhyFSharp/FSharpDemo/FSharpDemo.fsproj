@@ -7,7 +7,6 @@
 
 	<ItemGroup>
 		<Compile Include="AzureRelated\Auth.fs" />
-		<Compile Include="AzureRelated\ScenarioDemos.fs" />
 		<Compile Include="AzureRelated\AzureDemos.fs" />
 		<Compile Include="Demos.fs" />
 		<Compile Include="Program.fs" />

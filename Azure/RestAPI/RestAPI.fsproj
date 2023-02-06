@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Compile Include="HttpClient.fs" />
-    <Compile Include="Snapshot.fs" />
   </ItemGroup>
 
 </Project>
