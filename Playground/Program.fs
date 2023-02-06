@@ -7,5 +7,7 @@ open DemoREPerformance
 //timeStringContain n |> printfn "string contains takes: %A" 
 
 OtherTopics.BinaryFileReader.demo01() |> ignore
+OtherTopics.Database.Others.demo () |> ignore
+
 
 printfn "Done"

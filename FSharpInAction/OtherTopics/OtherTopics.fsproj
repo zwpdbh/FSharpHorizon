@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ExceptionHandling.fs" />
+    <Compile Include="Database\Others.fs" />
+    <Compile Include="Database\Sql.fs" />
     <Compile Include="ParserCombinators\Combinators.fs" />
     <Compile Include="Common.fs" />
     <Compile Include="DynamicFeatures.fs" />
@@ -23,9 +26,5 @@
     <PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
     <PackageReference Update="FSharp.Core" Version="6.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Sql\" />
   </ItemGroup>
 </Project>
