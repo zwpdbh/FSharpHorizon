@@ -1,4 +1,4 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
 
 
-AKSManagement.Demos.demoListSnapshot () |> printfn "%A"
+AKSManagement.Snapshot.demoListSnapshot () |> printfn "%A"

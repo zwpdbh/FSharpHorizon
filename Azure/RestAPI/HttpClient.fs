@@ -1,4 +1,4 @@
-﻿namespace AzureAPI
+﻿namespace RestAPI
 
 module HttpClient =
     open System 
