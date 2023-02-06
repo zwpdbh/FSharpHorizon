@@ -22,7 +22,7 @@ module XscnScenarioDemos =
 
     let demoListVirtualMachineDeployments () = 
         async {
-            let! accessTokenResponse = Auth.XscnWorkflowConsoleAuthService.getAccessToken()
+            let! accessTokenResponse = Auth.XscnScenarioAuthService.getAccessToken()
             match accessTokenResponse with 
             | Result.Ok accessToken -> 
                 return! listVirtualMachineDeployments accessToken    

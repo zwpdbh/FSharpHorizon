@@ -21,6 +21,7 @@ module AuthSetting =
     //// Azure AD --> App Registration -> ScenarioFramework -> Overview. Then check "Application ID URI".
     let xscnworkflowconsoleScope = "https://microsoft.onmicrosoft.com/3b4ae08b-9919-4749-bb5b-7ed4ef15964d/.default"
     let azureScope = "https://management.azure.com/.default"
+    let xscnScenarioScope = "https://scenariodeploymentsrestservice.azurewebsites.net"
 
     let zwpdbhSP =
         { 
@@ -272,6 +273,28 @@ module XscnWorkflowConsoleAuthService =
     open AuthTokenAgent
 
     let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.xscnworkflowconsoleScope)
+
+    let getAuthToken () = 
+        async {
+            return! agent.GetAccessToken()
+        }
+
+    let getAccessToken () = 
+        async {
+            let! response =  agent.GetAccessToken()
+            match response with 
+            | Result.Ok authTokenResponse -> 
+                return Result.Ok authTokenResponse.access_token
+            | err -> 
+                return Result.Error $"getAccessToken failed: {err}"
+        }
+
+
+// https://microsoft.onmicrosoft.com/3b4ae08b-9919-4749-bb5b-7ed4ef15964d
+module XscnScenarioAuthService = 
+    open AuthTokenAgent
+
+    let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.xscnScenarioScope)
 
     let getAuthToken () = 
         async {
