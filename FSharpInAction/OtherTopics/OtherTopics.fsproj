@@ -24,4 +24,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
     <PackageReference Update="FSharp.Core" Version="6.*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Sql\" />
+  </ItemGroup>
 </Project>

@@ -1,6 +1,8 @@
-﻿module Interviews
-open Expecto
+﻿
+//open Expecto
+//[<EntryPoint>]
+//let main argv =
+//    Tests.runTestsInAssembly defaultConfig argv
 
-[<EntryPoint>]
-let main argv =
-    Tests.runTestsInAssembly defaultConfig argv
+open Expecto
+Tests.runTestsInAssembly defaultConfig |> ignore 
