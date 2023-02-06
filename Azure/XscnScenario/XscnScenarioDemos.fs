@@ -7,7 +7,7 @@
 open RestAPI
 
 module XscnScenarioDemos = 
-    let xscnUri = "https://xscenariodeployments.cloudapp.net/"
+    let xscnUri = "https://xscenariodeployments.cloudapp.net"
 
     let listVirtualMachineDeployments (accessToken: string) =
         let endpoint = xscnUri + "/api/virtualmachinedeployments"
@@ -22,7 +22,7 @@ module XscnScenarioDemos =
 
     let demoListVirtualMachineDeployments () = 
         async {
-            let! accessTokenResponse = AzureAuth.AzureAuthService.getAccessToken()
+            let! accessTokenResponse = Auth.XscnWorkflowConsoleAuthService.getAccessToken()
             match accessTokenResponse with 
             | Result.Ok accessToken -> 
                 return! listVirtualMachineDeployments accessToken    

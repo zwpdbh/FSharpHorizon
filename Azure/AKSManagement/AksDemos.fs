@@ -20,9 +20,9 @@ module Snapshot =
             return responseStr
         }
 
-    let demoListSnapshot () : string = 
+    let demoListSnapshot () = 
         async {
-            let! accessTokenResponse = AzureAuth.AzureAuthService.getAccessToken()
+            let! accessTokenResponse = Auth.AzureAuthService.getAccessToken()
             match accessTokenResponse with 
             | Result.Ok accessToken -> 
                 return! listAllSnapshots "33922553-c28a-4d50-ac93-a5c682692168" accessToken    
@@ -30,7 +30,9 @@ module Snapshot =
                 printfn "No access token"
                 //failwith err 
                 return err 
-        } |> Async.RunSynchronously
+        } 
+        |> Async.RunSynchronously
+        |> printfn "%A"
 
     /// TBD: get a xscnworkflow, find all its related snapshot!
 
@@ -54,7 +56,7 @@ module XscnWorkflowConsole =
 
     let demoListWorkflowInstances () = 
         async {
-            let! accessTokenResponse = AzureAuth.AzureAuthService.getAccessToken()
+            let! accessTokenResponse = Auth.XscnWorkflowConsoleAuthService.getAccessToken()
             match accessTokenResponse with 
             | Result.Ok accessToken -> 
                 return! listWorkflowInstances 10 accessToken
