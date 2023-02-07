@@ -14,6 +14,11 @@ module Others=
 
 
     module Turing01 = 
+        // Given a list of inputs (a list of string with sigal charaters)
+        // + means record a new score that is the sum of the previous two scores
+        // D means record a new score that is double the previous score.
+        // C invliadate the previous score, remove it from score records
+        // Compute the total score given something like: ["5"; "2"; "C"; "D"; "+"]
         let scores inputs = 
             let rec helper inputs curr  = 
                 printfn $"inputs = {inputs}, curr = {curr}"
@@ -40,7 +45,8 @@ module Others=
                 Expect.equal (scores ["5"; "2"; "C"; "D"; "+"]) 30 ""
                 Expect.equal (scores ["5"; "-2"; "4"; "C"; "D"; "9"; "+"; "+"]) 27 ""
 
-
+        // Determin if a given string which contains only parentheses charaters
+        // is valid or not
         let isValidParentheses (str: string) = 
             let inputs = str |> Seq.toList
 
