@@ -16,13 +16,13 @@ module AuthSetting =
             Id = "33922553-c28a-4d50-ac93-a5c682692168" 
         }
 
-    //// It is the resource identifier of the resource you want. It is affixed with the .default suffix.
-    //// Here, the resource identifier is checked by
-    //// Azure AD --> App Registration -> ScenarioFramework -> Overview. Then check "Application ID URI".
+    // It is the resource identifier of the resource you want. It is affixed with the .default suffix.
+    // Here, the resource identifier is checked by
+    // Azure AD --> App Registration -> ScenarioFramework -> Overview. Then check "Application ID URI". (If it is registered App, need append "/.default")
+    let xscnScenarioScope = "https://scenariodeploymentsrestservice.azurewebsites.net/.default"
     let xscnworkflowconsoleScope = "https://microsoft.onmicrosoft.com/3b4ae08b-9919-4749-bb5b-7ed4ef15964d/.default"
     let azureScope = "https://management.azure.com/.default"
-    let xscnScenarioScope = "https://scenariodeploymentsrestservice.azurewebsites.net"
-
+  
     let zwpdbhSP =
         { 
             tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47"
