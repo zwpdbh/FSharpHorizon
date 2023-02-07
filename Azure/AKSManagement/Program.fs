@@ -1,4 +1,6 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
 
 
-AKSManagement.Demos.demoListSnapshot () |> printfn "%A"
+//AksManagement.Snapshot.demoListSnapshot ()
+//AksManagement.XscnWorkflowConsole.demoListWorkflowInstances()
+

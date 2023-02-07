@@ -1,4 +1,4 @@
-﻿namespace AzureAPI
+﻿namespace RestAPI
 
 module HttpClient =
     open System 
@@ -20,6 +20,7 @@ module HttpClient =
     let handleResponseAsync req = 
         async {
             let! response = client.SendAsync(req) |> Async.AwaitTask
+            response.EnsureSuccessStatusCode() |> ignore 
 
             return!
                 response.Content.ReadAsStringAsync()

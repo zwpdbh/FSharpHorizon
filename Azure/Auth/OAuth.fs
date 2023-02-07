@@ -1,4 +1,4 @@
-﻿namespace AzureAuth
+﻿namespace Auth
 
 module AuthSetting =
     type SubScription = { Name: string; Id: string }
@@ -10,18 +10,19 @@ module AuthSetting =
             clientSecret: string option // NOTICE: Client secret values cannot be viewed, except for immediately after creation. So, make sure to save it immediately.
         }
 
-    let deploymentServiceSubScription =
+    let subScriptionUsedByXscnWorkflowConsole =
         { 
             Name = "XTest Test Cluster STG Tenant Load Generators 8"
             Id = "33922553-c28a-4d50-ac93-a5c682692168" 
         }
 
-    //// It is the resource identifier of the resource you want. It is affixed with the .default suffix.
-    //// Here, the resource identifier is checked by
-    //// Azure AD --> App Registration -> ScenarioFramework -> Overview. Then check "Application ID URI".
+    // It is the resource identifier of the resource you want. It is affixed with the .default suffix.
+    // Here, the resource identifier is checked by
+    // Azure AD --> App Registration -> ScenarioFramework -> Overview. Then check "Application ID URI". (If it is registered App, need append "/.default")
+    let xscnScenarioScope = "https://scenariodeploymentsrestservice.azurewebsites.net/.default"
     let xscnworkflowconsoleScope = "https://microsoft.onmicrosoft.com/3b4ae08b-9919-4749-bb5b-7ed4ef15964d/.default"
     let azureScope = "https://management.azure.com/.default"
-
+  
     let zwpdbhSP =
         { 
             tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47"
@@ -32,6 +33,10 @@ module AuthSetting =
         }
 
 
+/// It currently support the following operations
+/// 1. get certificate stored locally using thumprint
+/// 2. get certificate stored locally suing subject name
+/// 3. get SP's secret value stored in KeyVault
 module KeyVault = 
     open Azure.Security.KeyVault.Secrets;
     open Azure.Identity
@@ -90,7 +95,27 @@ module KeyVault =
             // secretClient.Value.GetSecretAsync(secretName).Value
         }
     
+/// The credentials could be used by some Azure SDK. For example, for BlobServiceClient:
+/// new BlobServiceClient(accountUri, new DefaultAzureCredential()), or
+/// new BlobServiceClient(accountUri, clientCertificateCredential)
+module Credential = 
+    open Azure.Identity
+    type CredentialType = 
+        | DefaultAzureCredential 
+        | ServicePrincipal     
 
+    let getDefaultCredential () = 
+        new DefaultAzureCredential()
+
+    let getCredentialUsingSPCertificate tenantId clientId certificateSubjectName =
+        new ClientCertificateCredential (
+            tenantId,
+            clientId,
+            KeyVault.getLocalCertificateBySubject certificateSubjectName
+        )
+        
+/// A group of functions to obtain access token using SP
+/// Especially, the SP's secret value is obtained from KeyVault (see KeyVault module).
 module AuthToken = 
     open System
     open System.Net.Http
@@ -220,9 +245,56 @@ module AuthTokenAgent =
                 return tokenResponse 
             }          
 
-module AuthService = 
+    
+/// Use zwpdbhSP to request access_token from default Azure scope.
+/// The request access_token could be used to operate stand Azure APIs, like list Snapshots
+module AzureAuthService = 
     open AuthTokenAgent
     let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.azureScope)
+
+    let getAuthToken () = 
+        async {
+            return! agent.GetAccessToken()
+        }
+
+    let getAccessToken () = 
+        async {
+            let! response =  agent.GetAccessToken()
+            match response with 
+            | Result.Ok authTokenResponse -> 
+                return Result.Ok authTokenResponse.access_token
+            | err -> 
+                return Result.Error $"getAccessToken failed: {err}"
+        }
+
+/// Use zwpdbhSP to request access_token from XscnWorkflowConsole
+/// The request access_token could be used to operate XscnWorkflowConsole APIs, like list workflow instances.
+module XscnWorkflowConsoleAuthService = 
+    open AuthTokenAgent
+
+    let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.xscnworkflowconsoleScope)
+
+    let getAuthToken () = 
+        async {
+            return! agent.GetAccessToken()
+        }
+
+    let getAccessToken () = 
+        async {
+            let! response =  agent.GetAccessToken()
+            match response with 
+            | Result.Ok authTokenResponse -> 
+                return Result.Ok authTokenResponse.access_token
+            | err -> 
+                return Result.Error $"getAccessToken failed: {err}"
+        }
+
+
+// https://microsoft.onmicrosoft.com/3b4ae08b-9919-4749-bb5b-7ed4ef15964d
+module XscnScenarioAuthService = 
+    open AuthTokenAgent
+
+    let agent = new AuthTokenAgent(AuthSetting.zwpdbhSP, AuthSetting.xscnScenarioScope)
 
     let getAuthToken () = 
         async {

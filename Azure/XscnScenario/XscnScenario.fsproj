@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="AksDemos.fs" />
+    <Compile Include="XscnScenarioDemos.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

@@ -3,10 +3,6 @@ open Expecto
 
 module Combinators = 
     // For https://www.youtube.com/watch?v=ARJB8eDyxrg
-    // The commands we want to parse are
-    // go west
-    // take key 
-    // take key from bag
 
     type Parser<'a> = 
         | Parser of (char list -> Result<'a * char list, string>)
@@ -43,7 +39,7 @@ module Combinators =
                 runParser pFun2 inputChars
         Parser innerParser
 
-    // Define operation 
+    // Define operator 
     // Operator definitions are left associative 
     let ( <|> ) = orParse
 
