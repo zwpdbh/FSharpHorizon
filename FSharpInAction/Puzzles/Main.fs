@@ -1,8 +1,6 @@
-﻿
-//open Expecto
-//[<EntryPoint>]
-//let main argv =
-//    Tests.runTestsInAssembly defaultConfig argv
-
+﻿module PuzzlesMain
 open Expecto
-Tests.runTestsInAssembly defaultConfig |> ignore 
+
+[<EntryPoint>]
+let main argv =
+    Tests.runTestsInAssembly defaultConfig argv
