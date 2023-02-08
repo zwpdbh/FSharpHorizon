@@ -81,7 +81,7 @@ module RailwayProgramming =
             else 
                 data 
 
-        let labelForDefault data = 
+        let labelOrDefault data = 
             let {i = i; label = labelSoFar} = data 
 
             match labelSoFar with 
@@ -92,13 +92,21 @@ module RailwayProgramming =
             {i = i; label = None}
             |> carbonate 3 "Fizz"
             |> carbonate 5 "Buzz"
-            |> labelForDefault 
+            |> labelOrDefault 
             |> printfn "%s"
 
         let demo () = 
             [1..100] |> List.iter fizzBuzz
 
     module FizzBuzzUsingPipelineV2 = 
+        // Things to learn:
+        // defaultArg
+        //> defaultArg (Some 100) -1;;
+        //> val it: int = 100
+
+        //> defaultArg None -1;;
+        //val it: int = -1
+
         type Data = int * string option
 
         let carbonate factor label data = 
@@ -108,10 +116,11 @@ module RailwayProgramming =
                 let newLabel = 
                     labelSoFar 
                     |> Option.map (fun s -> s + label)
+                    // The pipe-backward operator takes a function on the left and applies it to a value on the right.
+                    // Something like allowing you to change operator precedence.
                     |> defaultArg <| label 
                 (i,Some newLabel)
-            else
-                
+            else         
                 data
 
         let labelOrDefault data = 
@@ -128,3 +137,191 @@ module RailwayProgramming =
            
         let demo () = 
             [1..100] |> List.iter fizzBuzz
+
+
+    module FizzBuzzUsingPipelineV3 = 
+        type Data = int * string option
+
+        let carbonate factor label data = 
+            let (i,labelSoFar) = data
+            if i % factor = 0 then
+                
+                let newLabel = 
+                    labelSoFar 
+                    |> Option.map (fun s -> s + label)
+                    |> defaultArg <| label 
+                (i,Some newLabel)
+            else         
+                data
+
+        let rules = [ (3,"Fizz"); (5,"Buzz"); (7,"Baz") ]
+
+        let allRules = 
+            rules 
+            |> List.map (fun (factor, label) -> carbonate factor label)
+            |> List.reduce (>>)
+
+        let labelOrDefault data = 
+            let (i,labelSoFar) = data
+            labelSoFar 
+            |> defaultArg <| sprintf "%i" i
+
+        let fizzBuzz i = 
+            (i,None)   
+            |> allRules
+            |> labelOrDefault     
+            |> printfn "%s"      
+           
+        let demo () = 
+            [1..100] |> List.iter fizzBuzz
+
+    //module FizzBuzzUsingRail = 
+
+    //    let (|Success|Failure|) = 
+    //        function 
+    //        | Choice1Of2 s -> Success s 
+    //        | Choice2Of2 f -> Failure f 
+        
+    //    // Convert a single value into a two-track result 
+    //    let succeed x = Choice1Of2 x 
+    //    let succeedv1 x = Result.Ok x 
+
+    //    // Convert a single value into a two-track result
+    //    let fail x = Choice2Of2 x 
+    //    let failv1 x = Result.Error x 
+
+    //    // appy either a success function or failure function
+    //    let either successFunc failureFunc twoTrackInput =
+    //        match twoTrackInput with
+    //        | Success s -> successFunc s
+    //        | Failure f -> failureFunc f
+
+    //    let eitherv1 successFunc failureFunc twoTrackInput =
+    //        match twoTrackInput with
+    //        | Ok s -> successFunc s
+    //        | Error f -> failureFunc f
+
+    //    // convert a switch function into a two-track function
+    //    let bind f = 
+    //        either f fail
+
+    //    let bindv1 f = 
+    //        eitherv1 f failv1
+
+    //    let carbonate factor label i = 
+    //        if i % factor = 0 then 
+    //            succeedv1 label 
+    //        else 
+    //            failv1 i 
+
+    module RailwayCombinatorModule = 
+        // Convert a single value into a two-track result 
+        let succeed x = Result.Ok x 
+
+        // Convert a single value into a two-track result
+        let fail x = Result.Error x 
+
+        // appy either a success function or failure function
+        let either successFunc failureFunc twoTrackInput =
+            match twoTrackInput with
+            | Ok s -> successFunc s
+            | Error f -> failureFunc f
+
+        // convert a switch function into a two-track function
+        let bind f = 
+            either f fail        
+
+
+    module FizzBuzz_RailwayOriented_CarbonationIsSuccess =  
+        open RailwayCombinatorModule
+
+        // the Success track contains the labels, and the Failure track contains the ints.
+        let carbonate factor label i = 
+            if i % factor = 0 then 
+                Ok label 
+            else 
+                Error i 
+
+        // Need to connect the components together
+        // Logic is: 
+        // if the int is already carbonated, ignore it; 
+        // if the int is not carbonated, connect it to the input of the next switch function
+        let connect f = 
+            function 
+            | Ok x -> succeed x 
+            | Error i -> f i 
+
+        let connectv2 f = 
+            either succeed f 
+
+        // The switches are connected together through composition (>>) rather than piping (|>).
+        let fizzBuzz = 
+            carbonate 15 "FizzBuzz"
+            >> connect (carbonate 3 "Fizz")
+            >> connect (carbonate 5 "Buzz")
+            >> either (printf "%s") (printf "%i")
+        
+        let demo () = 
+            [1..100] |> List.iter fizzBuzz
+
+
+    module FizzBuzz_RailwayOriented_CarbonationIsFailure = 
+
+        open RailwayCombinatorModule 
+
+        // carbonate a value
+        let carbonate factor label i = 
+            if i % factor = 0 then
+                fail label
+            else
+                succeed i
+
+        let fizzBuzz = 
+            carbonate 15 "FizzBuzz"
+            >> bind (carbonate 3 "Fizz")
+            >> bind (carbonate 5 "Buzz")
+            >> either (printf "%i; ") (printf "%s; ") 
+
+        let demo () = 
+            [1..100] |> List.iter fizzBuzz
+
+
+    module FizzBuzz_RailwayOriented_UsingCustomChoice = 
+        
+        open RailwayCombinatorModule
+
+        // why don't we keep the two-track idea, but get rid of the "Success" and "Failure" labels.
+        // Instead, we can call one track "Carbonated" and the other "Uncarbonated".
+        // Use an active pattern to map raw data into domain data
+        let (|Uncarbonated|Carbonated|) x =
+            match x with 
+            | Ok u -> Uncarbonated u
+            | Error c -> Carbonated c
+
+        /// convert a single value into a two-track result !!!
+        let uncarbonated x = Ok x
+        let carbonated x = Error x
+
+        // carbonate a value
+        let carbonate factor label i = 
+            if i % factor = 0 then
+                carbonated label
+            else
+                uncarbonated i
+
+        let connect f x = 
+            match x with
+            | Uncarbonated i -> f i
+            | Carbonated x -> carbonated x 
+
+        let connect' f = 
+            either f carbonated 
+
+        let fizzBuzz = 
+            carbonate 15 "FizzBuzz"
+            >> connect (carbonate 3 "Fizz")
+            >> connect (carbonate 5 "Buzz")
+            >> either (printf "%i; ") (printf "%s; ") 
+
+        // test
+        [1..100] |> List.iter fizzBuzz
