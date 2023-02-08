@@ -1,5 +1,6 @@
 ﻿namespace FunctionalPatterns
 
+/// From: https://swlaschin.gitbooks.io/fsharpforfunandprofit/content/posts/railway-oriented-programming-carbonated.html
 module RailwayProgramming = 
     module FizzBuzzMatch = 
         let fizzBuzz i = 
@@ -325,3 +326,95 @@ module RailwayProgramming =
 
         // test
         [1..100] |> List.iter fizzBuzz
+
+        // Things need to get used to: use >>; when we could use |> .
+        let understandFunctionCompositionOperator () = 
+            let negate x = x * -1 
+            let square x = x * x 
+            let print  x = printfn "The number is: %d" x
+            let square_negate_then_print = square >> negate >> print 
+
+            square_negate_then_print 10
+
+    module FizzBuzz_RailwayOriented_UsingAppend = 
+        open RailwayCombinatorModule
+
+        let (|Uncarbonated|Carbonated|) x =
+            match x with 
+            | Ok u -> Uncarbonated u
+            | Error c -> Carbonated c
+
+        /// convert a single value into a two-track result !!!
+        let uncarbonated x = Ok x
+        let carbonated x = Error x
+
+        // Instead of combining all the "switch" functions in series, we can "add" them together in parallel.
+        // Use it for doing all the factors at once.
+        // The trick is to define a "append" or "concat" function for combining two functions
+        let (<+>) switch1 switch2 x = 
+            match (switch1 x), (switch2 x) with 
+            | Carbonated s1, Carbonated s2 -> carbonated (s1 + s2)
+            | Uncarbonated f1,Carbonated s2  -> carbonated s2
+            | Carbonated s1,Uncarbonated f2 -> carbonated s1
+            | Uncarbonated f1,Uncarbonated f2 -> uncarbonated f1
+
+        // carbonate a value
+        let carbonate factor label i = 
+            if i % factor = 0 then
+                carbonated label
+            else
+                uncarbonated i
+
+        let fizzBuzz = 
+            let carbonateAll = 
+                carbonate 3 "Fizz" <+> carbonate 5 "Buzz"
+
+            carbonateAll 
+            >> either (printf "%i; ") (printf "%s; ")
+
+        let demo () = 
+            [1..100] |> List.iter fizzBuzz
+
+
+    module FizzBuzz_RailwayOriented_UsingAddition = 
+        open RailwayCombinatorModule
+
+        let (|Uncarbonated|Carbonated|) x =
+            match x with 
+            | Ok u -> Uncarbonated u
+            | Error c -> Carbonated c
+
+        /// convert a single value into a two-track result !!!
+        let uncarbonated x = Ok x
+        let carbonated x = Error x
+
+        // Instead of combining all the "switch" functions in series, we can "add" them together in parallel.
+        // Use it for doing all the factors at once.
+        // The trick is to define a "append" or "concat" function for combining two functions
+        let (<+>) switch1 switch2 x = 
+            match (switch1 x), (switch2 x) with 
+            | Carbonated s1, Carbonated s2 -> carbonated (s1 + s2)
+            | Uncarbonated f1,Carbonated s2  -> carbonated s2
+            | Carbonated s1,Uncarbonated f2 -> carbonated s1
+            | Uncarbonated f1,Uncarbonated f2 -> uncarbonated f1
+
+        // carbonate a value
+        let carbonate factor label i = 
+            if i % factor = 0 then
+                carbonated label
+            else
+                uncarbonated i
+
+        let fizzBuzzPrimes rules = 
+            let carbonateAll  = 
+                rules
+                |> List.map (fun (factor,label) -> carbonate factor label)
+                |> List.reduce (<+>)
+
+            carbonateAll 
+            >> either (printf "%i; ") (printf "%s; ") 
+
+        let rules = [ (3,"Fizz"); (5,"Buzz"); (7,"Baz") ]
+
+        let demo () = 
+            [1..100] |> List.iter (fizzBuzzPrimes rules)        
