@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ExceptionHandling.fs" />
+    <Compile Include="Database\Others.fs" />
+    <Compile Include="Database\Sql.fs" />
     <Compile Include="ParserCombinators\Combinators.fs" />
     <Compile Include="Common.fs" />
     <Compile Include="DynamicFeatures.fs" />

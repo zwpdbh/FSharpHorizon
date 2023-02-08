@@ -1,4 +1,4 @@
-﻿module Interviews
+﻿module PuzzlesMain
 open Expecto
 
 [<EntryPoint>]
