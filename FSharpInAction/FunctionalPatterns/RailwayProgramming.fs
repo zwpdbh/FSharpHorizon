@@ -1,6 +1,7 @@
 ﻿namespace FunctionalPatterns
 
 /// From: https://swlaschin.gitbooks.io/fsharpforfunandprofit/content/posts/railway-oriented-programming-carbonated.html
+/// Also it links from https://fsharpforfunandprofit.com/posts/recipe-part1/
 module RailwayProgramming = 
     module FizzBuzzMatch = 
         let fizzBuzz i = 
