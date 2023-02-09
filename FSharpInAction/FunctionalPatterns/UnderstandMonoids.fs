@@ -305,3 +305,105 @@ module MonoidHomomorphisms =
             |> List.reduce (+)
             |> printfn "Using map reduce, the most frequent word is %s"
 
+
+module WorkingWithNonMonoids = 
+    // DESIGN TIP: To easily create a monoidal type, make sure that each field of the type is also a monoid.
+    // Question to think about: when you do this, what is the "zero" of the new compound type?
+    // DESIGN TIP: To enable closure for a non-numeric type, replace single items with lists.
+    open System
+
+    module MonoidalChar = 
+        /// "monoidal char"
+        type MChar = MChar of Char list
+
+        /// convert a char into a "monoidal char"
+        let toMChar ch = MChar [ch]
+
+        /// add two monoidal chars
+        let addChar (MChar l1) (MChar l2) = 
+            MChar (l1 @ l2)
+
+        // infix version
+        let (++) = addChar  
+
+        /// convert to a string
+        let toString (MChar cs) = 
+            new System.String(List.toArray cs)
+
+
+        let demoMonoidalChar () = 
+            // add two chars and convert to string
+            let a = 'a' |> toMChar
+            let b = 'b' |> toMChar
+            let c = a ++ b
+            c |> toString |> printfn "a + b = %s"  
+            // result: "a + b = ab"
+
+    module MonoidalValidation = 
+        type ValidationResult = 
+            | Success
+            | Failure of string list
+
+        // helper to convert a single string into the failure case
+        let fail str =
+            Failure [str]
+
+        let validateBadWord (badWord: string) (name:string) =
+            if name.Contains(badWord) then
+                fail ("string contains a bad word: " + badWord)
+            else 
+                Success 
+
+        let validateLength maxLength name =
+            if String.length name > maxLength then
+                fail "string is too long"
+            else 
+                Success
+
+        /// add two results
+        let add r1 r2 = 
+            match r1,r2 with
+            | Success,    Success -> Success 
+            | Failure f1, Success -> Failure f1
+            | Success,    Failure f2 -> Failure f2
+            | Failure f1, Failure f2 -> Failure (f1 @ f2)
+
+        let test1() =
+            let result1 = Success
+            let result2 = Success
+            add result1 result2 
+            |> printfn "Result is %A"
+            // "Result is Success"
+
+        let test2 () = 
+            let result1 = Success
+            let result2 = fail "string is too long"
+            add result1 result2 
+            |> printfn "Result is %A"
+            // "Result is Failure ["string is too long"]"
+
+        let test3 () = 
+            let result1 = fail "string is null or empty"
+            let result2 = fail "string is too long"
+            add result1 result2 
+            |> printfn "Result is %A"
+
+            // Result is Failure 
+            //   [ "string is null or empty"; 
+            //     "string is too long"]
+
+        let test4 () = 
+            let validationResults str = 
+                [
+                    validateLength 10
+                    validateBadWord "monad"
+                    validateBadWord "cobol"
+                ]
+                |> List.map (fun validate -> validate str)
+
+            "cobol has native support for monads"
+            |> validationResults 
+            |> List.reduce add
+            |> printfn "Result is %A"
+
+        // TBD:: https://swlaschin.gitbooks.io/fsharpforfunandprofit/content/posts/monoids-part3.html
