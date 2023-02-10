@@ -1,4 +1,5 @@
 ﻿namespace FunctionalPatterns
+//From https://swlaschin.gitbooks.io/fsharpforfunandprofit/content/posts/monoids-part3.html
 //Here are all the design tips together:
 
 //To easily create a monoidal type, make sure that each field of the type is also a monoid.
@@ -416,8 +417,6 @@ module WorkingWithNonMonoids =
             |> validationResults 
             |> List.fold add zero  // using fold instead of reduce we now could support empty list
             |> printfn "Result is %A"
-
-        // TBD:: https://swlaschin.gitbooks.io/fsharpforfunandprofit/content/posts/monoids-part3.html
 
 
 
