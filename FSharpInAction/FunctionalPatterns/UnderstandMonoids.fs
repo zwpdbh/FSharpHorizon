@@ -1,4 +1,10 @@
 ﻿namespace FunctionalPatterns
+//Here are all the design tips together:
+
+//To easily create a monoidal type, make sure that each field of the type is also a monoid.
+//To enable closure for a non-numeric type, replace single items with lists (or a similar data structure).
+//To get associativity for an operation, try to move the operation into the object.
+//To get identity for an operation, create a special case in a discriminated union, or, even simpler, just use Option.
 
 module UnderstandMonoids = 
     // Monoid means ICombinable: 
@@ -339,7 +345,9 @@ module WorkingWithNonMonoids =
             c |> toString |> printfn "a + b = %s"  
             // result: "a + b = ab"
 
-    module MonoidalValidation = 
+    module MonoidalValidation =
+        // Show how to convert non-monoid to monoid (for closure rule) using list
+
         type ValidationResult = 
             | Success
             | Failure of string list
@@ -359,6 +367,9 @@ module WorkingWithNonMonoids =
                 fail "string is too long"
             else 
                 Success
+
+        // By definition, it is something that when combined with another result, leaves the other result alone.
+        let zero = Success
 
         /// add two results
         let add r1 r2 = 
@@ -403,7 +414,105 @@ module WorkingWithNonMonoids =
 
             "cobol has native support for monads"
             |> validationResults 
-            |> List.reduce add
+            |> List.fold add zero  // using fold instead of reduce we now could support empty list
             |> printfn "Result is %A"
 
         // TBD:: https://swlaschin.gitbooks.io/fsharpforfunandprofit/content/posts/monoids-part3.html
+
+
+
+    module MonoidForAssociativity = 
+        // DESIGN TIP: To get associativity for an operation, try to move the operation into the object.
+        // This is like say 5 - 3 => 5 + (-3), such that (-) operation becomes (+) operation which is now associative
+
+        module NonAssociative = 
+            let subtractChars (s1:string) (s2:string) = 
+
+                let isIncluded (ch:char) = 
+                    s2.IndexOf(ch) = -1
+
+                let chars = s1.ToCharArray() |> Array.filter isIncluded
+                System.String(chars)
+
+            let (--) = subtractChars
+
+            let demoAssociativity () = 
+                let result1 = ("abc" -- "abc") -- "abc"
+                let result2 = "abc" -- ("abc" -- "abc")
+                result1 <> result2
+
+
+        module AssociativeV1 = 
+            /// store a list of chars to remove
+            type CharsToRemove = CharsToRemove of Set<char>
+
+            /// construct a new CharsToRemove
+            /// We are modelling actions rather than data. We have a list of CharsToRemove actions, then we combine them into a single "big" CharsToRemove action,
+            /// and then we execute that single action at the end, after we have finished the intermediate manipulations.
+            let subtract (s:string) = 
+                s.ToCharArray() |> Set.ofArray |>  CharsToRemove 
+
+            /// apply a CharsToRemove to a string
+            let applyTo (s:string) (CharsToRemove chs) = 
+                let isIncluded ch = 
+                    Set.exists ((=) ch) chs |> not
+                let chars = 
+                    s.ToCharArray() |> Array.filter isIncluded
+                System.String(chars)
+
+            let (++) (CharsToRemove c1) (CharsToRemove c2) = 
+                CharsToRemove (Set.union c1 c2)
+
+            let test01 = 
+                (subtract "abd") 
+                |> applyTo "abcdef" |> printfn "Result is %s"
+
+            let test02 = 
+                let removalAction = (subtract "abc") ++ (subtract "def") ++ (subtract "abc")   
+                removalAction |> applyTo "abcdef" |> printfn "Result is %s"
+
+        module AssociativeV2 = 
+            // This is the functional equivalent of creating the CharsToRemove data structure.  
+            // Note that we reverse the parameters to make partial application easier
+            let subtract str charsToSubtract = 
+                NonAssociative.subtractChars charsToSubtract str 
+
+            let test1 = 
+                let removalAction = subtract "abd" 
+                "abcdef" |> removalAction |> printfn "Result is %s"
+
+            let test2 = 
+                let removalAction2 = (subtract "abc") >> (subtract "de") >> (subtract "abc") 
+                removalAction2 "abcdef" |> printfn "Result is %s"
+
+
+    module MonoidForIdentity = 
+        //DESIGN TIP: To get identity for an operation, create a special case in a discriminated union, or, even simpler, just use Option.
+
+        module PositiveNumbersV1 = 
+            type NormalOrIdentity<'T> = 
+                | Normal of 'T
+                | Zero 
+
+            let optionAdd f o1 o2 =
+                match o1, o2 with
+                | None, _ -> o2
+                | _, None -> o1
+                | Some s1, Some s2 -> Some (f s1 s2)
+
+
+        module PositiveNumbersV2 = 
+            type PositiveNumberOrIdentity = int option
+            let addPositive = PositiveNumbersV1.optionAdd (+)
+
+            let zero = None
+
+            let test1 = 
+                [1..10]
+                |> List.map Some
+                |> List.fold addPositive zero 
+
+            let test2 = 
+                []
+                |> List.map Some
+                |> List.fold addPositive zero
