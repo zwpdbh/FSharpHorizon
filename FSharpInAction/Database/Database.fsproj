@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="UnderstandMonoids.fs" />
-    <Compile Include="RailwayProgramming.fs" />
+    <Compile Include="DomainModels.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
