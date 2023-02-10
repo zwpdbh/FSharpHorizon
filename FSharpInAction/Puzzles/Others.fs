@@ -77,6 +77,77 @@ module Others=
                 Expect.isTrue (isValidParentheses "{[]}") ""
 
 
+    module Turing02 = 
+        module Problem01 = 
+            open System.Text.RegularExpressions
+            let freq s = 
+                Regex.Matches(s, @"\S+")
+                |> Seq.cast<Match>
+                |> Seq.map (fun m -> m.ToString ())
+                |> Seq.groupBy id 
+                |> Seq.map (fun (k, v) -> k, Seq.length v)
+                |> Map.ofSeq
+
+            let addMap map1 map2 =
+                let increment mapAcc word count =
+                    match mapAcc |> Map.tryFind word with 
+                    | Some count' -> mapAcc |> Map.add word (count + count')
+                    | None -> mapAcc |> Map.add word count 
+
+                map2 |> Map.fold increment map1
+
+            let OddWords s1 s2 = 
+                s1
+                |> freq 
+                |> addMap (s2 |> freq)
+                |> Map.toList
+                |> List.filter (fun (_, v) -> v = 1)
+                |> List.map (fun (k, _) -> k)
+
+            let test01 = 
+                "turing community is turing is the best" |> freq
+
+            let test02 = 
+                OddWords "turing community is turing is the best" "turing community is turing is greatest"
+
+        module Problem02 = 
+            let digitsToMap s =
+                s
+                |> Seq.toList
+                |> Seq.indexed
+                |> Seq.map (fun (k, v) -> v, k)
+                |> Map.ofSeq
+
+            let numInputPair s =
+                s 
+                |> Seq.toList
+                |> Seq.pairwise
+
+
+            let timeNeeded (digitStr:string) (num: string) = 
+                let theFirstMoveCost = digitStr.IndexOf(Seq.head num)
+                let digitMap = digitsToMap digitStr
+                numInputPair num 
+                |> Seq.map (fun (a, b) -> 
+                    match digitMap.TryFind a, digitMap.TryFind b with 
+                    | Some j, Some q -> abs (j - q)
+                    | _ -> 0
+                )
+                |> Seq.sum
+                |> (+) 2
+             
+            let test01 = 
+                digitsToMap "8459762103"
+
+            let test02 = 
+                numInputPair "210"
+
+            let test03 = 
+                timeNeeded "0123456789" "210" // 4
+
+            let test04 = 
+                timeNeeded "8459762103" "5439" // 17
+
     [<Tests>]
     let tests = testList "Others" [Turing01.test01; Turing01.test02]
 
