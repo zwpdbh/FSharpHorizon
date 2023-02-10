@@ -515,3 +515,153 @@ module WorkingWithNonMonoids =
                 []
                 |> List.map Some
                 |> List.fold addPositive zero
+
+
+    module Average = 
+        let avgf i1 i2 = 
+            float (i1 + i2) / 2.0
+        // Change average number to be monoid: 
+        // By default, it is not closure (int -> float); it is not associative; there is no identity.
+        // Apply the design tips
+        // 1) To easily create a monoidal type, make sure that each field of the type is also a monoid.
+        // 2) To enable closure for a non-numeric type, replace single items with lists.
+        // 3) To get associativity for an operation, try to move the operation into the object.
+        // 4) To get identity for an operation, create a special case in a discriminated union, or, even simpler, just use Option.
+
+        // How do we convert "average" from a verb (an operation) to a noun (a data structure)?
+        // The answer is that we create a structure that is not actually an average, 
+        // but a "delayed average" -- everything you need to make an average on demand.
+        type Avg = {total: int; count: int}
+
+        let addAvg avg1 avg2 = 
+            {
+                total = avg1.total + avg2.total
+                count = avg1.count + avg2.count
+            }
+
+        let zero = {total = 0; count = 0}
+
+        let (++) = addAvg
+
+        // convert a single number to average
+        let avg n = {total = n; count = 1}
+
+        let calcAvg avg = 
+            if avg.count = 0 then 
+                0.0
+            else 
+                float (avg.total / avg.count)
+
+
+        let test1 = 
+            addAvg (avg 4) (avg 5)
+            |> calcAvg
+            |> printfn "Average is %A"
+
+        let test2 = 
+            (avg 4) ++ (avg 5) ++ (avg 6) 
+            |> calcAvg 
+            |> printfn "Average is %A"
+
+        let test3 =
+            [1..10]
+            |> List.map avg 
+            |> List.reduce addAvg
+            |> calcAvg
+            |> printfn "Average is %A"
+
+    module MostFrequentWord = 
+        // The insight here is again to delay the calculation until the last minute, just as we did in the "average" example
+        // Rather than calculating the most frequent word upfront then, 
+        // We create a data structure that stores all the information that we need to calculate the most frequent word later.
+
+        open System 
+        open System.Text.RegularExpressions
+
+        type Text = Text of string 
+
+        let addText (Text s1) (Text s2) = 
+            Text (s1 + s2)
+
+
+        let wordFreq (Text s) = 
+            Regex.Matches(s, @"\S+")
+            |> Seq.cast<Match>
+            |> Seq.map (fun m -> m.ToString())
+            |> Seq.groupBy id
+            |> Seq.map (fun (k, v) -> k, Seq.length v)
+            |> Map.ofSeq
+
+        let page1() = 
+            List.replicate 1000 "hello world "
+            |> List.reduce (+)
+            |> Text
+
+        let page2() = 
+            List.replicate 1000 "goodbye world "
+            |> List.reduce (+)
+            |> Text
+
+        let page3() = 
+            List.replicate 1000 "foobar "
+            |> List.reduce (+)
+            |> Text
+
+        let document() = 
+            [page1(); page2(); page3()]
+
+        page1() |> wordFreq |> printfn "The frequency map for page1 is %A"
+        page2() |> wordFreq |> printfn "The frequency map for page2 is %A"
+
+        document() 
+        |> List.reduce addText
+        |> wordFreq 
+        |> printfn "The frequency map for the document is %A"
+
+        let addMap map1 map2 = 
+            let increment mapSoFar word count = 
+                match mapSoFar |> Map.tryFind word with 
+                | Some count' -> mapSoFar |> Map.add word (count + count')
+                | None -> mapSoFar |> Map.add word count
+
+            map2 |> Map.fold increment map1 
+
+        let mostFrequentWord map = 
+            let max (candidateWord, maxCountSoFar) word count = 
+                if count > maxCountSoFar then 
+                    (word, count)
+                else 
+                    (candidateWord, maxCountSoFar)
+
+            map |> Map.fold max ("None", 0)
+
+        let test1 = 
+            document() 
+            |> List.reduce addText
+            |> wordFreq
+            // get the most frequent word from the big map
+            |> mostFrequentWord
+            |> printfn "Using add first, the most frequent word and count is %A"
+
+        let test2 = 
+            document() 
+            |> List.map wordFreq
+            |> List.reduce addMap
+            // get the most frequent word from the merged smaller maps
+            |> mostFrequentWord
+            |> printfn "Using map reduce, the most frequent and count is %A"
+            
+        let testMapFold = 
+            let foldF mapAcc k v = 
+                mapAcc |> Map.add k (v-10)
+
+            let anotherMap = 
+                [1..100]
+                |> Seq.map (fun i -> i, -i)
+                |> Map.ofSeq
+
+            [1..6]
+            |> Seq.map (fun i -> i, i * i)
+            |> Map.ofSeq
+            |> Map.fold foldF anotherMap
+
