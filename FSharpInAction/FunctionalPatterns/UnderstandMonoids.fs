@@ -580,18 +580,6 @@ module WorkingWithNonMonoids =
 
         type Text = Text of string 
 
-        let addText (Text s1) (Text s2) = 
-            Text (s1 + s2)
-
-
-        let wordFreq (Text s) = 
-            Regex.Matches(s, @"\S+")
-            |> Seq.cast<Match>
-            |> Seq.map (fun m -> m.ToString())
-            |> Seq.groupBy id
-            |> Seq.map (fun (k, v) -> k, Seq.length v)
-            |> Map.ofSeq
-
         let page1() = 
             List.replicate 1000 "hello world "
             |> List.reduce (+)
@@ -610,14 +598,27 @@ module WorkingWithNonMonoids =
         let document() = 
             [page1(); page2(); page3()]
 
-        page1() |> wordFreq |> printfn "The frequency map for page1 is %A"
-        page2() |> wordFreq |> printfn "The frequency map for page2 is %A"
+        let addText (Text s1) (Text s2) = 
+            Text (s1 + s2)
 
-        document() 
-        |> List.reduce addText
-        |> wordFreq 
-        |> printfn "The frequency map for the document is %A"
+        let wordFreq (Text s) = 
+            Regex.Matches(s, @"\S+")
+            |> Seq.cast<Match>
+            |> Seq.map (fun m -> m.ToString())
+            |> Seq.groupBy id
+            |> Seq.map (fun (k, v) -> k, Seq.length v)
+            |> Map.ofSeq
 
+        let testFreqFeature = 
+            page1() |> wordFreq |> printfn "The frequency map for page1 is %A"
+            page2() |> wordFreq |> printfn "The frequency map for page2 is %A"
+
+            document() 
+            |> List.reduce addText
+            |> wordFreq 
+            |> printfn "The frequency map for the document is %A"
+
+        // Add two maps of frequence of words
         let addMap map1 map2 = 
             let increment mapSoFar word count = 
                 match mapSoFar |> Map.tryFind word with 
