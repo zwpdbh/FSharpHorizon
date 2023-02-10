@@ -134,7 +134,7 @@ module Others=
                     | _ -> 0
                 )
                 |> Seq.sum
-                |> (+) 2
+                |> (+) theFirstMoveCost
              
             let test01 = 
                 digitsToMap "8459762103"
