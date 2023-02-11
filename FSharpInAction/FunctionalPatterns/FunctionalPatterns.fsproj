@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="ApplicativeParsers\ApplicativeParsers.fs" />
+    <Compile Include="ApplicativeParsers\ParserCombinators.fs" />
+    <Compile Include="ApplicativeParsers\ParserFoundations.fs" />
     <Compile Include="UnderstandMonoids.fs" />
     <Compile Include="RailwayProgramming.fs" />
     <Compile Include="Program.fs" />
