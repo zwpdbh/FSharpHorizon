@@ -4,6 +4,9 @@
 /// Also it links from https://fsharpforfunandprofit.com/posts/recipe-part1/
 module RailwayProgramming = 
     module FizzBuzzMatch = 
+        // Downside is: 
+        // 1) The rules are hard coded.
+        // 2) The order of rules are important
         let fizzBuzz i = 
             match i with
             | _ when i % 15 = 0 -> 
@@ -22,6 +25,7 @@ module RailwayProgramming =
 
 
     module FizzBuzzIfPrime = 
+        // The order of rules are not important. but the rules are still hardcode.
         let fizzBuzz i = 
             let mutable printed = false
 
@@ -42,6 +46,8 @@ module RailwayProgramming =
         [1..100] |> List.iter fizzBuzz
 
     module FizzBuzzUsingFactorRules = 
+        // Rules are factor out and the order of the are not important.
+        // How can we remove the mutable?
         let fizzBuzz rules i  = 
             let mutable printed = false
 
@@ -64,6 +70,8 @@ module RailwayProgramming =
 
 
     module FizzBuzzUsingPipelineV1 = 
+        // We want to piple through rules to get result without mutable variable.
+        // This version is not elegent.
         type Data = 
             {
                 i: int 
@@ -101,7 +109,7 @@ module RailwayProgramming =
             [1..100] |> List.iter fizzBuzz
 
     module FizzBuzzUsingPipelineV2 = 
-        // Things to learn:
+        // Things havelearned:
         // defaultArg
         //> defaultArg (Some 100) -1;;
         //> val it: int = 100
@@ -109,6 +117,7 @@ module RailwayProgramming =
         //> defaultArg None -1;;
         //val it: int = -1
 
+        // Comparing with V1, we simply use tuple to replace complex custom type.
         type Data = int * string option
 
         let carbonate factor label data = 
@@ -142,6 +151,8 @@ module RailwayProgramming =
 
 
     module FizzBuzzUsingPipelineV3 = 
+        // Comparing with previous one, this one:
+        // Combine multiple rules into one rule function, using reduce.
         type Data = int * string option
 
         let carbonate factor label data = 
@@ -158,6 +169,7 @@ module RailwayProgramming =
 
         let rules = [ (3,"Fizz"); (5,"Buzz"); (7,"Baz") ]
 
+        // Notice the partial function in lambda function.
         let allRules = 
             rules 
             |> List.map (fun (factor, label) -> carbonate factor label)
@@ -177,46 +189,12 @@ module RailwayProgramming =
         let demo () = 
             [1..100] |> List.iter fizzBuzz
 
-    //module FizzBuzzUsingRail = 
-
-    //    let (|Success|Failure|) = 
-    //        function 
-    //        | Choice1Of2 s -> Success s 
-    //        | Choice2Of2 f -> Failure f 
-        
-    //    // Convert a single value into a two-track result 
-    //    let succeed x = Choice1Of2 x 
-    //    let succeedv1 x = Result.Ok x 
-
-    //    // Convert a single value into a two-track result
-    //    let fail x = Choice2Of2 x 
-    //    let failv1 x = Result.Error x 
-
-    //    // appy either a success function or failure function
-    //    let either successFunc failureFunc twoTrackInput =
-    //        match twoTrackInput with
-    //        | Success s -> successFunc s
-    //        | Failure f -> failureFunc f
-
-    //    let eitherv1 successFunc failureFunc twoTrackInput =
-    //        match twoTrackInput with
-    //        | Ok s -> successFunc s
-    //        | Error f -> failureFunc f
-
-    //    // convert a switch function into a two-track function
-    //    let bind f = 
-    //        either f fail
-
-    //    let bindv1 f = 
-    //        eitherv1 f failv1
-
-    //    let carbonate factor label i = 
-    //        if i % factor = 0 then 
-    //            succeedv1 label 
-    //        else 
-    //            failv1 i 
 
     module RailwayCombinatorModule = 
+        // A common moduel which will be used across following modules
+        // Previous one is the pipeline version.
+        // Here, we begin new explore, using rail programming pattern.
+
         // Convert a single value into a two-track result 
         let succeed x = Result.Ok x 
 
@@ -249,10 +227,11 @@ module RailwayProgramming =
         // if the int is already carbonated, ignore it; 
         // if the int is not carbonated, connect it to the input of the next switch function
         let connect f = 
-            function 
+            function
             | Ok x -> succeed x 
             | Error i -> f i 
 
+        // Another way of writing "connect" is to use the either function we defined in the library
         let connectv2 f = 
             either succeed f 
 
@@ -376,18 +355,19 @@ module RailwayProgramming =
         let demo () = 
             [1..100] |> List.iter fizzBuzz
 
-
+    /// Same as "FizzBuzz_RailwayOriented_UsingAppend" but using reduce to all all the rules
     module FizzBuzz_RailwayOriented_UsingAddition = 
+        
         open RailwayCombinatorModule
+
+        /// convert a single value into a two-track result !!!
+        let uncarbonated x = Ok x
+        let carbonated x = Error x
 
         let (|Uncarbonated|Carbonated|) x =
             match x with 
             | Ok u -> Uncarbonated u
             | Error c -> Carbonated c
-
-        /// convert a single value into a two-track result !!!
-        let uncarbonated x = Ok x
-        let carbonated x = Error x
 
         // Instead of combining all the "switch" functions in series, we can "add" them together in parallel.
         // Use it for doing all the factors at once.

@@ -5,5 +5,6 @@ module Main =
     let main argv = 
         // RailwayProgramming.FizzBuzzUsingPipelineV1.demo ()
         // RailwayProgramming.FizzBuzzUsingPipelineV2.demo ()
-        ApplicativeParsers.ParserCombinators.demoLifting ()
+        //ApplicativeParsers.ParserCombinators.demoLifting ()
+        Playground.MostFrequentWord.test 
         0
