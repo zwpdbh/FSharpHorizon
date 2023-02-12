@@ -66,7 +66,7 @@ module Playground =
         // In general, we want to give a char, we want to produce a function which when receive input, it will produce the result.
         let pchar charToMatch  = 
             // How to convert a normal function to a type
-            // 2.1. Use innerFunc (rely on partial function)
+            // 2.1.1 Use innerFunc (rely on partial function)
             let innerFunc str = 
                 if String.IsNullOrEmpty(str) then 
                     Error "No more input"
@@ -76,11 +76,11 @@ module Playground =
                     else 
                         let msg = sprintf "Expecting '%c'. Got '%c'" charToMatch str[0]
                         Error msg 
-            // 2.2 Wrap the function with Type
+            // 2.1.2 Wrap the function with Type
             Parser innerFunc 
 
         // Before we could directly run the parser (the function) such as "parseA "ZBC"
-        // 2.3 Define a helper function which unwrap it first, then run it. 
+        // 2.2 Define a helper function which unwrap it first, then run it. 
         let run parser input = 
             let (Parser innerFunc) = parser
             innerFunc input
