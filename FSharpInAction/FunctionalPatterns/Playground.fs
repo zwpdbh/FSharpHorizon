@@ -356,3 +356,7 @@ module Playground =
         /// 6. We want to parse something out, but pick something from parsed result
         /// Or skip/throw away something from the parsed result
         /// Ref: https://fsharpforfunandprofit.com/posts/understanding-parser-combinators-2/#6-throwing-results-away
+
+
+        /// Bind 
+        /// https://fsharpforfunandprofit.com/posts/elevated-world-2/#bind
