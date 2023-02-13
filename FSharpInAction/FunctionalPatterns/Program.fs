@@ -6,5 +6,5 @@ module Main =
         // RailwayProgramming.FizzBuzzUsingPipelineV1.demo ()
         // RailwayProgramming.FizzBuzzUsingPipelineV2.demo ()
         //ApplicativeParsers.ParserCombinators.demoLifting ()
-        Playground.ParserFoundations.test() 
+        Playground.ParserFoundations.testSequenceParser() 
         0

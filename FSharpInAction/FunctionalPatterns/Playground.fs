@@ -170,7 +170,7 @@ module Playground =
         
         // 4.4
         // With returnP and applyP, let build one which a two parameter function to Parser world
-        let lift2 f xp yP =
+        let map2P f xp yP =
             returnP f <*> xp <*> yP
         let lift2V2 f xP yP =
             let tmp1 = applyP f xP 
@@ -179,11 +179,52 @@ module Playground =
 
         // 5. Use lift2 to build custom parsers by combine some parsers
         // 5.1
-        let addP = lift2 ( + )
+        let addP = map2P ( + )
         
         // 5.2
         let startWith (str: string) (prefix: string) =
             str.StartsWith(prefix)
         // Notice: we are combine two string parser to get a bool parser! 
         let startsWithP =
-            lift2 startWith
+            map2P startWith
+
+        // 5.3 To define a parser which parse a prefix string and return prefix + remaining both as string.
+        // 5.3.1 We cound define a function which transform ((c1, c2), c3) to System.String [|c1; c2; c3|]. Thus, it could parse 3 digits.
+        let parse3Digits = 
+            let parseDigit = anyOf ['0'..'9']
+            let tupleParser = 
+                parseDigit .>>. parseDigit .>>. parseDigit
+
+            let transformTupleCharToString ((c1, c2), c3) = 
+                System.String [|c1; c2; c3|]
+
+            // Lift it using one parameter lifting
+            mapP transformTupleCharToString tupleParser
+
+        let testParse3Digits () =
+            run parse3Digits "1223A" |> printfn "%A"
+
+        // 5.3.2 We really want to define a parser which could parse a list of digits (as many digits as it could)
+        // We need to use recursion
+        let rec sequence parserList =
+            let cons head tail = head :: tail 
+            let consP = map2P cons 
+
+            match parserList with 
+            | [] ->
+                returnP []
+            | head::tail -> 
+                consP head (sequence tail)
+
+        let testSequenceParser () = 
+            [ pchar 'A'; pchar 'B'; pchar 'C'; pchar 'D' ]
+            |> sequence
+            |> run <| "ABCD12345"
+            |> printfn "%A"
+            
+        // Ref: https://fsharpforfunandprofit.com/posts/understanding-parser-combinators-2/#implementing-the-pstring-parser
+           
+        
+
+
+
