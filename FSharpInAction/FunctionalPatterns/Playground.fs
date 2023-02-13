@@ -105,7 +105,8 @@ module Playground =
 
             Parser innerFunc
 
-        let (.>>.) = andThen
+        /// And logic, andThen parser
+        let ( .>>. ) = andThen
 
         // 3.2
         // Or logic: build a parser which parse a or b 
@@ -121,7 +122,8 @@ module Playground =
 
             Parser innerFn
 
-        let (<|>) = orElse 
+        /// Or logic, orElse parser
+        let ( <|> ) = orElse 
 
         // 3.3
         // With AND and OR logic in our hand, 
@@ -153,15 +155,16 @@ module Playground =
                     Error err 
 
             Parser innerFunc
-
+        
+        /// Lifting, mapP f x 
         let ( |>> ) x f = mapP f x 
 
         // 4.2 We want to Lift any number parameter function to Parser world
         // Make 'a to Parser<'a>
         let returnP x =
-            let innFunc input = 
+            let innerFunc input = 
                 Ok (x, input)
-            Parser innFunc
+            Parser innerFunc
         // 4.3 
         let applyP fp xP = 
             (fp .>>. xP)
@@ -223,8 +226,133 @@ module Playground =
             |> printfn "%A"
             
         // Ref: https://fsharpforfunandprofit.com/posts/understanding-parser-combinators-2/#implementing-the-pstring-parser
+        // 5.4 Implement a string parser
+        let pstring (str: string) = 
+            str 
+            |> List.ofSeq
+            |> List.map pchar 
+            |> sequence
+            |> mapP (fun charList -> 
+                // use mapP to lift this lambda function into parser world
+                charList |> List.toArray |> System.String
+            )
+
+        let testingPstring () =
+            pstring "zhaowei"
+            |> run <| "zhaowei is good" 
+            |> printfn "%A"
+            
+
+        // 5.5 match a parser multiple times
+        let rec parseZeroOrMore parser input = 
+            let result = run parser input 
+
+            match result with 
+            | Ok (x, remainingFromThisParsing) ->
+                let (y, remainingFromFailedToParse) = parseZeroOrMore parser remainingFromThisParsing  
+                (x :: y, remainingFromFailedToParse)
+            | Error _ ->
+                ([], input)
+
+        /// A parser matches 0 or as many as parser<'a>, like .*
+        let many parser = 
+            let innerFunc input = 
+                Ok (parseZeroOrMore parser input)
+
+            Parser innerFunc
+
+        /// A parser match 1 or as many as parser<'a>, like .+
+        /// The idea utilizing parseZeroOrMore: many1 = match once + many
+        let many1 parser = 
+            let innerFunc input = 
+                match run parser input with 
+                | Error err -> 
+                    Error err 
+                | Ok (x, remainingAfterThisParsing) ->                    
+                    let (y, restAfterParsing) = parseZeroOrMore parser remainingAfterThisParsing
+                    Ok (x::y, restAfterParsing)
+
+            Parser innerFunc
+
+        let testMany () = 
+            many (pchar 'a')
+            |> run <| "aaaaabc" 
+            |> printfn "%A"
+
+            many (pstring "zhaowei")
+            |> run <| "zhaoweizhaoweizhao"
+            |> printfn "%A"
+
+            many (pstring "noexist")
+            |> run <| "zhaoweizhaoweizhao"
+            |> printfn "%A"
+
+            many1 (pstring "zhaowei")
+            |> run <| "zhaoweizhaoweizhao"
+            |> printfn "%A"
+
+            many1 (pstring "noexist")
+            |> run <| "zhaoweizhaoweizhao"
+            |> printfn "%A"
+
+            let whitespaceChar = anyOf [' '; '\t'; '\n']
+            let whitespace = many whitespaceChar
+
+            ["ABC"; " ABC"; "\tABC"]
+            |> List.iter (fun each ->
+                 each |> run whitespace |> printfn "%A"
+            )
+
+        let digit = anyOf ['0'..'9']
+        /// define parser for one or more digits
+        let pDigits = many1 digit
+
+        let testDigit () =       
+            run pDigits "1ABC" |> printfn "%A"
+            run pDigits "ABC" |> printfn "%A"
+            run pDigits "121212ABC" |> printfn "%A"
+
+        /// parse out integer from string
+        let pInt =
+            let resultToInt digitList = 
+                digitList |> List.toArray |> System.String |> int
+
+            pDigits
+            |> mapP resultToInt 
            
+        let testPInt () =       
+            run pInt "1ABC" |> printfn "%A"
+            run pInt "ABC" |> printfn "%A"
+            run pInt "121212ABC" |> printfn "%A" 
+
+
+        //5.6 Matching a parser 0 or 1 time
+        //General idea is 
+        // 1) map the result to Some
+        // 2) create parser always return None
+        // 3) use Or "<|>" operator to choose None parser if the first fail
+        let opt p =
+            let some = p |>> Some 
+            let none = returnP None 
+            some <|> none 
         
+        let pInteger =
+            let resultToInt (sign, charList) = 
+                let i = charList |> List.toArray |> System.String |> int 
+                match sign with 
+                | Some _ -> -i 
+                | None -> i 
+
+            let digit = anyOf ['0'..'9']
+            let digits = many1 digit 
+
+            (opt (pchar '-') .>>. digits)
+            |> mapP resultToInt 
+
+        let testNegativeInteger () = 
+            run pInteger "-121212ABC" |> printfn "%A" 
 
 
-
+        /// 6. We want to parse something out, but pick something from parsed result
+        /// Or skip/throw away something from the parsed result
+        /// Ref: https://fsharpforfunandprofit.com/posts/understanding-parser-combinators-2/#6-throwing-results-away
