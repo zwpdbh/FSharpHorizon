@@ -11,7 +11,7 @@ module BackTracking =
         /// From http://www.fssnip.net/7PT/title/Solving-8-queens-problem-with-F
         /// Generate all X,Y coordinates on the board
         /// (initially, all of them are available)
-        let n = 16
+        let n = 4
         let k = n - 1
         let all = 
             [ for x in 0..k do 
