@@ -8,6 +8,7 @@ module Main =
         //ApplicativeParsers.ParserCombinators.demoLifting ()
         //Playground.ParserFoundations.testNegativeInteger() 
 
-        ReactiveProgramming.EventsToStreams.SimpleEventSystem.demo ()
-
+        // ReactiveProgramming.EventsToStreams.SimpleEventSystem.demoRegisterHandler ()
+        //ReactiveProgramming.EventsToStreams.MergingMultipleEvents.demoImperativeOne ()
+        ReactiveProgramming.EventsToStreams.MergingMultipleEvents.demoFunctionalOne ()
         0
