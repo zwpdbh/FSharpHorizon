@@ -10,5 +10,6 @@ module Main =
 
         // ReactiveProgramming.EventsToStreams.SimpleEventSystem.demoRegisterHandler ()
         //ReactiveProgramming.EventsToStreams.MergingMultipleEvents.demoImperativeOne ()
-        ReactiveProgramming.EventsToStreams.MergingMultipleEvents.demoFunctionalOne ()
+        //ReactiveProgramming.EventsToStreams.MergingMultipleEvents.demoFunctionalOne ()
+        ReactiveProgramming.SlideWindowForObservable.MyObservable.demoOfSeq ()
         0
