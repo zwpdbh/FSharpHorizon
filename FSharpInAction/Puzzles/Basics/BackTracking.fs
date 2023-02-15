@@ -2,6 +2,7 @@
 
 open Expecto
 
+/// From https://medium.com/analytics-vidhya/the-blueprint-to-solve-any-backtracking-problem-b3640a3dcbd7
 module BackTracking =
     module EightQueens =
 
@@ -69,9 +70,73 @@ module BackTracking =
         let demoOneNQueenSolutions () = 
             solve [] all |> Seq.head |> render
 
-        let test01 =
-            testCase "Eight Queens problem"
-            <| fun _ -> Expect.isTrue true ""
+
+    module Permuations =
+        /// Given an seq nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+
+        let rec insert x l = 
+            seq {
+                match l with 
+                | [] -> yield [x]
+                | y::rest ->
+                    yield x :: l 
+                    for i in insert x rest do 
+                        yield y :: i 
+            }
+
+        let rec permutation l = 
+            seq {
+                match l with 
+                | [] -> []
+                | x :: tail -> 
+                    for each in permutation tail do 
+                        yield! insert x each 
+            }
+
+        let demoPermutation () = 
+            permutation [1;2;3;4]
+            |> Seq.length
+
+
+        let test = 
+            let rec insert x l = 
+                [
+                    match l with 
+                    | [] -> yield [x]
+                    | y::rest ->
+                        yield x :: l 
+                        for i in insert x rest do 
+                            yield y :: i 
+                ]
+
+            let rec permutation l = 
+                [
+                    match l with 
+                    | [] -> []
+                    | x :: tail -> 
+                        for each in permutation tail do 
+                            yield! insert x each 
+                ]
+
+            permutation [1;2;3;4]
+            |> Seq.length
+
+    module Subsets = 
+        // Given an integer list which is  nums of unique elements, return all possible subsets (the power set).
+
+        let rec subsets s = 
+            set [
+                yield s 
+                for e in s do 
+                    yield! subsets (Set.remove e s)
+            ]
+
+        let demoSubsets () = 
+            subsets (set [1; 2; 3])
+            |> printfn "%A"
+
+    /// More about sequence: 
+    /// http://www.fssnip.net/7XL/title/Continue-sequence-after-applying-SeqtakeWhile-skip-take-etc
 
     [<Tests>]
-    let tests = testList "BackTracking" [ EightQueens.test01 ]
+    let tests = testList "BackTracking" [ ]

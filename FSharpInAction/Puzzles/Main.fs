@@ -7,5 +7,5 @@ module PuzzlesMain =
     let main argv =
         //Tests.runTestsInAssembly defaultConfig argv
         // BackTracking.EightQueens.demoAllNQueenSolutions()
-        BackTracking.EightQueens.demoOneNQueenSolutions()
+        BackTracking.Subsets.demoSubsets ()
         0
