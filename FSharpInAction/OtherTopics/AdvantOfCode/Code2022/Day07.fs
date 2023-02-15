@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2022
+﻿namespace Others.AdventOfCode.Code2022
 
 module Day07 = 
     open Expecto

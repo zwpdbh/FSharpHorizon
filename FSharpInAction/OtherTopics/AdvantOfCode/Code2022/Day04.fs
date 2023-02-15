@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2022
+﻿namespace Others.AdventOfCode.Code2022
 open Expecto
 
 module Day04 = 
@@ -23,7 +23,7 @@ module Day04 =
 
 
     let input = 
-        (AdventOfCode.Common.readInput "2022/input/day04.txt")
+        (Others.AdventOfCode.Common.readInput "2022/input/day04.txt")
         |> List.ofArray
         |> List.filter (fun each -> each.Length > 0)
 

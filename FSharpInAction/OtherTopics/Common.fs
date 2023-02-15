@@ -1,4 +1,4 @@
-﻿namespace OtherTopics
+﻿namespace Others
 
 module Common = 
     open System

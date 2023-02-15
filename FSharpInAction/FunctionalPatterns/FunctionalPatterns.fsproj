@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ReactiveProgramming\EventsToStreams.fs" />
     <Compile Include="Playground.fs" />
     <Compile Include="ApplicativeParsers\OtherExamples\CombinatorsExample01.fs" />
     <Compile Include="ApplicativeParsers\ParserCombinators.fs" />

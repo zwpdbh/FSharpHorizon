@@ -1,5 +1,4 @@
 ﻿namespace OtherTopics
-open Expecto
 
 module Combinators = 
     // For https://www.youtube.com/watch?v=ARJB8eDyxrg

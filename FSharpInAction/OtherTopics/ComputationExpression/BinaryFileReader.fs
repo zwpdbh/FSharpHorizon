@@ -1,4 +1,4 @@
-﻿namespace OtherTopics
+﻿namespace Others
 
 open Expecto
 

@@ -1,6 +1,6 @@
-namespace AdventOfCode2022
-module Day01 = 
+namespace Others.AdventOfCode.Code2022
 
+module Day01 = 
     open Expecto
 
 
@@ -35,7 +35,7 @@ module Day01 =
 
 
     let numbers =
-        AdventOfCode.Common.readInput "2022\input\day01.txt"
+        Others.AdventOfCode.Common.readInput "2022\input\day01.txt"
 
     // For https://adventofcode.com/2022/day/1
     let test01 =

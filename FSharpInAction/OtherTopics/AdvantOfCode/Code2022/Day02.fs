@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2022
+﻿namespace Others.AdventOfCode.Code2022
 module Day02 = 
 
     open Expecto
@@ -75,7 +75,7 @@ module Day02 =
             testCase "Part one" 
             <| fun _ -> 
                 let scores = 
-                    AdventOfCode.Common.readInput "2022\input\day02.txt"
+                    Others.AdventOfCode.Common.readInput "2022\input\day02.txt"
                     |> List.ofArray
                     |> computeInstructions
                 Expect.equal scores 13924 "part one"
@@ -143,7 +143,7 @@ module Day02 =
             testCase "Part two: input" 
             <| fun _ -> 
                 let scores = 
-                    AdventOfCode.Common.readInput "2022\input\day02.txt"
+                    Others.AdventOfCode.Common.readInput "2022\input\day02.txt"
                     |> List.ofArray
                     |> computeInstructions
                 Expect.equal scores 13448 "Part two: input score"

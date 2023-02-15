@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode
+﻿namespace Others.AdventOfCode
 
 module Common = 
     open System

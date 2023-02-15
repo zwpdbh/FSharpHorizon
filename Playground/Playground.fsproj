@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FSharpInAction\AdventOfCode\AdventOfCode.fsproj" />
     <ProjectReference Include="..\FSharpInAction\OtherTopics\OtherTopics.fsproj" />
     <ProjectReference Include="..\FSharpInAction\Puzzles\Puzzles.fsproj" />
   </ItemGroup>

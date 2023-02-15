@@ -1,4 +1,4 @@
-﻿namespace OtherTopics.Database 
+﻿namespace Others.Database 
 
 module SqlProvider = 
     // TBD: check sql provider from chapter 32: Working with SQL

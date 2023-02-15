@@ -6,5 +6,8 @@ module Main =
         // RailwayProgramming.FizzBuzzUsingPipelineV1.demo ()
         // RailwayProgramming.FizzBuzzUsingPipelineV2.demo ()
         //ApplicativeParsers.ParserCombinators.demoLifting ()
-        Playground.ParserFoundations.testNegativeInteger() 
+        //Playground.ParserFoundations.testNegativeInteger() 
+
+        ReactiveProgramming.EventsToStreams.SimpleEventSystem.demo ()
+
         0
