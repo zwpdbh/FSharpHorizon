@@ -7,17 +7,18 @@ module AboutObserable =
 
     let demo01 () =
         let t1 = new Timer(float 500);
-        use disposable = 
+        let disposable = 
             t1.Elapsed 
                 |> Observable.map(fun _ -> "t1") 
                 |> Observable.subscribe(fun s -> printfn "%s" s)
         
         t1.Start()
         Task.Delay(10000).GetAwaiter().GetResult();
+        disposable.Dispose ()
 
     let demo02 () = 
         // Read from: https://medium.com/@dagbrattli/reactivity-in-f-4540377d02fa
-
+        // TBD: Just skim through but get confused, didn't understand it.
         0
 
 

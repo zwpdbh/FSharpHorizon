@@ -25,9 +25,11 @@
 		<Compile Include="LeetCode\Leetcode1-10.fs" />
 		<Compile Include="DailyProblems\HowTos.fs" />
 		<Compile Include="ExceptionHandling.fs" />
-		<Compile Include="Database\DomainModels.fs" />
-		<Compile Include="Database\Others.fs" />
-		<Compile Include="Database\Sql.fs" />
+		<Content Include="WorkingWithData\PostgreSQL\db-init.txt" />
+		<Compile Include="WorkingWithData\PostgreSQL\PostgreSql.fs" />
+		<Compile Include="WorkingWithData\QueryExpressions.fs" />
+		<Compile Include="WorkingWithData\DomainModels.fs" />
+		<Compile Include="WorkingWithData\Others.fs" />
 		<Compile Include="Common.fs" />
 		<Compile Include="DynamicFeatures.fs" />
 		<Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
@@ -35,11 +37,12 @@
 		<Content Include="ComputationExpression\PNG_01.png" />
 		<Compile Include="ComputationExpression\BinaryFileReader.fs" />
 		<Compile Include="ComputationExpression\Ex01Attempt.fs" />
-		<Compile Include="Main.fs" />
+		<Compile Include="Program.fs" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Expecto" Version="9.*" />
+		<PackageReference Include="Npgsql.FSharp" Version="5.6.0" />
 		<PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.*" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
 		<PackageReference Update="FSharp.Core" Version="6.*" />

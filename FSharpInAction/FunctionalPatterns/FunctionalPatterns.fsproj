@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ReactiveProgramming\Asynchronous.fs" />
     <Compile Include="ReactiveProgramming\IntroductionToObservable.fs" />
     <Compile Include="ReactiveProgramming\EventsToStreams.fs" />
     <Compile Include="Playground.fs" />
