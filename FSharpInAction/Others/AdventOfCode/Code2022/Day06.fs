@@ -49,7 +49,7 @@ module Day06 =
             testCase "part 01 input"
             <| fun _ ->
                 let input = 
-                    Others.AdventOfCode.Common.readInput "2022/input/day06.txt"
+                    Others.Common.readInput @"AdventOfCode\Code2022\input\day06.txt"
                     |> Array.head
 
                 Expect.equal (lockSignal input) 1109 "part 01 input"
@@ -99,11 +99,11 @@ module Day06 =
             testCase "part 02 input"
             <| fun _ ->
                 let input = 
-                    Others.AdventOfCode.Common.readInput "2022/input/day06.txt"
+                    Others.Common.readInput @"AdventOfCode\Code2022\input\day06.txt"
                     |> Array.head
 
                 Expect.equal (lockSignal input) 3965 "part 01 input"
 
     [<Tests>]
-    let tests = testList "Day06" [Part01.test01; Part01.test02; Part02.test01; Part02.test02]
+    let tests = testList "AdventOfCode.Code2022.Day06" [Part01.test01; Part01.test02; Part02.test01; Part02.test02]
 

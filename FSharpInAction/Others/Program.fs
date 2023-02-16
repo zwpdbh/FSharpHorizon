@@ -1,5 +1,6 @@
 ﻿
 namespace Others
+
 module OthersMain =
     open Expecto
 
@@ -12,4 +13,8 @@ module OthersMain =
         //Others.WorkingWithData.PostgreSql.NpgsqlFSharp.initDB ()
 
         //Others.WorkingWithData.PostgreSql.SqlProvider.demos ()
+
+        
+        Common.readInput @"FromInterview\words.txt" |> printfn "%A"
+
         0

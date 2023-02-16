@@ -67,7 +67,7 @@ module Day03 =
             testCase "part one"
             <| fun _ -> 
                 let input = 
-                    Others.AdventOfCode.Common.readInput "2022/input/day03.txt"
+                    Others.Common.readInput @"AdventOfCode\Code2022\input\day03.txt"
                     |> List.ofArray
                     |> List.filter (fun x -> x.Length > 0)
                 let score = 
@@ -113,7 +113,7 @@ module Day03 =
             testCase "part two "
             <| fun _ -> 
                 let input = 
-                    Others.AdventOfCode.Common.readInput "2022/input/day03.txt"
+                    Others.Common.readInput @"AdventOfCode\Code2022\input\day03.txt"
                     |> List.ofArray
                     |> List.filter (fun x -> x.Length > 0)
 
@@ -150,4 +150,4 @@ module Day03 =
 
 
     [<Tests>]
-    let tests = testList "Day03" [Part01.test01; Part01.test02; Part02.test03]
+    let tests = testList "AdventOfCode.Code2022.Day03" [Part01.test01; Part01.test02; Part02.test03]

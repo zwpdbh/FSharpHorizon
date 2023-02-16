@@ -382,5 +382,5 @@ module Day07 =
                 Expect.isTrue true ""
 
     [<Tests>]
-    let tests = testList "Day 07" [Token.testParser; Token.testTerminalOutput; Part01.test01]
+    let tests = testList "AdventOfCode.Code2022.Day07" [Token.testParser; Token.testTerminalOutput; Part01.test01]
 

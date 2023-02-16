@@ -75,13 +75,13 @@ module Day02 =
             testCase "Part one" 
             <| fun _ -> 
                 let scores = 
-                    Others.AdventOfCode.Common.readInput "2022\input\day02.txt"
+                    Others.Common.readInput @"AdventOfCode\Code2022\input\day02.txt"
                     |> List.ofArray
                     |> computeInstructions
                 Expect.equal scores 13924 "part one"
 
         [<Tests>]
-        let tests = testList "Day02: part one" [test01; test02]
+        let tests = testList "AdventOfCode.Code2022.Day02: part one" [test01; test02]
 
     module Part02 = 
         let parseCard card = 
@@ -143,11 +143,11 @@ module Day02 =
             testCase "Part two: input" 
             <| fun _ -> 
                 let scores = 
-                    Others.AdventOfCode.Common.readInput "2022\input\day02.txt"
+                    Others.Common.readInput @"AdventOfCode\Code2022\input\day01.txt"
                     |> List.ofArray
                     |> computeInstructions
                 Expect.equal scores 13448 "Part two: input score"
         [<Tests>]
-        let tests = testList "Day02: part two" [test01; test02]
+        let tests = testList "AdventOfCode.Code2022.Day02: part two" [test01; test02]
 
 

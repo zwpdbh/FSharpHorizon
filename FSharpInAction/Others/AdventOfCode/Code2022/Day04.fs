@@ -23,7 +23,7 @@ module Day04 =
 
 
     let input = 
-        (Others.AdventOfCode.Common.readInput "2022/input/day04.txt")
+        (Others.Common.readInput @"AdventOfCode\Code2022\input\day04.txt")
         |> List.ofArray
         |> List.filter (fun each -> each.Length > 0)
 
@@ -108,7 +108,7 @@ module Day04 =
                 Expect.equal result 865 "assignment pairs do the ranges overlap"
 
     [<Tests>]
-    let tests = testList "Day04" [Part01.test01; Part01.test02; Part02.test01]
+    let tests = testList "AdventOfCode.Code2022.Day04" [Part01.test01; Part01.test02; Part02.test01]
 
     // Lesson 01
     // To fit "|>" especially during processing of list, we shall keep the function in each stage accept list

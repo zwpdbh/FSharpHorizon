@@ -2,7 +2,7 @@ namespace Others.AdventOfCode.Code2022
 
 module Day01 = 
     open Expecto
-
+    open Others
 
     // This function group non-empty "number" into a list into another list
     let groupCalorie (numbers: string list) =
@@ -35,7 +35,7 @@ module Day01 =
 
 
     let numbers =
-        Others.AdventOfCode.Common.readInput "2022\input\day01.txt"
+        Common.readInput @"AdventOfCode\Code2022\input\day01.txt"
 
     // For https://adventofcode.com/2022/day/1
     let test01 =
@@ -50,4 +50,4 @@ module Day01 =
             Expect.equal (findTop3TotalCalorie numbers) 209603 "The most total Calories carried by Elf"
 
     [<Tests>]
-    let tests = testList "Day01" [ test01; test02 ]
+    let tests = testList "AdventOfCode.Code2022.Day01" [ test01; test02 ]

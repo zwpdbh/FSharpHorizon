@@ -8,13 +8,6 @@
 
 	<ItemGroup>
 		<Compile Include="Common.fs" />
-		<Content Include="FromInterview\words.txt" />
-		<Content Include="FromInterview\input.txt" />
-		<Compile Include="FromInterview\Polymer.fs" />
-
-		<Compile Include="AdventOfCode\Code2022\Day07.fs" />
-		<Compile Include="AdventOfCode\Code2022\Day06.fs" />
-		<Compile Include="AdventOfCode\Code2022\Day05.fs" />
 		<Compile Include="AdventOfCode\Code2022\Day04.fs" />
 		<Compile Include="AdventOfCode\Code2022\Day03.fs" />
 		<Compile Include="AdventOfCode\Code2022\Day02.fs" />
@@ -41,7 +34,7 @@
 		<Content Include="ComputationExpression\PNG_01.png" />
 		<Compile Include="ComputationExpression\BinaryFileReader.fs" />
 		<Compile Include="ComputationExpression\Ex01Attempt.fs" />
-		<Compile Include="Program.fs" />
+		<Compile Include="Main.fs" />
 	</ItemGroup>
 
 	<ItemGroup>
