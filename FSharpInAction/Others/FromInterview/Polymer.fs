@@ -10,6 +10,8 @@ module Polymer =
             <| fun _ -> 
                 Expect.isTrue true "00"
 
+        let demo () = 
+            0
     [<Tests>]
     let tests = testList "FromInterview.Polymer" [Problem01.test00] 
 
