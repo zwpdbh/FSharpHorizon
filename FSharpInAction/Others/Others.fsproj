@@ -34,7 +34,7 @@
 		<Compile Include="LeetCode\Leetcode1-10.fs" />
 		<Compile Include="DailyProblems\HowTos.fs" />
 		<Compile Include="ExceptionHandling.fs" />
-		<Content Include="WorkingWithData\PostgreSQL\db-init.txt" />
+		<Content Include="WorkingWithData\PostgreSQL\db-init.sql" />
 		<Compile Include="WorkingWithData\PostgreSQL\PostgreSql.fs" />
 		<Compile Include="WorkingWithData\QueryExpressions.fs" />
 		<Compile Include="WorkingWithData\DomainModels.fs" />
