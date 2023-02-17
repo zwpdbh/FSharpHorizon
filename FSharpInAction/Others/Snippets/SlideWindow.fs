@@ -55,7 +55,7 @@ module SlideWindow =
         let demo () = 
             "GEEKSFORGEEKS" |> longestSubStr
 
-
+    /// Try to use Activie Patterns to model slide window problem
     module SubStringProblemActivePattern = 
 
         /// Given a map where key is char, value is index position
@@ -78,7 +78,7 @@ module SlideWindow =
             |> indexedCharsFromString
             |> Map.ofList
 
-
+        /// Expand stage is only responsible to expand one character if possible.
         let (|Expand|_|) (currMap, restList) = 
             match restList with 
             | w::tail -> 
@@ -92,6 +92,7 @@ module SlideWindow =
                     None 
             | _ -> None
 
+        /// Contract stage is only responsible to contract if possible
         let (|Contract|_|) (currMap, restList) = 
             match restList with 
             | w::tail -> 
@@ -105,15 +106,18 @@ module SlideWindow =
             | _ -> 
                 None
 
-        let rec helper (maxMap: Map<'a,'b> when 'a: comparison) currMap inputList = 
+        /// findSub is the patterns of keep doing expand..expand, contract, expand..expand ...until this process stoped
+        /// So, the key is to make the result of expand and contract composible.
+        /// Here, the necessary are the current Map and the rest input.
+        let rec findSub (maxMap: Map<'a,'b> when 'a: comparison) currMap inputList = 
             match (currMap, inputList) with 
             | Expand (currMap, restList) -> 
                 if currMap.Count > maxMap.Count then 
-                    helper currMap currMap restList 
+                    findSub currMap currMap restList 
                 else 
-                    helper maxMap currMap restList
+                    findSub maxMap currMap restList
             | Contract (currMap, restList) ->
-                helper maxMap currMap restList
+                findSub maxMap currMap restList
             | _ -> 
                 maxMap
 
@@ -121,7 +125,7 @@ module SlideWindow =
             let maxOne: Map<char, int>  = Map.empty
             let soFar: Map<char, int>  = Map.empty
 
-            helper maxOne soFar (indexedCharsFromString s) 
+            findSub maxOne soFar (indexedCharsFromString s) 
             |> Map.toArray
             |> Array.sortBy (fun (_, i) -> i)
 
