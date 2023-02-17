@@ -9,9 +9,9 @@
 	<ItemGroup>
 
 		<Compile Include="Common.fs" />
-		<Compile Include="Basics\BackTracking.fs" />
-		<Compile Include="Basics\FSharpFeatures.fs" />
-		<Compile Include="Basics\BST.fs" />
+		<Compile Include="General\BackTracking.fs" />
+		<Compile Include="General\FSharpFeatures.fs" />
+		<Compile Include="General\BST.fs" />
 		<Content Include="Optiver\speed.txt" />
 		<Compile Include="Optiver\Optiver.fs" />
 		<Compile Include="Others.fs" />
