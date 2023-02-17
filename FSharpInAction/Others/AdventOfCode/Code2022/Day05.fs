@@ -115,7 +115,7 @@ module Day05 =
             <| fun _ -> 
 
                 let commandsInput = 
-                    Others.Common.readInput @"AdventOfCode\Code2022\input\day05.txt"
+                    Others.Common.readLines @"AdventOfCode\Code2022\input\day05.txt"
                     |> List.ofArray
 
                 let message = 
@@ -169,7 +169,7 @@ module Day05 =
             <| fun _ -> 
 
                 let commandsInput = 
-                    Others.Common.readInput @"AdventOfCode\Code2022\input\day05.txt"
+                    Others.Common.readLines @"AdventOfCode\Code2022\input\day05.txt"
                     |> List.ofArray
 
                 let message = 

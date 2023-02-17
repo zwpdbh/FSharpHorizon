@@ -11,6 +11,8 @@ module Common =
     let getPath filePathInProject = 
         Path.Combine(projectFolder, filePathInProject)
 
-    let readInput filePath = 
+    let readLines filePath = 
         File.ReadAllLines (getPath filePath)
 
+    let readText filePath = 
+        File.ReadAllText (getPath filePath)

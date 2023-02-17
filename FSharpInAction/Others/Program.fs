@@ -18,4 +18,6 @@ module OthersMain =
         // Common.readInput @"FromInterview\words.txt" |> printfn "%A"
         //Common.filePathInProject @"ComputationExpression\PNG_01.png" |> printfn "%A"
 
+        Snippets.ProcessText.Frequence.demoMostFrequence () |> printfn "%A"
+
         0

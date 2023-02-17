@@ -35,7 +35,7 @@ module Day01 =
 
 
     let numbers =
-        Common.readInput @"AdventOfCode\Code2022\input\day01.txt"
+        Common.readLines @"AdventOfCode\Code2022\input\day01.txt"
 
     // For https://adventofcode.com/2022/day/1
     let test01 =

@@ -23,7 +23,7 @@ module Day04 =
 
 
     let input = 
-        (Others.Common.readInput @"AdventOfCode\Code2022\input\day04.txt")
+        (Others.Common.readLines @"AdventOfCode\Code2022\input\day04.txt")
         |> List.ofArray
         |> List.filter (fun each -> each.Length > 0)
 

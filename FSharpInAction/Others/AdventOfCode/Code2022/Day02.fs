@@ -75,7 +75,7 @@ module Day02 =
             testCase "Part one" 
             <| fun _ -> 
                 let scores = 
-                    Others.Common.readInput @"AdventOfCode\Code2022\input\day02.txt"
+                    Others.Common.readLines @"AdventOfCode\Code2022\input\day02.txt"
                     |> List.ofArray
                     |> computeInstructions
                 Expect.equal scores 13924 "part one"
@@ -143,7 +143,7 @@ module Day02 =
             testCase "Part two: input" 
             <| fun _ -> 
                 let scores = 
-                    Others.Common.readInput @"AdventOfCode\Code2022\input\day02.txt"
+                    Others.Common.readLines @"AdventOfCode\Code2022\input\day02.txt"
                     |> List.ofArray
                     |> computeInstructions
                 Expect.equal scores 13448 "Part two: input score"

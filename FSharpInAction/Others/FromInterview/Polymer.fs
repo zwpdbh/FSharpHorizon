@@ -4,8 +4,7 @@ open Others
 open Expecto
 
 module Polymer = 
-    let words =
-        Common.readInput @"FromInterview\words.txt"
+
 
     let test00 = 
         testCase "test00"
