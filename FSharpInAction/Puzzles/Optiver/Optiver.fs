@@ -171,8 +171,6 @@ module Optiver =
             Expected = "GTCGTCGGAAGCCGGCCGAA"
         |}
 
-
-
         let lcsV1 (s1: string) (s2: string) = 
             let rec helper s1 s2 acc = 
                 match s1, s2 with 

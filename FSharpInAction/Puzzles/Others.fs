@@ -45,7 +45,7 @@ module Others=
                 Expect.equal (scores ["5"; "2"; "C"; "D"; "+"]) 30 ""
                 Expect.equal (scores ["5"; "-2"; "4"; "C"; "D"; "9"; "+"; "+"]) 27 ""
 
-        // Determin if a given string which contains only parentheses charaters
+        // Determin if a given string which contains ONLY parentheses charaters
         // is valid or not
         let isValidParentheses (str: string) = 
             let inputs = str |> Seq.toList
@@ -123,7 +123,10 @@ module Others=
                 |> Seq.toList
                 |> Seq.pairwise
 
-
+            /// Given digitStr which only contains digits number: 8459762103
+            /// Given num which represent numbers the user need to click by moving horizontally. 
+            /// Compute the cost of it. 
+            /// Don't forget the initial move.
             let timeNeeded (digitStr:string) (num: string) = 
                 let theFirstMoveCost = digitStr.IndexOf(Seq.head num)
                 let digitMap = digitsToMap digitStr

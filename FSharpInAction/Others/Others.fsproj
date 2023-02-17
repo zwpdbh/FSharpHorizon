@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<Compile Include="Common.fs" />
+		<Compile Include="Snippets\SlideWindow.fs" />
 		<Compile Include="Snippets\ProcessText.fs" />
 		<Content Include="Snippets\data\words03.txt" />
 		<Content Include="Snippets\data\words02.txt" />
