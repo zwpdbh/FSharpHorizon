@@ -19,5 +19,6 @@ module OthersMain =
         //Common.filePathInProject @"ComputationExpression\PNG_01.png" |> printfn "%A"
 
         //Snippets.ProcessText.Frequence.demoMostFrequence () |> printfn "%A"
-        Snippets.SlideWindow.SubStringProblem.demo () |> printfn "%A"
+        //Snippets.SlideWindow.SubStringProblem.demo () |> printfn "%A"
+        Snippets.SlideWindow.SubStringProblemActivePattern.demo () |> printfn "%A"
         0
