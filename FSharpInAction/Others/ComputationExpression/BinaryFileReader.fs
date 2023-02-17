@@ -120,8 +120,9 @@ module BinaryFileReader =
             // Check http://www.fssnip.net/nv/title/Reading-binary-values-from-a-file to understand basic reading binary from file
             // Need to solve,  Error: Unable to read beyond the end of the stream.,in 226933
             //let pngFilePath = Common.filePathInProject @"ComputationExpression/PNG_01.png"
-            let pngFilePath = @"D:\code\fsharp-programming\FSharpHorizen\FSharpInAction\OtherTopics\ComputationExpression\PNG_01.png"
-            let pngFileStream = File.Open(pngFilePath, FileMode.Open, FileAccess.Read)
+            let picturePath = Common.getPath @"ComputationExpression\PNG_01.png"
+
+            let pngFileStream = File.Open(picturePath, FileMode.Open, FileAccess.Read)
             pngFileStream.Seek(0, SeekOrigin.Begin) |> ignore 
 
             let pngReader = new BinaryReader(pngFileStream)

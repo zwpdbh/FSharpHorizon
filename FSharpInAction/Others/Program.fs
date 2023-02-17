@@ -15,6 +15,7 @@ module OthersMain =
         //Others.WorkingWithData.PostgreSql.SqlProvider.demos ()
 
         
-        Common.readInput @"FromInterview\words.txt" |> printfn "%A"
+        // Common.readInput @"FromInterview\words.txt" |> printfn "%A"
+        //Common.filePathInProject @"ComputationExpression\PNG_01.png" |> printfn "%A"
 
         0

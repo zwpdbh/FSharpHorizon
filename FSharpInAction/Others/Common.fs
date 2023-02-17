@@ -8,9 +8,9 @@ module Common =
     // We need to go to its "../../" because it is running from output folder
     let projectFolder = Directory.GetParent(workingDirectory).Parent.Parent.FullName
 
-    let filePathInProject filePath = 
-        Path.Combine(projectFolder, filePath)
+    let getPath filePathInProject = 
+        Path.Combine(projectFolder, filePathInProject)
 
     let readInput filePath = 
-        File.ReadAllLines (filePathInProject filePath)
+        File.ReadAllLines (getPath filePath)
 
