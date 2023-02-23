@@ -172,7 +172,7 @@ module Playground =
         let (<*>) = applyP
         
         // 4.4
-        // With returnP and applyP, let build one which a two parameter function to Parser world
+        // With returnP and applyP, let build one which could lift a two parameter function to Parser world
         let map2P f xp yP =
             returnP f <*> xp <*> yP
         let lift2V2 f xP yP =

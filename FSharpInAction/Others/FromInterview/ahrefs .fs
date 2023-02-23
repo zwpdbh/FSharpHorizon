@@ -5,6 +5,8 @@ open Expecto
 module Ahrefs = 
 
     module Problem01 = 
+        let demo () = 
+            0
         let test00 = 
             testCase "test00"
             <| fun _ -> 
