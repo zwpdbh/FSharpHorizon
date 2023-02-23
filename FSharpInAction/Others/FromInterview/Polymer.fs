@@ -36,9 +36,8 @@ module Polymer =
 
                                 let position, state' =
                                     match lastOne with 
-                                    | Some (position, text) -> 
-                                        let Pair(i, j) = position
-                                        let nextP = j + 1          
+                                    | Some (Pair(_, y), text) -> 
+                                        let nextP = y + 1          
                                         let position = (Pair (nextP, nextP + textLengh))
                                         position, state |> Map.add position text
                                     | None ->
@@ -78,8 +77,6 @@ module Polymer =
             <| fun _ -> 
                 Expect.isTrue true "00"
 
-        let demo () = 
-            0
     [<Tests>]
     let tests = testList "FromInterview.Polymer" [Problem01.test00] 
 
