@@ -12,7 +12,7 @@ module ScteTools =
 
     let checkBlobExportedBySCTE () = 
         let accountName = "bbpxscnams09pe02ax"
-        //let accountKey = "<see the corresponding account key when create ForcedAccount
+        let accountKey = "<see the corresponding account key when create ForcedAccount"
 
         let serviceUri = new Uri("https://bbpxscnams09pe02ax.blob.preprod.core.windows.net")
         let credential = Auth.Credential.getStorageSharedKeyCredential accountName accountKey
