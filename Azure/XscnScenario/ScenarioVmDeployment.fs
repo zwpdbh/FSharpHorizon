@@ -1,4 +1,4 @@
-﻿namespace XscnXscnario
+﻿namespace XscnScenario
 
 /// References:
 /// https://xscenariodeployments.cloudapp.net/swagger/ui/index#!/VirtualMachineDeployments/VirtualMachineDeployments_PutDeployment
@@ -6,7 +6,7 @@
 
 open RestAPI
 
-module XscnScenarioDemos = 
+module ScenarioVmDeployment = 
     let xscnUri = "https://xscenariodeployments.cloudapp.net"
 
     let listVirtualMachineDeployments (accessToken: string) =
