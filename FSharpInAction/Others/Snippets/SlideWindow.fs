@@ -3,7 +3,46 @@ open Expecto
 
 module SlideWindow = 
 
+    module SubString = 
+        let update acc c = 
+            let notRepeated =
+                acc 
+                |> List.takeWhile (fun x -> x <> c)
+            c :: notRepeated
+
+        let rec solveAux acc solution l = 
+            printfn $"{acc} {solution}"
+
+            match l, acc with 
+            | x::tail, [] -> 
+                solveAux [x] [x] tail
+            | x::tail, acc -> 
+                let acc' = update acc x 
+                
+                if List.length acc' > List.length solution then 
+                    solveAux  acc' acc' tail
+                else 
+                    solveAux  acc' solution tail
+            | [], _ -> 
+                solution
+                |> List.rev
+        
+        let solve s = 
+            s 
+            |> Seq.toList
+            |> solveAux [] []
+            |> Array.ofList
+            |> System.String
+            //|> List.map string 
+            //|> List.reduce (+)
+
+        let demo () =
+            solve "GEEKSFORGEEKS" |> printfn "%A"
+
+
+
     module SubStringProblem = 
+        // My previous stupid one
         let indexedCharsFromString s = 
             s
             |> Seq.toList

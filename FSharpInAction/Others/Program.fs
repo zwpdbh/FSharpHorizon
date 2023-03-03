@@ -24,5 +24,6 @@ module OthersMain =
         //FromInterview.Polymer.Problem01.demo () |> printfn "%A"
 
 
-        FromInterview.Ahrefs.Problem01.demo () |> printfn "%A"
+        //FromInterview.Ahrefs.Problem01.demo () |> printfn "%A"
+        Others.Snippets.SlideWindow.SubString.demo () 
         0
