@@ -6,8 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="XscnScenarioDemos.fs" />
+    <Compile Include="ScteTools.fs" />
+    <Compile Include="ScenarioVmDeployment.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.15.0" />
   </ItemGroup>
 
   <ItemGroup>
