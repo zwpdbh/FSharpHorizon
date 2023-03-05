@@ -1,10 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="ReactiveProgramming\PubSub.fs" />
     <Compile Include="ReactiveProgramming\Asynchronous.fs" />
@@ -18,9 +17,5 @@
     <Compile Include="RailwayProgramming.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FSharp.Control.Reactive" Version="5.0.5" />
-  </ItemGroup>
-
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
