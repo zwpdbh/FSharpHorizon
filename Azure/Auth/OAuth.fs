@@ -100,9 +100,54 @@ module KeyVault =
 /// new BlobServiceClient(accountUri, clientCertificateCredential)
 module Credential = 
     open Azure.Identity
-    type CredentialType = 
+    open Azure.Storage
+    type CredentialOptionForStorageAccount = 
         | DefaultAzureCredential 
-        | ServicePrincipal     
+        | ServicePrincipal of tenantId: string * clientId: string * certificateSubject: string
+        | StorageSharedKeyCredential of storageAccountName: string * storageAccountKey: string
+
+    type CredentialForStorageAccount = 
+        | DefaultCredential of DefaultAzureCredential
+        | ClientCertificateCredential of ClientCertificateCredential
+        | StorageForcedAccount of StorageSharedKeyCredential
+        
+
+    //private const string SubjectForRSRP = "rsrp-admin.xscenario.store.core.windows.net";
+    //private const string SubjectForSP = "reader.xscenario.store.core.windows.net";
+    //private const string AuthEndpoint = "https://login.windows.net";
+    //private const string ResourceIdUri = "https://management.core.windows.net";
+
+    //private string _preprodStorageLocation = "southcentralus";
+    //private string _srpEndpoint = "https://srppreprodsouthcentralus.southcentralus.rsrp.storage.azure.com";
+    //private string _srpStorageStamp = "sn4prdste16e";
+    //private string _rsrpResourceGroup = "xstore";
+
+    //private string _preprodPolicyServerEndpoint = "https://mockpolicyserver.azurewebsites.net";
+    //private string _prodPolicyServerEndpoint = "https://management.azure.com";
+
+    //private const string XScenarioTenantName = "XScenario";
+    //private const string XScenarioTenantId = "2e5ee8cd-b069-473f-8629-b4010ae488be";
+    //private const string XScenarioSubscriptionId = "d13eeeb5-2f98-4d41-a90e-c8cdf146b7cb";
+    //private const string XScenarioClientId = "da1e3aa6-5eb8-46cb-922c-d75505dc911c";
+    //private const string PrincipalId = "41fc944f-ef07-4cb3-800e-f8467bbe968f";
+
+    //private X509Certificate2 _rsrpCertificate = null;
+    //private X509Certificate2 _servicePrincipalCertificate = null;
+
+    //private string _storageAccount;
+    //private string _resourceGroup;
+
+    //private bool _isProd;
+    //private AuthorizationManagementClient _authorizationManagementClient;
+
+    //private string _roleDefinitionId = Guid.NewGuid().ToString();
+    //private string _roleAssignmentId = Guid.NewGuid().ToString();
+
+    //private string _blobEndpoint = "";
+
+    //private StorageManagementClient _preprodStorageManagementClient;
+    //private ResourceGroupResource _prodResourceGroupResource;
+
 
     let getDefaultCredential () = 
         new DefaultAzureCredential()
@@ -113,6 +158,23 @@ module Credential =
             clientId,
             KeyVault.getLocalCertificateBySubject certificateSubjectName
         )
+
+    let getStorageSharedKeyCredential storageAccountName storageAccountKey = 
+        new StorageSharedKeyCredential(storageAccountName, storageAccountKey)
+
+    let getConnectionString accountName accountKey endpointSuffix = 
+        // ref: https://learn.microsoft.com/en-us/azure/storage/common/storage-configure-connection-string?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&bc=%2Fazure%2Fstorage%2Fblobs%2Fbreadcrumb%2Ftoc.json#create-a-connection-string-for-an-explicit-storage-endpoint
+        $"AccountName={accountName};AccountKey={accountKey};EndpointSuffix={endpointSuffix};DefaultEndpointsProtocol=https"
+
+    let getCredential credentialType = 
+        match credentialType with 
+        | DefaultAzureCredential -> DefaultCredential (getDefaultCredential())
+        | ServicePrincipal (tenantId, clientId, certificateSubject) -> 
+            ClientCertificateCredential(getCredentialUsingSPCertificate tenantId clientId certificateSubject)
+        | StorageSharedKeyCredential (storageAccountName, storageAccountKey) -> 
+            StorageForcedAccount (getStorageSharedKeyCredential storageAccountName storageAccountKey)
+
+
         
 /// A group of functions to obtain access token using SP
 /// Especially, the SP's secret value is obtained from KeyVault (see KeyVault module).

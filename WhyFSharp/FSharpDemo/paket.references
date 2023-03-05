@@ -1,0 +1,8 @@
+Azure.Identity
+Azure.ResourceManager
+Azure.Security.KeyVault.Secrets
+Azure.Storage.Blobs
+FSharp.Control.AsyncSeq
+FsToolkit.ErrorHandling
+Thoth.Json.Net
+FSharp.Core

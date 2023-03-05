@@ -1,0 +1,5 @@
+Azure.Identity
+Azure.Security.KeyVault.Secrets
+Azure.Storage.Common
+Thoth.Json.Net
+FSharp.Core
