@@ -10,8 +10,9 @@
     <Compile Include="DemoBasics.fs" />
     <Compile Include="DemoLinearRegression.fs" />
     <Compile Include="DemoChart.fs" />
-    <Compile Include="DemoInteractive.fsx" />
+    <None Include="DemoInteractive.fsx" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
