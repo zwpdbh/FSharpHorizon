@@ -1,0 +1,7 @@
+Expecto
+Microsoft.NET.Test.Sdk
+Npgsql
+Npgsql.FSharp
+SQLProvider
+YoloDev.Expecto.TestSdk
+FSharp.Core

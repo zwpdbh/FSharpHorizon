@@ -1,49 +1,38 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
-		<GenerateProgramFile>false</GenerateProgramFile>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<Compile Include="Common.fs" />
-		<Compile Include="AdventOfCode\Code2022\Day04.fs" />
-		<Compile Include="AdventOfCode\Code2022\Day03.fs" />
-		<Compile Include="AdventOfCode\Code2022\Day02.fs" />
-		<Compile Include="AdventOfCode\Code2022\Day01.fs" />
-		<Content Include="AdventOfCode\Code2022\input\day01.txt" />
-		<Content Include="AdventOfCode\Code2022\input\day02.txt" />
-		<Content Include="AdventOfCode\Code2022\input\day03.txt" />
-		<Content Include="AdventOfCode\Code2022\input\day04.txt" />
-		<Content Include="AdventOfCode\Code2022\input\day05.txt" />
-		<Content Include="AdventOfCode\Code2022\input\day06.txt" />
-		<Compile Include="99problems\WorkingWithList.fs" />
-		<Compile Include="LeetCode\Leetcode1-10.fs" />
-		<Compile Include="DailyProblems\HowTos.fs" />
-		<Compile Include="ExceptionHandling.fs" />
-		<Content Include="WorkingWithData\PostgreSQL\db-init.txt" />
-		<Compile Include="WorkingWithData\PostgreSQL\PostgreSql.fs" />
-		<Compile Include="WorkingWithData\QueryExpressions.fs" />
-		<Compile Include="WorkingWithData\DomainModels.fs" />
-		<Compile Include="WorkingWithData\Others.fs" />
-
-		<Compile Include="DynamicFeatures.fs" />
-		<Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
-		<Content Include="ComputationExpression\PNG_02.png" />
-		<Content Include="ComputationExpression\PNG_01.png" />
-		<Compile Include="ComputationExpression\BinaryFileReader.fs" />
-		<Compile Include="ComputationExpression\Ex01Attempt.fs" />
-		<Compile Include="Main.fs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Expecto" Version="9.*" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
-		<PackageReference Include="Npgsql" Version="7.0.2" />
-		<PackageReference Include="Npgsql.FSharp" Version="5.6.0" />
-		<PackageReference Include="SQLProvider" Version="1.3.6" />
-		<PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.*" />
-		<PackageReference Update="FSharp.Core" Version="7.0.200" />
-	</ItemGroup>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Common.fs" />
+    <Compile Include="AdventOfCode\Code2022\Day04.fs" />
+    <Compile Include="AdventOfCode\Code2022\Day03.fs" />
+    <Compile Include="AdventOfCode\Code2022\Day02.fs" />
+    <Compile Include="AdventOfCode\Code2022\Day01.fs" />
+    <Content Include="AdventOfCode\Code2022\input\day01.txt" />
+    <Content Include="AdventOfCode\Code2022\input\day02.txt" />
+    <Content Include="AdventOfCode\Code2022\input\day03.txt" />
+    <Content Include="AdventOfCode\Code2022\input\day04.txt" />
+    <Content Include="AdventOfCode\Code2022\input\day05.txt" />
+    <Content Include="AdventOfCode\Code2022\input\day06.txt" />
+    <Compile Include="99problems\WorkingWithList.fs" />
+    <Compile Include="LeetCode\Leetcode1-10.fs" />
+    <Compile Include="DailyProblems\HowTos.fs" />
+    <Compile Include="ExceptionHandling.fs" />
+    <Content Include="WorkingWithData\PostgreSQL\db-init.txt" />
+    <Compile Include="WorkingWithData\PostgreSQL\PostgreSql.fs" />
+    <Compile Include="WorkingWithData\QueryExpressions.fs" />
+    <Compile Include="WorkingWithData\DomainModels.fs" />
+    <Compile Include="WorkingWithData\Others.fs" />
+    <Compile Include="DynamicFeatures.fs" />
+    <Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
+    <Content Include="ComputationExpression\PNG_02.png" />
+    <Content Include="ComputationExpression\PNG_01.png" />
+    <Compile Include="ComputationExpression\BinaryFileReader.fs" />
+    <Compile Include="ComputationExpression\Ex01Attempt.fs" />
+    <Compile Include="Main.fs" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
