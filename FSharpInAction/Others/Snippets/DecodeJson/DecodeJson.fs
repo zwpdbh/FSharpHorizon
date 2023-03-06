@@ -3,33 +3,62 @@ module DecodeJson =
     open Thoth.Json.Net
 
     module DecodeMapResponse = 
-        type Cooridates = {
-            coordinates: float list
+
+        type Point = {
+            cooridates: float list
         }
-    
-    
-        let coordinateDecoder: Decoder<Cooridates> = 
+
+        type Place = {
+            name: string
+            point: Point
+        }
+
+        type ResourceSet = {
+            resources: Place list
+        }
+
+        type MapPlace = {
+            resourceSets: ResourceSet list  
+        }
+
+        let pointDecoder: Decoder<Point> = 
             Decode.object (
-                fun get -> 
+                fun get ->
                     {
-                        Cooridates.coordinates = get.Required.Field "coordinates" (Decode.list Decode.float)
+                        Point.cooridates = get.Required.Field "coordinates" (Decode.list Decode.float)
                     }
             )
 
-        type MapPlace = {
-            name: string 
-            coordinates: Cooridates
-        }
+        let placeDecoder: Decoder<Place> = 
+            Decode.object (
+                fun get -> 
+                    {
+                        Place.name = get.Required.Field "name" Decode.string
+                        Place.point = get.Required.Field "point" pointDecoder
+                    }
+            )
+
+        let resourceSetDecoder: Decoder<ResourceSet> = 
+            Decode.object (
+                fun get -> 
+                    {
+                        ResourceSet.resources = get.Required.Field "resources" (Decode.list placeDecoder)
+                    }
+            )
 
         let mapPlaceDecoder: Decoder<MapPlace> = 
             Decode.object (
                 fun get -> 
                     {
-                        MapPlace.name =  get.Required.Field "name" Decode.string
-                        MapPlace.coordinates = get.Required.Field "point" coordinateDecoder
+                        MapPlace.resourceSets =  get.Required.Field "resourceSets" (Decode.list resourceSetDecoder)
                     }
             )
 
         let demo () = 
-            //m
-            0
+            match ResponseData.mapResponseStr |> Decode.fromString mapPlaceDecoder with 
+            | Result.Ok x -> 
+                x.resourceSets.Head.resources.Head.point.cooridates
+            | _ -> 
+                failwith "error"
+           
+            
