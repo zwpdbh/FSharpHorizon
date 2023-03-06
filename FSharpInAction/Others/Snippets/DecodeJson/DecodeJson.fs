@@ -58,7 +58,7 @@ module DecodeJson =
             match ResponseData.mapResponseStr |> Decode.fromString mapPlaceDecoder with 
             | Result.Ok x -> 
                 x.resourceSets.Head.resources.Head.point.cooridates
-            | _ -> 
-                failwith "error"
+            | Result.Error err -> 
+                failwith $"{err}"
            
             
