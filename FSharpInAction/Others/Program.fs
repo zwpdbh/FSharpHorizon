@@ -25,5 +25,7 @@ module OthersMain =
 
 
         //FromInterview.Ahrefs.Problem01.demo () |> printfn "%A"
-        Others.Snippets.SlideWindow.SubString.demo () 
+        //Others.Snippets.SlideWindow.SubString.demo () 
+
+        Others.Snippets.DecodeJson.DecodeMapResponse.demo() |> printfn "%A"
         0
