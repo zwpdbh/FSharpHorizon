@@ -194,16 +194,17 @@ module DecodeJson =
             NspResourceId: string 
             StorageResourceId: string 
             StorageKey: string 
-            StorageDstResourceId: string 
-            StorageDstKey: string 
-            SrcAccountName: string 
-            StorageDstName: string 
+            StorageDstResourceId: string option
+            StorageDstKey: string option
+            SrcAccountName: string option
+            StorageDstName: string option
             SubscriptionId: string 
         }
 
         type WorkflowData = 
             | Aks of AksData
             | Nsp of NspData
+            | Unknow of string 
 
 
         type Workflow = {
@@ -238,8 +239,60 @@ module DecodeJson =
             )
 
 
+        // Let's use active pattern help use to decode DU
+        let (|GetAksData|_|) str: option<AksData> = 
+            let aksDataDecoder = 
+                Decode.object (
+                    fun get ->
+                        {
+                            AksData.DeploymentName = get.Required.Field "DeploymentName" Decode.string 
+                            AksData.DeploymentLocation = get.Required.Field "DeploymentLocation" Decode.string 
+                            AksData.K8sConfig = get.Required.Field "K8sConfig" Decode.string
+                            AksData.SubscriptionId = get.Required.Field "SubscriptionId" Decode.string
+                        }
+                )
+
+            match str |> Decode.fromString aksDataDecoder  with 
+            | Ok data -> Some data 
+            | Error _ -> 
+                None
 
 
+        let (|GetNspData|_|) str: option<NspData> = 
+            let nspDataDecoder = 
+                Decode.object (
+                    fun get ->
+                        {
+                            NspData.DeploymentName = get.Required.Field "DeploymentName" Decode.string 
+                            NspData.NspResourceId = get.Required.Field "NspResourceId" Decode.string 
+                            NspData.SrcAccountName = get.Optional.Field "SrcAccountName" Decode.string
+                            NspData.StorageDstName = get.Optional.Field "StorageDstName" Decode.string 
+                            NspData.StorageDstKey = get.Optional.Field "StorageDstKey" Decode.string
+                            NspData.SubscriptionId = get.Required.Field "SubscriptionId" Decode.string
+                            NspData.StorageDstResourceId = get.Optional.Field "StorageDstResourceId" Decode.string
+                            NspData.StorageResourceId = get.Required.Field "StorageResourceId" Decode.string
+                            NspData.StorageKey = get.Required.Field "StorageKey" Decode.string
+                        }
+                )
+
+            match str |> Decode.fromString nspDataDecoder with 
+            | Ok data -> Some data 
+            | Error _ -> 
+                None
+
+        let dataDecoder: Decoder<WorkflowData> =
+            Decode.string 
+            |> Decode.andThen (fun str -> 
+                match str with 
+                | GetAksData data -> 
+                    Decode.succeed (Aks data)
+                | GetNspData data -> 
+                    Decode.succeed (Nsp data)
+                | unknowOne ->
+                    printfn $"UNKNOW: {unknowOne}"
+                    printfn "\n"
+                    Decode.succeed (Unknow str)
+            )
 
         let workflowsDecoder: Decoder<Workflow> = 
             Decode.object (
@@ -249,15 +302,24 @@ module DecodeJson =
                         Workflow.definitionName = get.Required.Field "definitionName" (Decode.string)
                         Workflow.executionPointers = get.Required.Field "executionPointers" executionPointersDecoder
                         Workflow.description = get.Optional.Field "description" (Decode.string)
-                        Workflow.data = get.Required.Field "data" (Decode.string)
+                        Workflow.data = get.Required.Field "data" dataDecoder
                     }
             )
 
 
         let demo () = 
             match ResponseData.workflowsStr |> Decode.fromString (Decode.list workflowsDecoder) with 
-            | Result.Ok x -> 
-                x
+            | Result.Ok workflowList -> 
+                workflowList
+                |> List.groupBy (fun each -> 
+                    match each.data with 
+                    | Aks _ -> "Aks"
+                    | Nsp _ -> "Nsp"
+                    | _  -> "Unknown"
+                )
+                |> List.map (fun (k, v) ->
+                    k, List.length v
+                )
             | Result.Error err -> 
                 failwith $"{err}"         
 
