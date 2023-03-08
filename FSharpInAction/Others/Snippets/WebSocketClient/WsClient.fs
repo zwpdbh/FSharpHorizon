@@ -92,7 +92,7 @@ module WsClient =
                 do! 
                     [
                         receiveMessage ws buffer
-                        //sendMessage ws
+                        sendMessage ws
                     ] |> Async.Parallel |> Async.Ignore // run both receive and send functions in parallel 
             }
         
