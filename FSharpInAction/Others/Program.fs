@@ -31,5 +31,5 @@ module OthersMain =
         //Others.Snippets.DecodeJson.DecodeWorkflowsResponseV3.demo () |> printfn "%A"
 
         //Others.Snippets.WsClient.WebSocketsClient.demo () 
-        Others.Snippets.WsClient.WebSocketClient.demo () 
+        Others.Snippets.WsClient.WebSocketClient.startStreaming "ethusd" 
         0
