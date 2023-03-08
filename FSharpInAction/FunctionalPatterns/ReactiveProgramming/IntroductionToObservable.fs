@@ -26,34 +26,7 @@ module AboutObserable =
 module SlideWindowForObservable =
     open System
 
-    // Learned from: https://stackoverflow.com/questions/3845110/observable-from-sequence-in-f
-    // TBD:: understand https://stackoverflow.com/questions/2649161/need-help-regarding-async-and-fsi
-    module MyObservable =
-        /// Creates an observable that calls the specified function after someone
-        /// subscribes to it (useful for waiting using 'let!' when we need to start
-        /// operation after 'let!' attaches handler)
-        let guard f (e: IObservable<'Args>) =
-            { new IObservable<'Args> with
-                member x.Subscribe(observer) =
-                    let rm = e.Subscribe(observer) in
-                    f ()
-                    rm }
-
-        let ofSeq s =
-            let evt = new Event<_>()
-
-            evt.Publish
-            |> guard (fun o ->
-                for n in s do
-                    evt.Trigger(n))
-
-        let demoOfSeq () =
-            [ 1 .. 10 ] |> ofSeq
-            |> Observable.filter (fun n -> n%2 = 0)
-            |> Observable.add (printfn "%d")
-
     module SlideWindow =
-
         /// Returns an observable that yields sliding windows of
         /// containing elements drawn from the input observable.
         /// Each window is returned as a fresh array.
@@ -90,3 +63,30 @@ module SlideWindowForObservable =
 
                     // Send incoming values to the agent
                     source.Subscribe(agent.Post) }
+
+
+    // Learned from: https://stackoverflow.com/questions/3845110/observable-from-sequence-in-f
+    // TBD:: understand https://stackoverflow.com/questions/2649161/need-help-regarding-async-and-fsi
+    module MyObservable =
+        /// Creates an observable that calls the specified function after someone
+        /// subscribes to it (useful for waiting using 'let!' when we need to start
+        /// operation after 'let!' attaches handler)
+        let guard f (e: IObservable<'Args>) =
+            { new IObservable<'Args> with
+                member x.Subscribe(observer) =
+                    let rm = e.Subscribe(observer) in
+                    f ()
+                    rm }
+
+        let ofSeq s =
+            let evt = new Event<_>()
+
+            evt.Publish
+            |> guard (fun o ->
+                for n in s do
+                    evt.Trigger(n))
+
+        let demoOfSeq () =
+            [ 1 .. 10 ] |> ofSeq
+            |> Observable.filter (fun n -> n%2 = 0)
+            |> Observable.add (printfn "%d")

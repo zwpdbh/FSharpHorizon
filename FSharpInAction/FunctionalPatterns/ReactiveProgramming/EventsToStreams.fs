@@ -40,7 +40,8 @@ module EventsToStreams =
 
         let demoRegisterHandler () =
             // create a handler. The event args are ignored
-            let basicHandler _eventArgs = printfn "tick %A" DateTime.Now
+            let basicHandler _eventArgs = 
+                printfn "tick %A" DateTime.Now
 
             // register the handler
             let basicTimer1 = createTimer 1000 basicHandler
@@ -187,17 +188,19 @@ module EventsToStreams =
             let simultaneousStream, nonSimultaneousStream =
                 // make pairs of events
                 let pairwiseStream =
-                   combinedStream |> Observable.pairwise
+                    combinedStream |> Observable.pairwise
 
                 pairwiseStream |> Observable.partition areSimultaneous
+
 
             // split the non-simultaneous stream based on the id
             let fizzStream, buzzStream  =
                 nonSimultaneousStream
-                // convert pair of events to the first event
+                // convert pair of events to the first event !!!
                 |> Observable.map (fun (ev1,_) -> ev1)
                 // split on whether the event id is three
                 |> Observable.partition (fun {label=id} -> id=3)
+
 
             // Now, attach behavior to each stream
             //print events from the combinedStream

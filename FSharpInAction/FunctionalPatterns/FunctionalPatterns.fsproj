@@ -5,8 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ReactiveProgramming\Todo\Asynchronous.fs" />
     <Compile Include="ReactiveProgramming\PubSub.fs" />
-    <Compile Include="ReactiveProgramming\Asynchronous.fs" />
     <Compile Include="ReactiveProgramming\IntroductionToObservable.fs" />
     <Compile Include="ReactiveProgramming\EventsToStreams.fs" />
     <Compile Include="Playground.fs" />
