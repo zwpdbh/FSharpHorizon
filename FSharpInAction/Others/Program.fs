@@ -28,5 +28,8 @@ module OthersMain =
         //Others.Snippets.SlideWindow.SubString.demo () 
 
         //Others.Snippets.DecodeJson.DecodeMapResponse.demo() |> printfn "%A"
-        Others.Snippets.DecodeJson.DecodeWorkflowsResponseV3.demo () |> printfn "%A"
+        //Others.Snippets.DecodeJson.DecodeWorkflowsResponseV3.demo () |> printfn "%A"
+
+        //Others.Snippets.WsClient.WebSocketsClient.demo () 
+        Others.Snippets.WsClient.WebSocketClient.demo () 
         0
