@@ -27,4 +27,4 @@ nuget Thoth.Json.Net 10.0.0
 nuget XPlot.Plotly 4.0.6
 nuget YoloDev.Expecto.TestSdk
 nuget FSharp.Control.Websockets >= 0.2.3
-nuget  Websocket.Client >= 4.4.43
+nuget Websocket.Client >= 4.4.43

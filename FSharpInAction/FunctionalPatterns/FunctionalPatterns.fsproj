@@ -5,6 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="paket.references" />
+    <Compile Include="ReactiveProgramming\ObservableExamples.fs" />
     <Compile Include="ReactiveProgramming\Todo\Asynchronous.fs" />
     <Compile Include="ReactiveProgramming\PubSub.fs" />
     <Compile Include="ReactiveProgramming\IntroductionToObservable.fs" />

@@ -22,5 +22,7 @@ module Main =
         //ReactiveProgramming.Asynchronous.MyTest.demoSequenceAsync ()
         //ReactiveProgramming.Asynchronous.MyTest.demoParallelAsync ()
 
-        ReactiveProgramming.Asynchronous.FunAndProfit.demoCancellingWorkflow () 
+        //ReactiveProgramming.Asynchronous.FunAndProfit.demoCancellingWorkflow () 
+        //ReactiveProgramming.PubSub.Example03.demo () |> printfn "%A"
+        FunctionalPatterns.ReactiveProgramming.ObservableExamples.MergeAndSplit.demo () |> printfn "%A"
         0
