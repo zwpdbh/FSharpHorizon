@@ -270,15 +270,15 @@ module AuthTokenAgent =
         let agent = 
             MailboxProcessor.Start(fun inbox ->
                 let rec loop (tokenResponseResult: Result<AuthTokenResponse, string> option) = 
-                    let requestNewToken sp scope (chnl: AsyncReplyChannel<Result<AuthTokenResponse, string>>) = 
-                        match sp, scope with 
-                        | RequestAccessToken tokenResponse -> 
-                            chnl.Reply (Result.Ok tokenResponse)
-                            loop(Some (Result.Ok tokenResponse))
-                        | _ -> 
-                            loop(Some (Result.Error "RequestAccessToken failed"))    
-                           
-                    async {
+                    async {       
+                        let requestNewToken sp scope (chnl: AsyncReplyChannel<Result<AuthTokenResponse, string>>) = 
+                            match sp, scope with 
+                            | RequestAccessToken tokenResponse -> 
+                                chnl.Reply (Result.Ok tokenResponse)
+                                loop(Some (Result.Ok tokenResponse))
+                            | _ -> 
+                                loop(Some (Result.Error "RequestAccessToken failed"))    
+
                         let! msg = inbox.Receive()
                         match msg with 
                         | RequestNewToken chnl -> 
