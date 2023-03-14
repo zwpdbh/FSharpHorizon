@@ -6,7 +6,9 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="Common.fs" />
+    <Compile Include="Snippets\DuckTyping.fs" />
     <Compile Include="Snippets\WebSocketClient\WsClient.fs" />
     <Compile Include="Snippets\DecodeJson\ResponseData.fs" />
     <Compile Include="Snippets\DecodeJson\DecodeJson.fs" />
@@ -37,8 +39,6 @@
     <Content Include="WorkingWithData\PostgreSQL\db-init.sql" />
     <Compile Include="WorkingWithData\PostgreSQL\PostgreSql.fs" />
     <Compile Include="WorkingWithData\QueryExpressions.fs" />
-    <Compile Include="WorkingWithData\DomainModels.fs" />
-    <Compile Include="WorkingWithData\Others.fs" />
     <Compile Include="DynamicFeatures.fs" />
     <Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
     <Content Include="ComputationExpression\PNG_02.png" />
@@ -47,5 +47,6 @@
     <Compile Include="ComputationExpression\Ex01Attempt.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
