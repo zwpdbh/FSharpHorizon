@@ -1,8 +1,11 @@
 ﻿namespace Others.Snippets 
 module DecodeJson = 
     open Thoth.Json.Net
-
+    open Others
     module DecodeMapResponse = 
+
+        let jsonStr = Common.readText @"Snippets/data/mapServiceResponse.txt"
+
         // In this example, the response is JSON object and each of its attribute's value is either simple value or an JSON object.
         // Here, we want to extract the cooridate from the JSON.
         // 1) Define hierachcal object from the deepest level.
@@ -58,7 +61,7 @@ module DecodeJson =
             )
 
         let demo () = 
-            match ResponseData.mapResponseStr |> Decode.fromString mapPlaceDecoder with 
+            match jsonStr |> Decode.fromString mapPlaceDecoder with 
             | Result.Ok x -> 
                 x.resourceSets.Head.resources.Head.point.cooridates
             | Result.Error err -> 
@@ -69,7 +72,7 @@ module DecodeJson =
         // The problem is that some attribute's value is another serilized JSON object. For example, executionPointers and data
         // Start from simple, just treat values as string first. 
         // Then, modify the our module to use more complex type and change cooresponding decoder.
-        
+        let jsonStr = Common.readText @"Snippets/data/workflows.txt"
         type Workflow = {
             id: string 
             definitionName: string
@@ -92,7 +95,7 @@ module DecodeJson =
 
 
         let demo () = 
-            match ResponseData.workflowsStr |> Decode.fromString (Decode.list workflowsDecoder) with 
+            match jsonStr |> Decode.fromString (Decode.list workflowsDecoder) with 
             | Result.Ok x -> 
                 x
             | Result.Error err -> 
@@ -104,7 +107,7 @@ module DecodeJson =
         // For example, executionPointers and data. Those attribute's value is an list of JSON object be serilized as string.
         // Start from simple, just treat values as string first. 
         // Then, modify the our module to use more complex type and change cooresponding decoder.
-    
+        let jsonStr = Common.readText @"Snippets/data/workflows.txt"
         type ExecutionPointer = {
             Id: string 
             StepId: int 
@@ -159,7 +162,7 @@ module DecodeJson =
 
 
         let demo () = 
-            match ResponseData.workflowsStr |> Decode.fromString (Decode.list workflowsDecoder) with 
+            match jsonStr |> Decode.fromString (Decode.list workflowsDecoder) with 
             | Result.Ok x -> 
                 x
             | Result.Error err -> 
@@ -172,7 +175,7 @@ module DecodeJson =
         // For example, executionPointers and data. Those attribute's value is an list of JSON object be serilized as string.
         // Start from simple, just treat values as string first. 
         // Then, modify the our module to use more complex type and change cooresponding decoder.
-    
+        let jsonStr = Common.readText @"Snippets/data/workflows.txt"
         type ExecutionPointer = {
             Id: string 
             StepId: int 
@@ -308,7 +311,7 @@ module DecodeJson =
 
 
         let demo () = 
-            match ResponseData.workflowsStr |> Decode.fromString (Decode.list workflowsDecoder) with 
+            match jsonStr |> Decode.fromString (Decode.list workflowsDecoder) with 
             | Result.Ok workflowList -> 
                 workflowList
                 |> List.groupBy (fun each -> 
@@ -325,7 +328,8 @@ module DecodeJson =
 
     // We want to decode the value based on condition specified by the type
     module ConditionParsing = 
-        
+        let jsonStr = Common.readText @"Snippets/data/conditionResponse.txt"
+
         open System
         // From: https://stackoverflow.com/questions/70025092/thoth-json-net-conditional-parsing
         type DecodeBuilder() =
@@ -378,6 +382,6 @@ module DecodeJson =
             }
 
         let demo () = 
-            Decode.fromString (Decode.array decodeByType) ResponseData.conditionResponseStr
+            Decode.fromString (Decode.array decodeByType) jsonStr
     
 

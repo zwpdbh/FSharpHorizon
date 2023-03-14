@@ -9,11 +9,14 @@
     <None Include="paket.references" />
     <Compile Include="Common.fs" />
     <Compile Include="Snippets\DuckTyping.fs" />
-    <Compile Include="Snippets\WebSocketClient\WsClient.fs" />
-    <Compile Include="Snippets\DecodeJson\ResponseData.fs" />
-    <Compile Include="Snippets\DecodeJson\DecodeJson.fs" />
+    <Compile Include="Snippets\CancelWorkflow.fs" />
+    <Compile Include="Snippets\WsClient.fs" />
+    <Compile Include="Snippets\DecodeJson.fs" />
     <Compile Include="Snippets\SlideWindow.fs" />
     <Compile Include="Snippets\ProcessText.fs" />
+    <Content Include="Snippets\data\workflows.txt" />
+    <Content Include="Snippets\data\mapServiceResponse.txt" />
+    <Content Include="Snippets\data\conditionResponse.txt" />
     <Content Include="Snippets\data\words03.txt" />
     <Content Include="Snippets\data\words02.txt" />
     <Content Include="Snippets\data\words01.txt" />
@@ -47,6 +50,5 @@
     <Compile Include="ComputationExpression\Ex01Attempt.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

@@ -26,5 +26,5 @@ module Main =
         //ReactiveProgramming.PubSub.Example03.demo () |> printfn "%A"
         //FunctionalPatterns.ReactiveProgramming.ObservableExamples.MergeAndSplit.demo () |> printfn "%A"
 
-        FunctionalPatterns.ReactiveProgramming.ObservableExamples.SimulateEvents.demo () |> printfn "%A"
+        FunctionalPatterns.ReactiveProgramming.PubSub.SimulateEvents.demo () |> printfn "%A"
         0
