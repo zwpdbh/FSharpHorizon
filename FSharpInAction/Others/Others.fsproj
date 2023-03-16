@@ -20,6 +20,7 @@
     <Content Include="Snippets\data\words03.txt" />
     <Content Include="Snippets\data\words02.txt" />
     <Content Include="Snippets\data\words01.txt" />
+    <Compile Include="FromInterview\Tmp.fs" />
     <Content Include="FromInterview\input.txt" />
     <Compile Include="FromInterview\Polymer.fs" />
     <Compile Include="AdventOfCode\Code2022\Day07.fs" />
