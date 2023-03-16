@@ -28,8 +28,9 @@
 
 //AzureWorkflow.DemoAzureStorageBlob.demoTestMemoryStream()
 
-WhyFSharp.DemoAsycSeq.demo() 
+//WhyFSharp.DemoAsycSeq.demo() 
 
+WhyFSharp.DemoMessagePassing.demo() 
 
 /// Talk about my experience about choosing F# 
 /// F# is the C#'s future. Shall I wait until C# has all features of F#?

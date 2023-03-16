@@ -362,6 +362,135 @@ module Demo08 =
             measureNworkers n 30 40
         )    
 
+module DemoMessagePassing = 
+    open System
+
+    let rec fib n = 
+        match n with 
+        | 0 ->  0
+        | 1 ->  1
+        | _ -> fib(n-1) + fib(n-2)
+
+
+    // type Job = int
+
+    type WorkerMessage =
+        // | CheckStatus of AsyncReplyChannel<WorkerStatus>
+        | ComputeFib of int 
+        | Idel
+        | Shutdown 
+
+    and SchedulerMessage =
+        | AddJob of int // A job is fib n to be computed
+        | CheckStatus of AsyncReplyChannel<string>
+        | RequestJob of workerId: int * AsyncReplyChannel<WorkerMessage>
+        | ReportResult of workerId: int * input: int * output: int
+
+    and Scheduler() =
+
+        let agent = 
+            MailboxProcessor<SchedulerMessage>.Start(fun inbox ->
+                let rec loop(total: int, jobs: int list) =
+                    async {
+                        
+                        let! msg = inbox.Receive()
+
+                        match msg with 
+                        | AddJob n -> 
+                            return! loop(total + n, n::jobs)
+                        | CheckStatus chnl ->
+                            chnl.Reply $"There are {total} jobs in total"
+                            return! loop(total, jobs)
+
+                        | RequestJob (id, chnl) -> 
+                            //printfn $"Worker{id} is requesting job"
+                            match jobs with 
+                            | x::tail -> 
+                                chnl.Reply (ComputeFib x)
+                                return! loop(total, tail)
+                            | [] -> 
+                                chnl.Reply Idel
+                                return! loop(total, [])
+
+                        | ReportResult (id, k, v) ->
+                            printfn $"Report from worker{id}, fib({k}) = {v}"
+                            return! loop(total, jobs)
+                    }
+
+                loop(0, [])
+            )
+                
+        member x.AddJob n =
+            agent.Post (AddJob n)
+
+        member x.ReportResult (id, input, output) = 
+            agent.Post (ReportResult(id, input, output))
+
+        member x.RequestJob (id)  = 
+            async {
+                return! agent.PostAndAsyncReply(fun chnl -> RequestJob (id, chnl))
+            }
+
+
+        
+
+    and Worker(id: int, scheduler: Scheduler) = 
+        let id = id
+        let scheduler = scheduler
+
+        let agent = 
+            MailboxProcessor<WorkerMessage>.Start(fun _ -> 
+                let rec loop () =
+                    async {
+
+                        let! msg = scheduler.RequestJob(id)
+                        //printfn $"Worker{id} receive message from scheduler: {msg}"
+                        match msg with 
+                        | ComputeFib n-> 
+                            let fibn = fib n
+                            scheduler.ReportResult (id, n, fibn)
+                            return! loop()
+                        | Idel -> 
+                            return! loop()
+                        | Shutdown -> 
+                            () 
+                    }
+                loop()
+            )
+        
+        member x.ComputeFib n = 
+            agent.Post (ComputeFib n)
+
+        member x.Shutdown () =
+            agent.Post Shutdown
+
+
+
+    let demo() = 
+        let rand = new Random()
+        let scheduler = new Scheduler()
+
+        [1..3]
+        |> List.map (fun i -> new Worker(i, scheduler))
+        |> ignore 
+
+        let rec loop() = 
+            async { 
+                let jobs = 
+                    // Each batch of job is to compute 20 of fib(x)
+                    seq {
+                        for i in 1..20 do
+                            yield rand.Next(20)
+                    }
+                for each in jobs do 
+                    do! Async.Sleep 200
+                    scheduler.AddJob each
+                return! loop()
+            }   
+        loop () |> Async.RunSynchronously
+        
+    
+
 module DemoAsycSeq = 
     // An AsyncSeq is a sequence in which individual elements are retrieved using an Async computation.
     open FSharp.Control
