@@ -232,6 +232,7 @@ module Demo07 =
 
 
 /// MessagePassing as better way to handle concurrency
+/// See: https://jason-down.com/2021/12/23/all-you-can-eat-agents/
 // This demo shows 
 // 1. Spawn multiple workers (agent) to compute multiple tasks 
 // 2.1 A worker request new task from scheduler if it is not busy
