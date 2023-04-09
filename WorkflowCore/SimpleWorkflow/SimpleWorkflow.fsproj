@@ -5,7 +5,9 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+
     <Compile Include="HelloWorld.fs" />
+    <Compile Include="HellowSaga.fs" />
     <None Include="paket.references" />
     <Compile Include="Program.fs" />
   </ItemGroup>

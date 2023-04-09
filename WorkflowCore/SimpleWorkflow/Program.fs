@@ -5,7 +5,8 @@ module SimpleWorkflowMain =
 
   [<EntryPoint>]
   let main argv =
-    HellowWorkflow.demo() |> printfn "%A"
+    //HellowWorkflow.demo() |> printfn "%A"
+    HellowSaga.demo() |> printfn "%A"
       
     0 
 

@@ -1,7 +1,6 @@
 namespace SimpleWorkflow
 
 open Microsoft.Extensions.DependencyInjection
-open Microsoft.Extensions.Logging
 open WorkflowCore.Interface
 open WorkflowCore.Models
 
@@ -17,10 +16,23 @@ module HellowWorkflow =
         printfn "Initialize"
         ExecutionResult.Next()
 
+    type UndoInitialize() =
+      inherit StepBody()
+      override x.Run(context: IStepExecutionContext) =
+        printfn "UndoInitialize"
+        ExecutionResult.Next()
+
     type ApplyDiscount() =
       inherit StepBody()
       override x.Run(context: IStepExecutionContext) =
         printfn "ApplyDiscount"
+        failwith "something unexpected"
+        ExecutionResult.Next()
+
+    type UndoApplyDiscount() =
+      inherit StepBody()
+      override x.Run(context: IStepExecutionContext) =
+        printfn "UndoApplyDiscount"
         ExecutionResult.Next()
 
     type ApplyShipping() =
@@ -29,10 +41,28 @@ module HellowWorkflow =
         printfn "ApplyShipping"
         ExecutionResult.Next()
 
+    type UndoApplyShipping() =
+      inherit StepBody()
+      override x.Run(context: IStepExecutionContext) =
+        printfn "UndoApplyShipping"
+        ExecutionResult.Next()
+
     type Finalize() =
       inherit StepBody()
       override x.Run(context: IStepExecutionContext) =
         printfn "Finalize"
+        ExecutionResult.Next()
+
+    type UndoFinalize() =
+      inherit StepBody()
+      override x.Run(context: IStepExecutionContext) =
+        printfn "UndoFinalize"
+        ExecutionResult.Next()
+
+    type Cleanup() =
+      inherit StepBody()
+      override x.Run(context: IStepExecutionContext) =
+        printfn "Cleanup"
         ExecutionResult.Next()
 
   module Workflow =
@@ -41,7 +71,7 @@ module HellowWorkflow =
       // Implementing Interfaces by Using Class Types: https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/interfaces#implementing-interfaces-by-using-class-types
       interface IWorkflow with
         member this.Id: string = 
-           "ProcessPaymentWorkflow";
+           "ProcessPaymentWorkflow"
         member this.Version: int = 
           1
 
