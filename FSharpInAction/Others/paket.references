@@ -8,4 +8,4 @@ FSharp.Core
 Thoth.Json.Net
 FSharp.Control.Websockets
 Websocket.Client
-WorkflowCore
+System.ComponentModel.Composition
