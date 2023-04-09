@@ -6,6 +6,7 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="WorkflowCore\Simple.fs" />
     <None Include="paket.references" />
     <Compile Include="Common.fs" />
     <Compile Include="Snippets\MessagePassing.fs" />
