@@ -8,6 +8,8 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="Common.fs" />
+    <Compile Include="Snippets\MessagePassing.fs" />
+    <Compile Include="Snippets\WebCrawler.fs" />
     <Compile Include="Snippets\DuckTyping.fs" />
     <Compile Include="Snippets\CancelWorkflow.fs" />
     <Compile Include="Snippets\WsClient.fs" />

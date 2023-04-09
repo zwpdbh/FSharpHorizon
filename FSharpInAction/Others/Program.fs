@@ -1,4 +1,4 @@
-﻿
+
 namespace Others
 
 module OthersMain =
@@ -7,6 +7,6 @@ module OthersMain =
     [<EntryPoint>]
     let main argv =
 
-        FromInterview.Tmp.Problem01.demo () |> printfn "%A"
-
+        //FromInterview.Tmp.Problem01.demo () |> printfn "%A"
+        Snippets.MessagePassing.demoMeasureSolvingFibWithDifferentSolvers ()
         0

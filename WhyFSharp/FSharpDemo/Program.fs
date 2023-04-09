@@ -1,4 +1,4 @@
-﻿/// What is F#: https://dotnet.microsoft.com/en-us/languages/fsharp
+/// What is F#: https://dotnet.microsoft.com/en-us/languages/fsharp
 /// F# is An open-source language that makes it easy to write succinct, robust, and performant code -- from Microsft
 
 /// Show: https://fsharpforfunandprofit.com/why-use-fsharp/
@@ -30,7 +30,6 @@
 
 //WhyFSharp.DemoAsycSeq.demo() 
 
-WhyFSharp.DemoMessagePassing.demo() 
 
 /// Talk about my experience about choosing F# 
 /// F# is the C#'s future. Shall I wait until C# has all features of F#?
