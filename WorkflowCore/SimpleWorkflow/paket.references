@@ -1,0 +1,5 @@
+FSharp.Core
+WorkflowCore
+Microsoft.Extensions.DependencyInjection.Abstractions
+Microsoft.Extensions.DependencyInjection
+Microsoft.Extensions.Logging

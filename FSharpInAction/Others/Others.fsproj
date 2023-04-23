@@ -6,12 +6,26 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="WorkflowCore\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="Common.fs" />
+    <Compile Include="Snippets\MessagePassing.fs" />
+    <Compile Include="Snippets\WebCrawler.fs" />
+    <Compile Include="Snippets\DuckTyping.fs" />
+    <Compile Include="Snippets\CancelWorkflow.fs" />
+    <Compile Include="Snippets\WsClient.fs" />
+    <Compile Include="Snippets\DecodeJson.fs" />
     <Compile Include="Snippets\SlideWindow.fs" />
     <Compile Include="Snippets\ProcessText.fs" />
+    <Content Include="Snippets\data\workflows.txt" />
+    <Content Include="Snippets\data\mapServiceResponse.txt" />
+    <Content Include="Snippets\data\conditionResponse.txt" />
     <Content Include="Snippets\data\words03.txt" />
     <Content Include="Snippets\data\words02.txt" />
     <Content Include="Snippets\data\words01.txt" />
+    <Compile Include="FromInterview\Tmp.fs" />
     <Content Include="FromInterview\input.txt" />
     <Compile Include="FromInterview\Polymer.fs" />
     <Compile Include="AdventOfCode\Code2022\Day07.fs" />
@@ -34,8 +48,6 @@
     <Content Include="WorkingWithData\PostgreSQL\db-init.sql" />
     <Compile Include="WorkingWithData\PostgreSQL\PostgreSql.fs" />
     <Compile Include="WorkingWithData\QueryExpressions.fs" />
-    <Compile Include="WorkingWithData\DomainModels.fs" />
-    <Compile Include="WorkingWithData\Others.fs" />
     <Compile Include="DynamicFeatures.fs" />
     <Compile Include="SymbolicComputation\ExpressionSimplification.fs" />
     <Content Include="ComputationExpression\PNG_02.png" />

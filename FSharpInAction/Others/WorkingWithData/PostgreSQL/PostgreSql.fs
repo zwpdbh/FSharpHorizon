@@ -135,32 +135,32 @@ module PostgreSql =
             insertCourses ()
             insertCourseSelections ()
 
-    //module SqlProvider = 
-    //    // Need to install: FSharp.Data.SqlProvider
-    //    // From https://github.com/fsprojects/SQLProvider
-    //    // See its doc: https://fsprojects.github.io/SQLProvider//core/postgresql.html
-    //    // Need to install dependencies: Npgsql
-    //    open FSharp.Data.Sql
-    //    open Npgsql
+    module SqlProvider = 
+        // Need to install: FSharp.Data.SqlProvider
+        // From https://github.com/fsprojects/SQLProvider
+        // See its doc: https://fsprojects.github.io/SQLProvider//core/postgresql.html
+        // Need to install dependencies: Npgsql
+        open FSharp.Data.Sql
+        open Npgsql
         
-    //    let [<Literal>] connectionString = "Host=localhost; Database=fsharp; Username=postgres; Password=postgres"
-    //    let [<Literal>] dbVendor = Common.DatabaseProviderTypes.POSTGRESQL
-    //    let [<Literal>] resolutionPath = @"C:\Users\wei\.nuget\packages\npgsql\7.0.2\lib\net6.0"
-    //    let [<Literal>] optionType = Common.NullableColumnType.OPTION
-    //    type sql = 
-    //        SqlDataProvider<
-    //            DatabaseVendor=dbVendor, 
-    //            ConnectionString=connectionString,  
-    //            ConnectionStringName="",
-    //            ResolutionPath=resolutionPath,
-    //            UseOptionTypes=optionType
-    //        >
+        let [<Literal>] connectionString = "Host=localhost; Database=fsharp; Username=postgres; Password=postgres"
+        let [<Literal>] dbVendor = Common.DatabaseProviderTypes.POSTGRESQL
+        let [<Literal>] resolutionPath = @"C:\Users\wei\.nuget\packages\npgsql\7.0.2\lib\net6.0"
+        let [<Literal>] optionType = Common.NullableColumnType.OPTION
+        //type sql = 
+        //    SqlDataProvider<
+        //        DatabaseVendor=dbVendor, 
+        //        ConnectionString=connectionString,  
+        //        ConnectionStringName="",
+        //        ResolutionPath=resolutionPath,
+        //        UseOptionTypes=optionType
+        //    >
 
-    //    let demoContains () = 
-    //        0
+        //let demoContains () = 
+        //    0
 
-    //    let demos () = 
-    //        demoContains ()
+        //let demos () = 
+        //    demoContains ()
 
-    //        printfn "done"
+        //    printfn "done"
     

@@ -5,3 +5,7 @@ Npgsql.FSharp
 SQLProvider
 YoloDev.Expecto.TestSdk
 FSharp.Core
+Thoth.Json.Net
+FSharp.Control.Websockets
+Websocket.Client
+System.ComponentModel.Composition

@@ -1,0 +1,10 @@
+﻿[
+    {
+        "type" : "Reverse",
+        "value" : "edcba"
+    },
+    {
+        "type" : "Rot13",
+        "value" : "qrpbqr guvf"
+    }
+]

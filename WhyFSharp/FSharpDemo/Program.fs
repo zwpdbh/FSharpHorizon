@@ -1,4 +1,4 @@
-﻿/// What is F#: https://dotnet.microsoft.com/en-us/languages/fsharp
+/// What is F#: https://dotnet.microsoft.com/en-us/languages/fsharp
 /// F# is An open-source language that makes it easy to write succinct, robust, and performant code -- from Microsft
 
 /// Show: https://fsharpforfunandprofit.com/why-use-fsharp/
@@ -13,7 +13,7 @@
 
 
 //// =============Demos============= 
-//WhyFSharp.Demo07.demo() 
+WhyFSharp.Demo07.demo() 
 
 //WhyFSharp.Demo08.demo()
 
@@ -28,7 +28,7 @@
 
 //AzureWorkflow.DemoAzureStorageBlob.demoTestMemoryStream()
 
-WhyFSharp.DemoAsycSeq.demo() 
+//WhyFSharp.DemoAsycSeq.demo() 
 
 
 /// Talk about my experience about choosing F# 
