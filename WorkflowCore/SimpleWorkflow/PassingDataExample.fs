@@ -15,5 +15,7 @@ module PassingDataWorkflow =
 
   type MyData()=
     // See: https://stackoverflow.com/questions/24840948/when-should-i-use-let-member-val-and-member-this
+    // See: https://fsharpforfunandprofit.com/posts/object-oriented-intro/
+    // See: https://fsharpforfunandprofit.com/series/porting-from-csharp/
     member val Value1 = 0 with get, set
     member x.Value2 = 0
